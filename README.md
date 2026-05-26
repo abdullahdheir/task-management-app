@@ -1,6 +1,6 @@
-# Ink & Paper
+# Task Management App
 
-A modern, minimalist blog platform built with Laravel, designed for writers who value clarity and focus. The platform provides a distraction-free writing environment with a clean, elegant interface inspired by the principles of digital quiet.
+A modern, user-friendly task management application built with Laravel. Each user can create, manage, and track their own tasks with the ability to mark tasks as completed. The application features authentication, authorization, and a clean, responsive interface.
 
 ![Laravel](https://img.shields.io/badge/Laravel-13.x-FF2D20?style=flat-square&logo=laravel)
 ![PHP](https://img.shields.io/badge/PHP-8.3+-777BB4?style=flat-square&logo=php)
@@ -8,21 +8,21 @@ A modern, minimalist blog platform built with Laravel, designed for writers who 
 
 ## Features
 
-- **Distraction-Free Writing Editor**: Clean, minimalist interface designed for focused content creation
-- **Category Management**: Organize content with a flexible category system with slug support
-- **Modern UI/UX**: Built with Tailwind CSS and Material Design principles
-- **Responsive Design**: Fully responsive layout that works seamlessly across all devices
-- **SEO-Friendly**: Built-in slug generation and SEO metadata support
-- **Dashboard Analytics**: Track post performance and engagement metrics
-- **Draft Management**: Save and manage drafts before publishing
+- **User Authentication**: Secure login and registration using Laravel Fortify
+- **Task Management**: Create, read, update, and delete personal tasks
+- **Status Tracking**: Mark tasks as pending, in progress, or completed
+- **User Isolation**: Each user can only access their own tasks
+- **Modern UI/UX**: Clean, responsive design built with Tailwind CSS
+- **Authorization**: Robust access control to prevent unauthorized access
+- **Comprehensive Testing**: Full test coverage for task management features
 
 ## Technology Stack
 
-- **Backend**: Laravel 13.x
+- **Backend**: Laravel 11.x
 - **Frontend**: Blade Templates, Tailwind CSS
+- **Authentication**: Laravel Fortify
 - **Database**: MySQL/PostgreSQL
-- **Icons**: Google Material Symbols
-- **Fonts**: Inter (UI), Source Serif 4 (Body/Display)
+- **Testing**: PHPUnit
 
 ## Installation
 
@@ -38,8 +38,8 @@ A modern, minimalist blog platform built with Laravel, designed for writers who 
 1. **Clone the repository**
 
     ```bash
-    git clone https://github.com/abdullahdheir/sass-blog.git
-    cd sass-blog
+    git clone https://github.com/abdullahdheir/task-management-app.git
+    cd task-management-app
     ```
 
 2. **Install dependencies**
@@ -63,7 +63,7 @@ A modern, minimalist blog platform built with Laravel, designed for writers who 
     DB_CONNECTION=mysql
     DB_HOST=127.0.0.1
     DB_PORT=3306
-    DB_DATABASE=ink_and_paper
+    DB_DATABASE=task_management
     DB_USERNAME=your_username
     DB_PASSWORD=your_password
     ```
@@ -94,77 +94,70 @@ A modern, minimalist blog platform built with Laravel, designed for writers who 
 ├── app/
 │   ├── Http/
 │   │   └── Controllers/
-│   │       ├── CategoryController.php
-│   │       ├── PageController.php
-│   │       └── PostController.php
+│   │       └── TaskController.php
 │   └── Models/
-│       ├── Category.php
-│       └── Post.php
+│       ├── Task.php
+│       └── User.php
 ├── database/
+│   ├── factories/
+│   │   ├── TaskFactory.php
+│   │   └── UserFactory.php
 │   └── migrations/
-│       ├── 2026_05_24_035439_create_categories_table.php
-│       └── 2026_05_24_035609_create_posts_table.php
+│       ├── 0001_01_01_000000_create_users_table.php
+│       └── 2026_05_25_114206_create_tasks_table.php
 ├── resources/
-│   ├── views/
-│   │   ├── layouts/
-│   │   │   ├── dashboard.blade.php
-│   │   │   └── public.blade.php
-│   │   ├── categories/
-│   │   │   ├── index.blade.php
-│   │   │   ├── create.blade.php
-│   │   │   └── edit.blade.php
-│   │   └── posts/
-│   │       ├── index.blade.php
-│   │       ├── create.blade.php
-│   │       ├── edit.blade.php
-│   │       └── show.blade.php
-└── routes/
-    └── web.php
+│   └── views/
+│       ├── layouts/
+│       │   └── master.blade.php
+│       └── tasks/
+│           ├── index.blade.php
+│           ├── create.blade.php
+│           ├── edit.blade.php
+│           └── show.blade.php
+├── routes/
+│   └── web.php
+└── tests/
+    └── Feature/
+        └── TaskControllerTest.php
 ```
 
 ## Database Schema
 
-### Categories Table
+### Users Table
 
 - `id` (Primary Key)
 - `name` (String, Required)
-- `slug` (String, Unique, Required)
-- `description` (Text, Nullable)
+- `email` (String, Unique, Required)
+- `password` (String, Required)
+- `email_verified_at` (Timestamp, Nullable)
+- `remember_token` (String, Nullable)
 - `created_at`, `updated_at` (Timestamps)
 
-### Posts Table
+### Tasks Table
 
 - `id` (Primary Key)
 - `title` (String, Required)
-- `content` (Text, Required)
-- `category_id` (Foreign Key, Nullable)
+- `owner_id` (Foreign Key to users, Required)
+- `status` (Enum: pending, doing, completed, Default: pending)
+- `started_at` (Timestamp, Nullable)
+- `completed_at` (Timestamp, Nullable)
 - `created_at`, `updated_at` (Timestamps)
 
 ## Usage
 
-### Managing Categories
+### Authentication
 
-1. Navigate to `/categories` to view all categories
-2. Click "Create Category" to add a new category
-3. Fill in the name, slug, and optional description
-4. Edit or delete categories from the management view
+1. Navigate to `/login` to sign in
+2. Navigate to `/register` to create a new account
+3. After registration, you'll be redirected to the login page
 
-### Managing Posts
+### Managing Tasks
 
-1. Navigate to `/posts` to view the dashboard
-2. Click "Write a post" to create a new post
-3. Enter the title, select a category, and write your content
-4. Publish your post or save as a draft
-5. Edit or delete posts from the dashboard
-
-## Design System
-
-The platform uses a custom design system based on Material Design 3 principles:
-
-- **Color Palette**: Purple primary with neutral surface colors
-- **Typography**: Source Serif 4 for headings and body text, Inter for UI elements
-- **Spacing**: Consistent spacing scale for visual rhythm
-- **Components**: Reusable Blade components for consistency
+1. Navigate to `/tasks` to view all your tasks
+2. Click "Add New Task" to create a new task
+3. Enter the task title and submit
+4. Use the "Mark Complete/Pending" button to toggle task status
+5. Edit or delete tasks from the task list
 
 ## Contributing
 
@@ -183,6 +176,18 @@ Contributions are welcome! Please follow these guidelines:
 - Write clear, descriptive commit messages
 - Add comments for complex logic
 
+## Running Tests
+
+Run the test suite with:
+
+```bash
+php artisan test
+```
+
+## Security
+
+If you discover any security related issues, please email the maintainers instead of using the issue tracker.
+
 ## License
 
 This project is open-sourced software licensed under the [MIT license](LICENSE).
@@ -195,5 +200,4 @@ For support, please open an issue on GitHub or contact the maintainers.
 
 - Built with [Laravel](https://laravel.com)
 - Styled with [Tailwind CSS](https://tailwindcss.com)
-- Icons by [Google Material Symbols](https://fonts.google.com/icons)
-- Fonts by [Google Fonts](https://fonts.google.com)
+- Authentication by [Laravel Fortify](https://laravel.com/docs/fortify)
