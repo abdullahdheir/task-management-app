@@ -105,8 +105,17 @@
                                         @csrf
                                         @method('PATCH')
                                         <button type="submit"
-                                            class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white {{ $task->status === 'completed' ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-green-500 hover:bg-green-600' }} transition duration-200">
-                                            {{ $task->status === 'completed' ? 'Mark Pending' : 'Mark Complete' }}
+                                            class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white transition duration-200
+                                            @if ($task->status === 'pending') bg-blue-500 hover:bg-blue-600
+                                            @elseif($task->status === 'doing') bg-green-500 hover:bg-green-600
+                                            @else bg-yellow-500 hover:bg-yellow-600 @endif">
+                                            @if ($task->status === 'pending')
+                                                Start
+                                            @elseif($task->status === 'doing')
+                                                Complete
+                                            @else
+                                                Restart
+                                            @endif
                                         </button>
                                     </form>
                                     <a href="{{ route('tasks.edit', $task->id) }}"

@@ -88,23 +88,31 @@ class TaskController extends Controller
     }
 
     /**
-     * Toggle task status between pending and completed
+     * Toggle task status: pending -> doing -> completed -> pending
      */
     public function toggleStatus(Task $task)
     {
         $this->authorizeTask($task);
 
-        if ($task->status === 'completed') {
-            $task->update([
-                'status' => 'pending',
-                'completed_at' => null,
-            ]);
-        } else {
-            $task->update([
-                'status' => 'completed',
-                'completed_at' => now(),
-            ]);
+        $newStatus = match ($task->status) {
+            'pending' => 'doing',
+            'doing' => 'completed',
+            'completed' => 'pending',
+            default => 'pending',
+        };
+
+        $updateData = ['status' => $newStatus];
+
+        if ($newStatus === 'doing') {
+            $updateData['started_at'] = now();
+        } elseif ($newStatus === 'completed') {
+            $updateData['completed_at'] = now();
+        } elseif ($newStatus === 'pending') {
+            $updateData['started_at'] = null;
+            $updateData['completed_at'] = null;
         }
+
+        $task->update($updateData);
 
         return redirect()->back()->with('success', 'The task status has been updated successfully');
     }
