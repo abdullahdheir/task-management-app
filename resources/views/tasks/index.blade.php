@@ -1,5 +1,5 @@
 @extends('layouts.master')
-
+@use('App\Enums\TaskStatus')
 @section('content')
     <div class="bg-white rounded-2xl shadow-xl p-8">
         <div class="flex justify-between items-center mb-8">
@@ -46,7 +46,7 @@
                                 <td class="px-6 py-4">
                                     <div class="flex items-center">
                                         <div class="flex-shrink-0 h-10 w-10">
-                                            @if ($task->status === 'completed')
+                                            @if ($task->status === TaskStatus::COMPLETED)
                                                 <div
                                                     class="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center">
                                                     <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor"
@@ -55,7 +55,7 @@
                                                             stroke-width="2" d="M5 13l4 4L19 7"></path>
                                                     </svg>
                                                 </div>
-                                            @elseif($task->status === 'doing')
+                                            @elseif($task->status === TaskStatus::DOING)
                                                 <div
                                                     class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
                                                     <svg class="h-6 w-6 text-blue-600" fill="none" stroke="currentColor"
@@ -84,10 +84,10 @@
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    @if ($task->status === 'completed')
+                                    @if ($task->status === TaskStatus::COMPLETED)
                                         <span
                                             class="px-3 py-1 text-xs font-semibold text-green-700 bg-green-100 rounded-full">Completed</span>
-                                    @elseif($task->status === 'doing')
+                                    @elseif($task->status === TaskStatus::DOING)
                                         <span
                                             class="px-3 py-1 text-xs font-semibold text-blue-700 bg-blue-100 rounded-full">In
                                             Progress</span>
@@ -106,12 +106,12 @@
                                         @method('PATCH')
                                         <button type="submit"
                                             class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white transition duration-200
-                                            @if ($task->status === 'pending') bg-blue-500 hover:bg-blue-600
-                                            @elseif($task->status === 'doing') bg-green-500 hover:bg-green-600
+                                            @if ($task->status === TaskStatus::PENDING) bg-blue-500 hover:bg-blue-600
+                                            @elseif($task->status === TaskStatus::DOING) bg-green-500 hover:bg-green-600
                                             @else bg-yellow-500 hover:bg-yellow-600 @endif">
-                                            @if ($task->status === 'pending')
+                                            @if ($task->status === TaskStatus::PENDING)
                                                 Start
-                                            @elseif($task->status === 'doing')
+                                            @elseif($task->status === TaskStatus::DOING)
                                                 Complete
                                             @else
                                                 Restart

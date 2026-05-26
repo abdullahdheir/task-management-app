@@ -1,10 +1,10 @@
 <?php
 
-namespace App;
+namespace App\Enums;
 
 enum TaskStatus: string
 {
     case PENDING = 'pending';
-    case DOIND = 'doing';
+    case DOING = 'doing';
     case COMPLETED = 'completed';
 }

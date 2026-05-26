@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\TaskStatus;
 use App\Models\Task;
 use Illuminate\Http\Request;
 
@@ -95,19 +96,19 @@ class TaskController extends Controller
         $this->authorizeTask($task);
 
         $newStatus = match ($task->status) {
-            'pending' => 'doing',
-            'doing' => 'completed',
-            'completed' => 'pending',
-            default => 'pending',
+            TaskStatus::PENDING => TaskStatus::DOING,
+            TaskStatus::DOING => TaskStatus::COMPLETED,
+            TaskStatus::COMPLETED => TaskStatus::PENDING,
+            default => TaskStatus::PENDING,
         };
 
         $updateData = ['status' => $newStatus];
 
-        if ($newStatus === 'doing') {
+        if ($newStatus === TaskStatus::DOING) {
             $updateData['started_at'] = now();
-        } elseif ($newStatus === 'completed') {
+        } elseif ($newStatus === TaskStatus::COMPLETED) {
             $updateData['completed_at'] = now();
-        } elseif ($newStatus === 'pending') {
+        } elseif ($newStatus === TaskStatus::PENDING) {
             $updateData['started_at'] = null;
             $updateData['completed_at'] = null;
         }
