@@ -13,8 +13,8 @@ class Task extends Model
     protected function casts(): array
     {
         return [
-            'completed_at' => 'timestamp',
-            'started_at' => 'timestamp',
+            'completed_at' => 'datetime',
+            'started_at' => 'datetime',
             'status' => TaskStatus::class,
         ];
     }
