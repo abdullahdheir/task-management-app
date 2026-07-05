@@ -1,161 +1,173 @@
-@extends('layouts.master')
-@use('App\Enums\TaskStatus')
+@extends('layouts.app')
+
+@section('title', 'Task List')
+
 @section('content')
-    <div class="bg-white rounded-2xl shadow-xl p-8">
-        <div class="flex justify-between items-center mb-8">
-            <div>
-                <h1 class="text-3xl font-bold text-gray-800 mb-2">My Tasks</h1>
-                <p class="text-gray-600">Manage and track your tasks</p>
-            </div>
+
+    {{-- Header --}}
+    <div class="flex justify-between items-end mb-8">
+        <div>
+            <h2 class="font-headline-lg text-headline-lg text-on-surface">Task List</h2>
+            <p class="font-body-md text-body-md text-on-surface-variant">
+                You have {{ $remainingCount ?? 8 }} tasks remaining for today.
+            </p>
+        </div>
+        <div class="flex gap-stack-md">
+            <button
+                class="px-4 py-2 bg-surface-container-high text-on-surface rounded-lg font-label-md text-label-md border border-outline-variant hover:bg-surface-container-highest transition-colors flex items-center gap-2">
+                <span class="material-symbols-outlined text-[18px]">filter_list</span>
+                Filters
+            </button>
             <a href="{{ route('tasks.create') }}"
-                class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 transform hover:scale-[1.02] flex items-center space-x-2">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                </svg>
-                <span>Add New Task</span>
+                class="px-4 py-2 bg-primary text-on-primary rounded-lg font-label-md text-label-md flex items-center gap-2 hover:opacity-90 active:scale-95 transition-all shadow-md">
+                <span class="material-symbols-outlined text-[18px]">add</span>
+                Add Task
             </a>
         </div>
+    </div>
 
-        @if (session('success'))
-            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-6 flex items-center">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                </svg>
-                {{ session('success') }}
+    {{-- Filter Chips --}}
+    <div class="flex flex-wrap gap-stack-md mb-8">
+        <div class="flex items-center gap-2 pr-4 border-r border-outline-variant">
+            <span class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Priority</span>
+            <a href="{{ request()->fullUrlWithQuery(['priority' => 'high']) }}"
+                class="px-3 py-1 rounded-full text-label-sm font-label-sm transition-all
+                    {{ request('priority') === 'high' ? 'bg-error text-on-error' : 'bg-error-container text-on-error-container hover:brightness-95' }}">
+                High
+            </a>
+            <a href="{{ request()->fullUrlWithQuery(['priority' => 'medium']) }}"
+                class="px-3 py-1 rounded-full text-label-sm font-label-sm transition-all
+                    {{ request('priority') === 'medium' ? 'bg-outline text-white' : 'bg-surface-variant text-on-secondary-fixed-variant hover:brightness-95' }}">
+                Medium
+            </a>
+            <a href="{{ request()->fullUrlWithQuery(['priority' => 'low']) }}"
+                class="px-3 py-1 rounded-full text-label-sm font-label-sm transition-all
+                    {{ request('priority') === 'low' ? 'bg-secondary text-on-secondary' : 'bg-secondary-container text-on-secondary-fixed-variant hover:brightness-95' }}">
+                Low
+            </a>
+        </div>
+        <div class="flex items-center gap-2">
+            <span class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Category</span>
+            @foreach (['Work', 'Personal', 'Health'] as $cat)
+                <a href="{{ request()->fullUrlWithQuery(['category' => strtolower($cat)]) }}"
+                    class="px-3 py-1 rounded-full text-label-sm font-label-sm transition-all
+                    {{ request('category') === strtolower($cat) ? 'bg-primary text-white' : 'bg-surface-container-highest text-primary hover:bg-primary hover:text-white' }}">
+                    {{ $cat }}
+                </a>
+            @endforeach
+        </div>
+    </div>
+
+    {{-- Bento Grid --}}
+    <div class="grid grid-cols-12 gap-gutter-desktop">
+
+        {{-- Task List --}}
+        <div class="col-span-12 lg:col-span-8 space-y-4">
+            @forelse($tasks ?? [] as $task)
+                @include('partials.task-item', ['task' => $task])
+            @empty
+                {{-- Demo items --}}
+                @include('partials.task-item', [
+                    'task' => [
+                        'id' => 1,
+                        'title' => 'Quarterly Revenue Presentation',
+                        'due' => 'Due Today, 5:00 PM',
+                        'category' => 'Work',
+                        'priority' => 'high',
+                        'completed' => false,
+                    ],
+                ])
+                @include('partials.task-item', [
+                    'task' => [
+                        'id' => 2,
+                        'title' => 'Update Design System Documentation',
+                        'due' => 'Tomorrow',
+                        'category' => 'Work',
+                        'priority' => 'medium',
+                        'completed' => false,
+                    ],
+                ])
+                @include('partials.task-item', [
+                    'task' => [
+                        'id' => 3,
+                        'title' => 'Evening Yoga Session',
+                        'due' => 'Completed',
+                        'category' => 'Health',
+                        'priority' => 'low',
+                        'completed' => true,
+                    ],
+                ])
+                @include('partials.task-item', [
+                    'task' => [
+                        'id' => 4,
+                        'title' => 'Buy Grocery for Dinner',
+                        'due' => 'Friday, 6:00 PM',
+                        'category' => 'Personal',
+                        'priority' => 'low',
+                        'completed' => false,
+                    ],
+                ])
+            @endforelse
+        </div>
+
+        {{-- Right Column --}}
+        <div class="col-span-12 lg:col-span-4 space-y-gutter-desktop">
+
+            {{-- Weekly Goal --}}
+            <div class="bg-primary text-on-primary rounded-2xl p-6 shadow-lg relative overflow-hidden">
+                <div class="relative z-10">
+                    <h3 class="font-headline-md text-headline-md mb-2">Weekly Goal</h3>
+                    <p class="font-body-md text-body-md opacity-90 mb-6">
+                        You've completed {{ $weeklyProgress ?? 65 }}% of your tasks this week. Keep it up!
+                    </p>
+                    <div class="w-full bg-white/20 h-2 rounded-full mb-2">
+                        <div class="bg-secondary-fixed h-full rounded-full" style="width: {{ $weeklyProgress ?? 65 }}%">
+                        </div>
+                    </div>
+                    <span class="text-label-sm font-label-sm">{{ $weeklyCompleted ?? 18 }}/{{ $weeklyTotal ?? 28 }} tasks
+                        finished</span>
+                </div>
+                <div class="absolute -right-4 -bottom-4 opacity-10">
+                    <span class="material-symbols-outlined text-[120px]"
+                        style="font-variation-settings: 'FILL' 1;">insights</span>
+                </div>
             </div>
-        @endif
 
-        <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="min-w-full">
-                    <thead class="bg-gradient-to-r from-blue-50 to-indigo-50">
-                        <tr>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                Task</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                Status</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                Completed</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-200">
-                        @forelse($tasks as $task)
-                            <tr class="hover:bg-blue-50 transition duration-150">
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center">
-                                        <div class="flex-shrink-0 h-10 w-10">
-                                            @if ($task->status === TaskStatus::COMPLETED)
-                                                <div
-                                                    class="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center">
-                                                    <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor"
-                                                        viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                                    </svg>
-                                                </div>
-                                            @elseif($task->status === TaskStatus::DOING)
-                                                <div
-                                                    class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
-                                                    <svg class="h-6 w-6 text-blue-600" fill="none" stroke="currentColor"
-                                                        viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                                                    </svg>
-                                                </div>
-                                            @else
-                                                <div
-                                                    class="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center">
-                                                    <svg class="h-6 w-6 text-gray-600" fill="none" stroke="currentColor"
-                                                        viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            stroke-width="2"
-                                                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                                    </svg>
-                                                </div>
-                                            @endif
-                                        </div>
-                                        <div class="ml-4">
-                                            <div class="text-sm font-medium text-gray-900">{{ $task->title }}</div>
-                                            <div class="text-sm text-gray-500">Created
-                                                {{ $task->created_at->format('M d, Y') }}</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    @if ($task->status === TaskStatus::COMPLETED)
-                                        <span
-                                            class="px-3 py-1 text-xs font-semibold text-green-700 bg-green-100 rounded-full">Completed</span>
-                                    @elseif($task->status === TaskStatus::DOING)
-                                        <span
-                                            class="px-3 py-1 text-xs font-semibold text-blue-700 bg-blue-100 rounded-full">In
-                                            Progress</span>
-                                    @else
-                                        <span
-                                            class="px-3 py-1 text-xs font-semibold text-gray-700 bg-gray-100 rounded-full">Pending</span>
-                                    @endif
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {{ $task->completed_at?->format('M d, Y') ?? '-' }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                                    <form action="{{ route('tasks.toggle-status', $task->id) }}" method="POST"
-                                        class="inline">
-                                        @csrf
-                                        @method('PATCH')
-                                        <button type="submit"
-                                            class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white transition duration-200
-                                            @if ($task->status === TaskStatus::PENDING) bg-blue-500 hover:bg-blue-600
-                                            @elseif($task->status === TaskStatus::DOING) bg-green-500 hover:bg-green-600
-                                            @else bg-yellow-500 hover:bg-yellow-600 @endif">
-                                            @if ($task->status === TaskStatus::PENDING)
-                                                Start
-                                            @elseif($task->status === TaskStatus::DOING)
-                                                Complete
-                                            @else
-                                                Restart
-                                            @endif
-                                        </button>
-                                    </form>
-                                    <a href="{{ route('tasks.edit', $task->id) }}"
-                                        class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 transition duration-200">
-                                        Edit
-                                    </a>
-                                    <form action="{{ route('tasks.destroy', $task->id) }}" method="POST" class="inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit"
-                                            class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-red-500 hover:bg-red-600 transition duration-200"
-                                            onclick="return confirm('Are you sure you want to delete this task?')">
-                                            Delete
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="4" class="px-6 py-12 text-center">
-                                    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2">
-                                        </path>
-                                    </svg>
-                                    <h3 class="mt-2 text-sm font-medium text-gray-900">No tasks</h3>
-                                    <p class="mt-1 text-sm text-gray-500">Get started by creating a new task.</p>
-                                    <div class="mt-6">
-                                        <a href="{{ route('tasks.create') }}"
-                                            class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition duration-200">
-                                            Create Task
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+            {{-- Category Breakdown --}}
+            <div class="bg-surface-container-low rounded-2xl p-6 border border-outline-variant">
+                <h3 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest mb-4">
+                    Focus by Category
+                </h3>
+                <div class="space-y-4">
+                    @foreach ($categories ?? [['name' => 'Work', 'count' => 12, 'color' => 'bg-primary'], ['name' => 'Personal', 'count' => 4, 'color' => 'bg-secondary'], ['name' => 'Health', 'count' => 2, 'color' => 'bg-tertiary']] as $cat)
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center gap-3">
+                                <span class="w-3 h-3 rounded-full {{ $cat['color'] }}"></span>
+                                <span class="font-body-md text-body-md">{{ $cat['name'] }}</span>
+                            </div>
+                            <span class="font-label-md text-label-md">{{ $cat['count'] }} Tasks</span>
+                        </div>
+                    @endforeach
+                </div>
             </div>
         </div>
     </div>
+
 @endsection
+
+@push('scripts')
+    <script>
+        document.querySelectorAll('.task-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const label = this.closest('div').querySelector('label');
+                if (this.checked) {
+                    label?.classList.add('line-through', 'text-outline');
+                    this.closest('.task-row')?.classList.add('opacity-60');
+                } else {
+                    label?.classList.remove('line-through', 'text-outline');
+                    this.closest('.task-row')?.classList.remove('opacity-60');
+                }
+            });
+        });
+    </script>
+@endpush

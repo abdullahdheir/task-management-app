@@ -127,4 +127,15 @@ class TaskController extends Controller
             abort(403, 'You do not have permission to access this task.');
         }
     }
+
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+
+        $tasks = Task::where('owner_id', auth()->id())
+            ->where('title', 'like', '%' . $query . '%')
+            ->get();
+
+        return view('tasks.search', compact('tasks', 'query'));
+    }
 }

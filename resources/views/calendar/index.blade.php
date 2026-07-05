@@ -1,0 +1,226 @@
+@extends('layouts.app')
+
+@section('title', 'Calendar')
+
+@push('styles')
+    <style>
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            grid-template-rows: auto repeat(5, 1fr);
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+    </style>
+@endpush
+
+@section('content')
+
+    {{-- Calendar Controls --}}
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+        <div class="flex items-center gap-4">
+            <h2 class="font-headline-lg text-headline-lg text-on-surface">
+                {{ $monthLabel ?? now()->format('F Y') }}
+            </h2>
+            <div class="flex bg-surface-container-low rounded-lg p-1">
+                <a href="{{ route('calendar.index', ['month' => $prevMonth ?? now()->subMonth()->format('Y-m')]) }}"
+                    class="p-1 hover:bg-surface-container-highest rounded-md transition-colors">
+                    <span class="material-symbols-outlined">chevron_left</span>
+                </a>
+                <a href="{{ route('calendar.index', ['month' => $nextMonth ?? now()->addMonth()->format('Y-m')]) }}"
+                    class="p-1 hover:bg-surface-container-highest rounded-md transition-colors">
+                    <span class="material-symbols-outlined">chevron_right</span>
+                </a>
+            </div>
+            <a href="{{ route('calendar.index') }}"
+                class="px-4 py-2 text-label-md font-bold text-primary hover:bg-primary-fixed rounded-lg transition-colors">
+                Today
+            </a>
+        </div>
+
+        <div class="flex items-center gap-2 bg-surface-container-low p-1 rounded-xl">
+            <button
+                class="px-6 py-2 rounded-lg text-label-md font-bold transition-all bg-surface shadow-sm text-primary">Month</button>
+            <button
+                class="px-6 py-2 rounded-lg text-label-md font-medium text-on-surface-variant hover:text-on-surface transition-all">Week</button>
+        </div>
+    </div>
+
+    {{-- Calendar Grid --}}
+    <div class="bg-surface border border-outline-variant rounded-2xl shadow-sm overflow-hidden flex flex-col"
+        style="min-height: 600px;">
+
+        {{-- Day Headers --}}
+        <div class="grid grid-cols-7 border-b border-outline-variant bg-surface-container-lowest">
+            @foreach (['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'] as $day)
+                <div class="py-3 text-center text-label-sm font-bold text-on-surface-variant">{{ $day }}</div>
+            @endforeach
+        </div>
+
+        {{-- Days Grid --}}
+        <div class="flex-1 grid grid-cols-7 auto-rows-fr">
+            @forelse($calendarDays ?? [] as $day)
+                <div
+                    class="border-r border-b border-outline-variant p-2 transition-colors cursor-pointer group min-h-[120px]
+                    {{ $day['current_month'] ? 'hover:bg-surface-container-low' : 'bg-surface-container-low opacity-40' }}
+                    {{ $day['is_today'] ? 'bg-primary-fixed/20' : '' }}">
+
+                    <span
+                        class="text-label-md {{ $day['is_today'] ? 'font-black text-white bg-primary w-6 h-6 flex items-center justify-center rounded-full -ml-1' : 'font-bold' }}">
+                        {{ $day['day'] }}
+                    </span>
+
+                    @if (!empty($day['events']))
+                        <div class="mt-2 space-y-1">
+                            @foreach ($day['events'] as $event)
+                                <div class="px-2 py-1 rounded {{ $event['color'] }} text-[10px] font-bold truncate">
+                                    {{ $event['title'] }}
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
+                </div>
+                @empty
+                    {{-- Demo calendar for September 2024 --}}
+                    @php
+                        $demoDays = [
+                            ['day' => 25, 'current_month' => false, 'is_today' => false, 'events' => []],
+                            ['day' => 26, 'current_month' => false, 'is_today' => false, 'events' => []],
+                            ['day' => 27, 'current_month' => false, 'is_today' => false, 'events' => []],
+                            ['day' => 28, 'current_month' => false, 'is_today' => false, 'events' => []],
+                            ['day' => 29, 'current_month' => false, 'is_today' => false, 'events' => []],
+                            ['day' => 30, 'current_month' => false, 'is_today' => false, 'events' => []],
+                            ['day' => 1, 'current_month' => true, 'is_today' => false, 'events' => []],
+                            [
+                                'day' => 2,
+                                'current_month' => true,
+                                'is_today' => false,
+                                'events' => [
+                                    [
+                                        'title' => 'Project Kickoff',
+                                        'color' => 'bg-secondary-container text-on-secondary-fixed-variant',
+                                    ],
+                                ],
+                            ],
+                            ['day' => 3, 'current_month' => true, 'is_today' => false, 'events' => []],
+                            [
+                                'day' => 4,
+                                'current_month' => true,
+                                'is_today' => false,
+                                'events' => [
+                                    ['title' => 'Design Review', 'color' => 'bg-primary-container text-white'],
+                                ],
+                            ],
+                            [
+                                'day' => 5,
+                                'current_month' => true,
+                                'is_today' => true,
+                                'events' => [
+                                    [
+                                        'title' => 'Team Lunch',
+                                        'color' => 'bg-tertiary-container text-on-tertiary-container',
+                                    ],
+                                    [
+                                        'title' => 'Client Deadline',
+                                        'color' => 'bg-error-container text-on-error-container',
+                                    ],
+                                ],
+                            ],
+                            ['day' => 6, 'current_month' => true, 'is_today' => false, 'events' => []],
+                            ['day' => 7, 'current_month' => true, 'is_today' => false, 'events' => []],
+                            ['day' => 8, 'current_month' => true, 'is_today' => false, 'events' => []],
+                            ['day' => 9, 'current_month' => true, 'is_today' => false, 'events' => []],
+                            [
+                                'day' => 10,
+                                'current_month' => true,
+                                'is_today' => false,
+                                'events' => [
+                                    [
+                                        'title' => 'Sprint Planning',
+                                        'color' => 'bg-secondary-container text-on-secondary-fixed-variant',
+                                    ],
+                                ],
+                            ],
+                            ['day' => 11, 'current_month' => true, 'is_today' => false, 'events' => []],
+                            [
+                                'day' => 12,
+                                'current_month' => true,
+                                'is_today' => false,
+                                'events' => [['title' => 'UX Workshop', 'color' => 'bg-primary-container text-white']],
+                            ],
+                            ['day' => 13, 'current_month' => true, 'is_today' => false, 'events' => []],
+                            ['day' => 14, 'current_month' => true, 'is_today' => false, 'events' => []],
+                            ['day' => 15, 'current_month' => true, 'is_today' => false, 'events' => []],
+                            ['day' => 16, 'current_month' => true, 'is_today' => false, 'events' => []],
+                            [
+                                'day' => 17,
+                                'current_month' => true,
+                                'is_today' => false,
+                                'events' => [
+                                    ['title' => 'Board Meeting', 'color' => 'bg-primary-container text-white'],
+                                    [
+                                        'title' => 'Flight to SF',
+                                        'color' => 'bg-tertiary-container text-on-tertiary-container',
+                                    ],
+                                ],
+                            ],
+                            ['day' => 18, 'current_month' => true, 'is_today' => false, 'events' => []],
+                            ['day' => 19, 'current_month' => true, 'is_today' => false, 'events' => []],
+                            ['day' => 20, 'current_month' => true, 'is_today' => false, 'events' => []],
+                            [
+                                'day' => 21,
+                                'current_month' => true,
+                                'is_today' => false,
+                                'events' => [
+                                    [
+                                        'title' => 'Launch Event',
+                                        'color' => 'bg-secondary-container text-on-secondary-fixed-variant',
+                                    ],
+                                ],
+                            ],
+                            ['day' => 22, 'current_month' => true, 'is_today' => false, 'events' => []],
+                            ['day' => 23, 'current_month' => true, 'is_today' => false, 'events' => []],
+                            ['day' => 24, 'current_month' => true, 'is_today' => false, 'events' => []],
+                            ['day' => 25, 'current_month' => true, 'is_today' => false, 'events' => []],
+                            ['day' => 26, 'current_month' => true, 'is_today' => false, 'events' => []],
+                            ['day' => 27, 'current_month' => true, 'is_today' => false, 'events' => []],
+                            ['day' => 28, 'current_month' => true, 'is_today' => false, 'events' => []],
+                            ['day' => 29, 'current_month' => true, 'is_today' => false, 'events' => []],
+                        ];
+                    @endphp
+                    @foreach ($demoDays as $day)
+                        <div
+                            class="border-r border-b border-outline-variant p-2 transition-colors cursor-pointer min-h-[120px]
+                    {{ $day['current_month'] ? 'hover:bg-surface-container-low' : 'bg-surface-container-low opacity-40' }}
+                    {{ $day['is_today'] ? 'bg-primary-fixed/20' : '' }}">
+                            <span
+                                class="text-label-md {{ $day['is_today'] ? 'font-black text-white bg-primary w-6 h-6 flex items-center justify-center rounded-full' : 'font-bold' }}">
+                                {{ $day['day'] }}
+                            </span>
+                            @if (!empty($day['events']))
+                                <div class="mt-2 space-y-1">
+                                    @foreach ($day['events'] as $event)
+                                        <div class="px-2 py-1 rounded {{ $event['color'] }} text-[10px] font-bold truncate">
+                                            {{ $event['title'] }}
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @endif
+                        </div>
+                    @endforeach
+                @endforelse
+            </div>
+        </div>
+
+    @endsection
