@@ -2,140 +2,97 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\TaskStatus;
+use App\Actions\Tasks\CompleteTask;
+use App\Actions\Tasks\CreateTask;
+use App\Actions\Tasks\UpdateTask;
+use App\Http\Requests\StoreTaskRequest;
+use App\Http\Requests\UpdateTaskRequest;
+use App\Models\Project;
 use App\Models\Task;
+use App\Services\TaskService;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Request $request, TaskService $service)
     {
-        $tasks = Task::where('owner_id', auth()->id())->get();
-        return view('tasks.index', compact('tasks'));
+        $user = auth()->user();
+        $filters = $request->only(['priority', 'category', 'status', 'project_id', 'due_from', 'due_to']);
+
+        $tasks = $service->listForUser($user, $filters);
+        $projects = Project::forUser($user)->get();
+
+        return view('tasks.index', compact('tasks', 'projects', 'filters'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        return view('tasks.create');
+        $user = auth()->user();
+        $projects = Project::forUser($user)->get();
+
+        return view('tasks.create', compact('projects'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(StoreTaskRequest $request)
     {
-        $request->validate([
-            'title' => ['required', 'string'],
-        ]);
-
-        Task::create([
-            'title' => $request->input('title'),
-            'owner_id' => auth()->id(),
-        ]);
-
-        return redirect()->route('tasks.index')->with('success', 'The task has been created successfully');
+        $task = (new CreateTask)($request->validated(), auth()->user());
+        return redirect()->route('tasks.show', $task)->with('success', 'Task created.');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Task $task)
     {
-        $this->authorizeTask($task);
-        return view('tasks.show', compact('task'));
+        $user = auth()->user();
+        if ($task->user_id !== $user->id && $task->assignee_id !== $user->id) {
+            abort(403);
+        }
+
+        $subtasks = $task->subtasks()->with('assignee')->get();
+        $comments = $task->comments()->with('user')->get();
+        $activities = $task->activities()->with('user')->orderBy('created_at', 'desc')->get();
+
+        return view('tasks.show', compact('task', 'subtasks', 'comments', 'activities'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Task $task)
     {
-        $this->authorizeTask($task);
-        return view('tasks.edit', compact('task'));
+        $user = auth()->user();
+        if ($task->user_id !== $user->id && $task->assignee_id !== $user->id) {
+            abort(403);
+        }
+
+        $projects = Project::forUser($user)->get();
+        return view('tasks.edit', compact('task', 'projects'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Task $task)
+    public function update(UpdateTaskRequest $request, Task $task)
     {
-        $this->authorizeTask($task);
-        $request->validate([
-            'title' => ['required', 'string'],
-        ]);
-
-        $task->update([
-            'title' => $request->input('title'),
-        ]);
-
-        return redirect()->route('tasks.index')->with('success', 'The task has been updated successfully');
+        $task = (new UpdateTask)($task, $request->validated(), auth()->user());
+        return redirect()->route('tasks.show', $task)->with('success', 'Task updated.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Task $task)
     {
-        $this->authorizeTask($task);
+        $user = auth()->user();
+        if ($task->user_id !== $user->id && $task->assignee_id !== $user->id) {
+            abort(403);
+        }
+
         $task->delete();
-
-        return redirect()->back()->with('success', 'The task has been deleted successfully');
+        return redirect()->route('tasks.index')->with('success', 'Task deleted.');
     }
 
-    /**
-     * Toggle task status: pending -> doing -> completed -> pending
-     */
-    public function toggleStatus(Task $task)
+    public function complete(Task $task)
     {
-        $this->authorizeTask($task);
-
-        $newStatus = match ($task->status) {
-            TaskStatus::PENDING => TaskStatus::DOING,
-            TaskStatus::DOING => TaskStatus::COMPLETED,
-            TaskStatus::COMPLETED => TaskStatus::PENDING,
-            default => TaskStatus::PENDING,
-        };
-
-        $updateData = ['status' => $newStatus];
-
-        if ($newStatus === TaskStatus::DOING) {
-            $updateData['started_at'] = now();
-        } elseif ($newStatus === TaskStatus::COMPLETED) {
-            $updateData['completed_at'] = now();
-        } elseif ($newStatus === TaskStatus::PENDING) {
-            $updateData['started_at'] = null;
-            $updateData['completed_at'] = null;
-        }
-
-        $task->update($updateData);
-
-        return redirect()->back()->with('success', 'The task status has been updated successfully');
+        $task = (new CompleteTask)($task, auth()->user());
+        return back()->with('success', 'Task marked complete.');
     }
 
-    /**
-     * Authorize that the task belongs to the authenticated user
-     */
-    private function authorizeTask(Task $task)
+    public function storeSubtask(StoreTaskRequest $request, Task $task)
     {
-        if ($task->owner_id !== auth()->id()) {
-            abort(403, 'You do not have permission to access this task.');
-        }
-    }
+        $data = $request->validated();
+        $data['parent_id'] = $task->id;
 
-    public function search(Request $request)
-    {
-        $query = $request->input('query');
-
-        $tasks = Task::where('owner_id', auth()->id())
-            ->where('title', 'like', '%' . $query . '%')
-            ->get();
-
-        return view('tasks.search', compact('tasks', 'query'));
+        $subtask = (new CreateTask)($data, auth()->user());
+        return redirect()->route('tasks.show', $task)->with('success', 'Subtask created.');
     }
 }
