@@ -16,9 +16,18 @@ class Project extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'owner_id', 'team_id', 'name', 'slug', 'description',
-        'color', 'icon', 'status', 'progress', 'budget',
-        'start_date', 'due_date',
+        'owner_id',
+        'team_id',
+        'name',
+        'slug',
+        'description',
+        'color',
+        'icon',
+        'status',
+        'progress',
+        'budget',
+        'start_date',
+        'due_date',
     ];
 
     protected function casts(): array
