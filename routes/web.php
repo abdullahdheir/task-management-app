@@ -1,47 +1,52 @@
 <?php
 
+use App\Http\Controllers\AttachmentController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\CalendarController;
-use App\Http\Controllers\HelpController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\TeamController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('auth:web')->group(function () {
-
+Route::middleware(['auth'])->group(function () {
     // Dashboard
-    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/', function () {
+        return redirect()->route('dashboard');
+    });
 
     // Tasks
     Route::resource('tasks', TaskController::class);
+    Route::post('tasks/{task}/complete', [TaskController::class, 'complete'])->name('tasks.complete');
+    Route::post('tasks/{task}/subtasks', [TaskController::class, 'storeSubtask'])->name('tasks.subtasks.store');
 
     // Projects
-    Route::get('projects/overview', [ProjectController::class, 'overview'])->name('projects.overview');
-    Route::resource('projects', ProjectController::class)->except(['index']);
+    Route::resource('projects', ProjectController::class);
+    Route::post('projects/{project}/members', [ProjectController::class, 'addMember'])->name('projects.members.add');
+    Route::delete('projects/{project}/members/{user}', [ProjectController::class, 'removeMember'])->name('projects.members.remove');
 
     // Teams
-    Route::get('teams/overview', [TeamController::class, 'overview'])->name('teams.overview');
-    Route::get('teams/{slug}/directory', [TeamController::class, 'directory'])->name('teams.directory');
-    Route::get('teams/{slug}/settings', [TeamController::class, 'settings'])->name('teams.settings');
-    Route::resource('teams', TeamController::class)->except(['index', 'show']);
+    Route::resource('teams', TeamController::class);
+    Route::post('teams/{team}/invite', [TeamController::class, 'invite'])->name('teams.invite');
+    Route::post('teams/{team}/accept', [TeamController::class, 'acceptInvite'])->name('teams.accept');
 
-    // Calendar
+    // Comments & Attachments
+    Route::post('comments', [CommentController::class, 'store'])->name('comments.store');
+    Route::delete('comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
+    Route::post('tasks/{task}/attachments', [AttachmentController::class, 'store'])->name('attachments.store');
+    Route::delete('attachments/{attachment}', [AttachmentController::class, 'destroy'])->name('attachments.destroy');
+
+    // Search & Calendar
+    Route::get('/search', [SearchController::class, 'index'])->name('search');
     Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
 
-    // Profile
+    // Profile & Settings
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
-
-    // Profile
-    Route::get('/help', [HelpController::class, 'index'])->name('help.index');
-
-    // Search
-    Route::get('/search', [SearchController::class, 'index'])->name('search.index');
-
-    // Settings
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
-    Route::get('/settings/account', [SettingsController::class, 'account'])->name('settings.account');
+    Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
 });
