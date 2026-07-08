@@ -26,6 +26,13 @@
             <span class="font-label-md text-label-md">Projects</span>
         </a>
 
+        <a href="{{ route('teams.overview') }}"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200
+                {{ str_contains($currentRoute, 'teams.') ? 'text-primary font-bold bg-surface-container-highest' : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container' }}">
+            <span class="material-symbols-outlined">groups</span>
+            <span class="font-label-md text-label-md">Teams</span>
+        </a>
+
         <a href="{{ route('tasks.index') }}"
             class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200
                 {{ str_contains($currentRoute, 'tasks.') ? 'text-primary font-bold bg-surface-container-highest' : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container' }}">

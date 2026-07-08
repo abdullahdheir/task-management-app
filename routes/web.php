@@ -8,6 +8,7 @@ use App\Http\Controllers\HelpController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\TeamController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:web')->group(function () {
@@ -21,6 +22,12 @@ Route::middleware('auth:web')->group(function () {
     // Projects
     Route::get('projects/overview', [ProjectController::class, 'overview'])->name('projects.overview');
     Route::resource('projects', ProjectController::class)->except(['index']);
+
+    // Teams
+    Route::get('teams/overview', [TeamController::class, 'overview'])->name('teams.overview');
+    Route::get('teams/{slug}/directory', [TeamController::class, 'directory'])->name('teams.directory');
+    Route::get('teams/{slug}/settings', [TeamController::class, 'settings'])->name('teams.settings');
+    Route::resource('teams', TeamController::class)->except(['index', 'show']);
 
     // Calendar
     Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');

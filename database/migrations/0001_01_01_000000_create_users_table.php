@@ -17,8 +17,22 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('username')->unique()->nullable();
+            $table->string('avatar')->nullable();
+            $table->string('job_title')->nullable();
+            $table->string('department')->nullable();
+            $table->string('location')->nullable();
+            $table->text('bio')->nullable();
+            $table->string('timezone')->default('UTC');
+            $table->boolean('dark_mode')->default(false);
+            $table->boolean('two_factor_enabled')->default(false);
+            $table->boolean('share_usage_data')->default(true);
+            $table->time('focus_start')->nullable(); // Focus hours from
+            $table->time('focus_end')->nullable();   // Focus hours to
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
+
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
