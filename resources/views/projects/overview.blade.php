@@ -126,7 +126,22 @@
                     </div>
                 @endforelse
                 <!-- New Project Empty State / Call to Action -->
-                
+                @if (!$projects->isEmpty())
+                    <a href="{{ route('projects.create') }}"
+                        class="group bg-surface-container-low border-2 border-dashed border-outline-variant rounded-xl hover:border-primary hover:bg-white transition-all duration-300 p-stack-lg flex flex-col items-center justify-center h-full text-center cursor-pointer">
+                        <div
+                            class="w-16 h-16 rounded-full bg-white border border-outline-variant flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-colors duration-300">
+                            <span class="material-symbols-outlined text-[32px]">add</span>
+                        </div>
+                        <h4 class="text-headline-md font-headline-md text-on-surface mb-2">Start Something New</h4>
+                        <p class="text-body-md text-on-surface-variant px-8">Define goals, assemble your team, and
+                            launch your next big idea.</p>
+                        <div
+                            class="mt-6 px-6 py-2 bg-surface-container-highest rounded-full text-label-md font-bold text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+                            Launch Project
+                        </div>
+                    </a>
+                @endif
             </div>
         </div>
     </section>
