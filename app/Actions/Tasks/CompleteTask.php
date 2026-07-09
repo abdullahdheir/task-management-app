@@ -2,6 +2,7 @@
 
 namespace App\Actions\Tasks;
 
+use App\Events\TaskCompleted;
 use App\Models\Task;
 use App\Models\User;
 
@@ -14,6 +15,8 @@ class CompleteTask
         }
 
         $task->markComplete();
+
+        TaskCompleted::dispatch($task, $user);
 
         // If this is a subtask, and all siblings are complete, mark parent complete
         if ($task->parent) {

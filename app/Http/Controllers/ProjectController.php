@@ -2,63 +2,115 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Projects\CreateProject;
+use App\Actions\Projects\UpdateProject;
+use App\Http\Requests\StoreProjectRequest;
+use App\Http\Requests\UpdateProjectRequest;
+use App\Models\Project;
+use App\Models\User;
+use App\Services\ActivityService;
+use App\Services\ProjectService;
 use Illuminate\Http\Request;
 
 class ProjectController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function overview()
+    public function index(ProjectService $service)
     {
-        return view('projects.overview');
+        $user = auth()->user();
+        $projects = $service->listForUser($user);
+
+        return view('projects.overview', compact('projects'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         return view('projects.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(StoreProjectRequest $request)
     {
-        //
+        $project = (new CreateProject)($request->validated(), auth()->user());
+        return redirect()->route('projects.show', $project)->with('success', 'Project created.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function show(Project $project)
     {
-        return view('projects.show');
+        $user = auth()->user();
+        if ($project->owner_id !== $user->id && !$project->members()->where('users.id', $user->id)->exists()) {
+            abort(403);
+        }
+
+        $members = $project->members()->with('pivot')->get();
+        $tasks = $project->tasks()->with(['assignee', 'subtasks'])->topLevel()->orderBy('due_date')->get();
+        $recentActivity = $project->activities()->with('user')->orderBy('created_at', 'desc')->limit(10)->get();
+
+        return view('projects.show', compact('project', 'members', 'tasks', 'recentActivity'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function edit(Project $project)
     {
-        return view('projects.edit');
+        $user = auth()->user();
+        if ($project->owner_id !== $user->id) {
+            abort(403);
+        }
+
+        return view('projects.edit', compact('project'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(UpdateProjectRequest $request, Project $project)
     {
-        //
+        $user = auth()->user();
+        if ($project->owner_id !== $user->id) {
+            abort(403);
+        }
+
+        $project = (new UpdateProject)($project, $request->validated());
+        return redirect()->route('projects.show', $project)->with('success', 'Project updated.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function destroy(Project $project)
     {
-        //
+        $user = auth()->user();
+        if ($project->owner_id !== $user->id) {
+            abort(403);
+        }
+
+        $project->delete();
+        return redirect()->route('projects.index')->with('success', 'Project deleted.');
+    }
+
+    public function addMember(Request $request, Project $project)
+    {
+        $user = auth()->user();
+        if ($project->owner_id !== $user->id) {
+            abort(403);
+        }
+
+        $request->validate([
+            'user_id' => ['required', 'exists:users,id'],
+            'role' => ['nullable', 'in:lead,member,viewer'],
+        ]);
+
+        $member = User::find($request->user_id);
+        $project->members()->syncWithoutDetaching([
+            $request->user_id => ['role' => $request->role ?? 'member'],
+        ]);
+
+        ActivityService::logProjectMemberAdded($user, $project, $member);
+
+        return back()->with('success', 'Member added.');
+    }
+
+    public function removeMember(Project $project, User $user)
+    {
+        $authUser = auth()->user();
+        if ($project->owner_id !== $authUser->id) {
+            abort(403);
+        }
+
+        $project->members()->detach($user->id);
+        ActivityService::logProjectMemberRemoved($authUser, $project, $user);
+
+        return back()->with('success', 'Member removed.');
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Actions\Tasks;
 
+use App\Events\TaskCreated;
 use App\Models\Task;
 use App\Models\User;
 use Illuminate\Validation\ValidationException;
@@ -23,6 +24,8 @@ class CreateTask
         $data['user_id'] = $user->id;
 
         $task = Task::create($data);
+
+        TaskCreated::dispatch($task, $user);
 
         return $task;
     }

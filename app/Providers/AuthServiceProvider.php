@@ -11,6 +11,8 @@ class AuthServiceProvider extends ServiceProvider
 {
     protected $policies = [
         Task::class => TaskPolicy::class,
+        Project::class => ProjectPolicy::class,
+        Team::class => TeamPolicy::class,
     ];
 
     public function register(): void
