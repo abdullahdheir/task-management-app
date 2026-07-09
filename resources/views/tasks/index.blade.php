@@ -9,7 +9,7 @@
         <div>
             <h2 class="font-headline-lg text-headline-lg text-on-surface">Task List</h2>
             <p class="font-body-md text-body-md text-on-surface-variant">
-                You have {{ $remainingCount ?? 8 }} tasks remaining for today.
+                You have {{ $remainingCount }} tasks remaining for today.
             </p>
         </div>
         <div class="flex gap-stack-md">
@@ -48,11 +48,11 @@
         </div>
         <div class="flex items-center gap-2">
             <span class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Category</span>
-            @foreach (['Work', 'Personal', 'Health'] as $cat)
-                <a href="{{ request()->fullUrlWithQuery(['category' => strtolower($cat)]) }}"
+            @foreach ($categories as $cat)
+                <a href="{{ request()->fullUrlWithQuery(['category' => strtolower($cat['name'])]) }}"
                     class="px-3 py-1 rounded-full text-label-sm font-label-sm transition-all
-                    {{ request('category') === strtolower($cat) ? 'bg-primary text-white' : 'bg-surface-container-highest text-primary hover:bg-primary hover:text-white' }}">
-                    {{ $cat }}
+                    {{ request('category') === strtolower($cat['name']) ? 'bg-primary text-white' : 'bg-surface-container-highest text-primary hover:bg-primary hover:text-white' }}">
+                    {{ $cat['name'] }}
                 </a>
             @endforeach
         </div>
@@ -63,50 +63,17 @@
 
         {{-- Task List --}}
         <div class="col-span-12 lg:col-span-8 space-y-4">
-            @forelse($tasks ?? [] as $task)
+            @forelse($tasks as $task)
                 @include('partials.task-item', ['task' => $task])
             @empty
-                {{-- Demo items --}}
-                @include('partials.task-item', [
-                    'task' => [
-                        'id' => 1,
-                        'title' => 'Quarterly Revenue Presentation',
-                        'due' => 'Due Today, 5:00 PM',
-                        'category' => 'Work',
-                        'priority' => 'high',
-                        'completed' => false,
-                    ],
-                ])
-                @include('partials.task-item', [
-                    'task' => [
-                        'id' => 2,
-                        'title' => 'Update Design System Documentation',
-                        'due' => 'Tomorrow',
-                        'category' => 'Work',
-                        'priority' => 'medium',
-                        'completed' => false,
-                    ],
-                ])
-                @include('partials.task-item', [
-                    'task' => [
-                        'id' => 3,
-                        'title' => 'Evening Yoga Session',
-                        'due' => 'Completed',
-                        'category' => 'Health',
-                        'priority' => 'low',
-                        'completed' => true,
-                    ],
-                ])
-                @include('partials.task-item', [
-                    'task' => [
-                        'id' => 4,
-                        'title' => 'Buy Grocery for Dinner',
-                        'due' => 'Friday, 6:00 PM',
-                        'category' => 'Personal',
-                        'priority' => 'low',
-                        'completed' => false,
-                    ],
-                ])
+                <div
+                    class="flex items-center justify-center py-12 rounded-lg border border-outline-variant bg-surface-container-low">
+                    <div class="text-center">
+                        <span class="material-symbols-outlined text-on-surface-variant text-5xl mb-3">check_circle</span>
+                        <p class="text-on-surface-variant font-body-md">No tasks found</p>
+                        <p class="text-on-surface-variant text-label-sm mt-1">Create a new task to get started</p>
+                    </div>
+                </div>
             @endforelse
         </div>
 
@@ -118,13 +85,13 @@
                 <div class="relative z-10">
                     <h3 class="font-headline-md text-headline-md mb-2">Weekly Goal</h3>
                     <p class="font-body-md text-body-md opacity-90 mb-6">
-                        You've completed {{ $weeklyProgress ?? 65 }}% of your tasks this week. Keep it up!
+                        You've completed {{ $weeklyProgress }}% of your tasks this week. Keep it up!
                     </p>
                     <div class="w-full bg-white/20 h-2 rounded-full mb-2">
-                        <div class="bg-secondary-fixed h-full rounded-full" style="width: {{ $weeklyProgress ?? 65 }}%">
+                        <div class="bg-secondary-fixed h-full rounded-full" style="width: {{ $weeklyProgress }}%">
                         </div>
                     </div>
-                    <span class="text-label-sm font-label-sm">{{ $weeklyCompleted ?? 18 }}/{{ $weeklyTotal ?? 28 }} tasks
+                    <span class="text-label-sm font-label-sm">{{ $weeklyCompleted }}/{{ $weeklyTotal }} tasks
                         finished</span>
                 </div>
                 <div class="absolute -right-4 -bottom-4 opacity-10">
@@ -139,7 +106,7 @@
                     Focus by Category
                 </h3>
                 <div class="space-y-4">
-                    @foreach ($categories ?? [['name' => 'Work', 'count' => 12, 'color' => 'bg-primary'], ['name' => 'Personal', 'count' => 4, 'color' => 'bg-secondary'], ['name' => 'Health', 'count' => 2, 'color' => 'bg-tertiary']] as $cat)
+                    @forelse($categories as $cat)
                         <div class="flex justify-between items-center">
                             <div class="flex items-center gap-3">
                                 <span class="w-3 h-3 rounded-full {{ $cat['color'] }}"></span>
@@ -147,7 +114,11 @@
                             </div>
                             <span class="font-label-md text-label-md">{{ $cat['count'] }} Tasks</span>
                         </div>
-                    @endforeach
+                    @empty
+                        <div class="text-center py-4">
+                            <p class="text-on-surface-variant text-label-sm">No categories yet</p>
+                        </div>
+                    @endforelse
                 </div>
             </div>
         </div>

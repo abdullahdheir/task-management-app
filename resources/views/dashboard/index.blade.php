@@ -54,55 +54,15 @@
             </div>
 
             <div class="space-y-3">
-                @forelse($upcomingTasks ?? [] as $task)
+                @forelse($upcomingTasks as $task)
                     @include('partials.task-deadline-item', ['task' => $task])
                 @empty
-                    {{-- Placeholder items --}}
                     <div
-                        class="flex items-center p-4 rounded-lg border border-slate-200 hover:shadow-sm transition-all cursor-pointer">
-                        <div class="h-10 w-10 bg-error-container rounded-lg flex items-center justify-center mr-4">
-                            <span class="material-symbols-outlined text-error">priority_high</span>
-                        </div>
-                        <div class="flex-1">
-                            <h4 class="font-body-lg text-body-lg font-bold">Redesign Onboarding Flow</h4>
-                            <p class="text-label-sm text-on-surface-variant">Client: Neon Studio</p>
-                        </div>
-                        <div class="text-right">
-                            <p class="text-label-md font-bold text-error">Today, 5:00 PM</p>
+                        class="flex items-center justify-center p-8 rounded-lg border border-outline-variant bg-surface-container-low">
+                        <div class="text-center">
                             <span
-                                class="text-label-sm bg-error-container text-on-error-container px-2 py-0.5 rounded-full">High</span>
-                        </div>
-                    </div>
-
-                    <div
-                        class="flex items-center p-4 rounded-lg border border-slate-200 hover:shadow-sm transition-all cursor-pointer">
-                        <div class="h-10 w-10 bg-surface-container flex items-center justify-center mr-4 rounded-lg">
-                            <span class="material-symbols-outlined text-primary">description</span>
-                        </div>
-                        <div class="flex-1">
-                            <h4 class="font-body-lg text-body-lg font-bold">Quarterly Report Draft</h4>
-                            <p class="text-label-sm text-on-surface-variant">Internal Team</p>
-                        </div>
-                        <div class="text-right">
-                            <p class="text-label-md font-bold text-on-surface">Tomorrow, 10:00 AM</p>
-                            <span
-                                class="text-label-sm bg-surface-container-highest text-on-surface-variant px-2 py-0.5 rounded-full">Medium</span>
-                        </div>
-                    </div>
-
-                    <div
-                        class="flex items-center p-4 rounded-lg border border-slate-200 hover:shadow-sm transition-all cursor-pointer">
-                        <div class="h-10 w-10 bg-secondary-container flex items-center justify-center mr-4 rounded-lg">
-                            <span class="material-symbols-outlined text-secondary">chat</span>
-                        </div>
-                        <div class="flex-1">
-                            <h4 class="font-body-lg text-body-lg font-bold">Feedback Call with Stakeholders</h4>
-                            <p class="text-label-sm text-on-surface-variant">Project: Focus 2.0</p>
-                        </div>
-                        <div class="text-right">
-                            <p class="text-label-md font-bold text-on-surface">Oct 24, 2:30 PM</p>
-                            <span
-                                class="text-label-sm bg-secondary-container text-on-secondary-fixed-variant px-2 py-0.5 rounded-full">Low</span>
+                                class="material-symbols-outlined text-on-surface-variant text-4xl mb-2">event_available</span>
+                            <p class="text-on-surface-variant font-body-md">No upcoming deadlines</p>
                         </div>
                     </div>
                 @endforelse
@@ -118,15 +78,15 @@
                 <div class="relative z-10">
                     <p class="font-label-md text-label-md opacity-80 mb-2">Active Projects</p>
                     <h3 class="font-headline-lg text-headline-lg font-bold">{{ $activeProjectsCount ?? 12 }}</h3>
-                    <div class="mt-4 flex -space-x-2">
-                        @foreach ($teamAvatars ?? [] as $avatar)
+                    <div class="flex -space-x-2">
+                        @foreach ($teamAvatars as $avatar)
                             <img class="h-8 w-8 rounded-full border-2 border-primary-container" src="{{ $avatar }}"
                                 alt="Team member">
                         @endforeach
-                        @if (($remainingMembers ?? 4) > 0)
+                        @if ($remainingMembers > 0)
                             <div
                                 class="h-8 w-8 rounded-full border-2 border-primary-container bg-primary flex items-center justify-center text-label-sm text-on-primary">
-                                +{{ $remainingMembers ?? 4 }}
+                                +{{ $remainingMembers }}
                             </div>
                         @endif
                     </div>
@@ -141,7 +101,7 @@
             <div class="bg-white p-stack-lg rounded-xl card-elevation border border-outline-variant">
                 <h3 class="font-headline-md text-headline-md mb-stack-lg">Project Overview</h3>
                 <div class="space-y-6">
-                    @foreach ($projects ?? [['name' => 'Design System', 'progress' => 80, 'color' => 'bg-secondary'], ['name' => 'Mobile App Dev', 'progress' => 45, 'color' => 'bg-primary'], ['name' => 'Marketing Deck', 'progress' => 15, 'color' => 'bg-tertiary-container']] as $project)
+                    @forelse($projects as $project)
                         <div>
                             <div class="flex justify-between items-center mb-2">
                                 <span class="font-label-md text-label-md font-bold">{{ $project['name'] }}</span>
@@ -152,12 +112,17 @@
                                 </div>
                             </div>
                         </div>
-                    @endforeach
+                    @empty
+                        <div class="text-center py-8">
+                            <span class="material-symbols-outlined text-on-surface-variant text-4xl mb-2">folder_open</span>
+                            <p class="text-on-surface-variant font-body-md">No active projects</p>
+                        </div>
+                    @endforelse
                 </div>
-                <button
-                    class="w-full mt-6 py-2 border border-outline-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-low transition-colors">
+                <a href="{{ route('projects.index') }}"
+                    class="block w-full mt-6 py-2 border border-outline-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-low transition-colors text-center">
                     Manage Projects
-                </button>
+                </a>
             </div>
         </section>
 
@@ -168,7 +133,7 @@
                 <span class="text-label-sm bg-surface-container px-3 py-1 rounded-full text-on-surface">Last 24 hours</span>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-                @foreach ($recentActivity ?? [['icon' => 'check_circle', 'color' => 'bg-secondary-container', 'iconColor' => 'text-secondary', 'title' => 'Task Completed', 'desc' => 'Landing page assets uploaded by Sarah'], ['icon' => 'add_comment', 'color' => 'bg-primary-container', 'iconColor' => 'text-on-primary', 'title' => 'New Comment', 'desc' => 'James left a note on the Budget sheet'], ['icon' => 'schedule', 'color' => 'bg-tertiary-fixed', 'iconColor' => 'text-tertiary', 'title' => 'Meeting Moved', 'desc' => 'Sync-up delayed by 30 mins'], ['icon' => 'report', 'color' => 'bg-error-container', 'iconColor' => 'text-error', 'title' => 'High Priority', 'desc' => 'Bug reported on production site']] as $activity)
+                @forelse($recentActivity as $activity)
                     <div class="flex items-start gap-3 p-3 rounded-lg hover:bg-surface-container-low transition-colors">
                         <div
                             class="w-8 h-8 rounded-full {{ $activity['color'] }} flex items-center justify-center shrink-0">
@@ -180,7 +145,12 @@
                             <p class="text-label-sm text-on-surface-variant">{{ $activity['desc'] }}</p>
                         </div>
                     </div>
-                @endforeach
+                @empty
+                    <div class="col-span-full text-center py-8">
+                        <span class="material-symbols-outlined text-on-surface-variant text-4xl mb-2">history</span>
+                        <p class="text-on-surface-variant font-body-md">No recent activity</p>
+                    </div>
+                @endforelse
             </div>
         </section>
     </div>

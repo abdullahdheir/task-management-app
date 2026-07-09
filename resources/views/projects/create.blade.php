@@ -27,7 +27,8 @@
     <!-- Create Project Form Section -->
     <div class="max-w-[800px] mx-auto">
         <section class="glass-card rounded-xl p-8 shadow-sm">
-            <form class="space-y-8" id="createProjectForm">
+            <form action="{{ route('projects.store') }}" method="POST" class="space-y-8" id="createProjectForm">
+                @csrf
                 <!-- Basic Info -->
                 <div class="space-y-stack-lg">
                     <div class="flex flex-col gap-2">
@@ -35,14 +36,16 @@
                             Name</label>
                         <input
                             class="w-full h-12 px-4 rounded-lg border border-outline-variant bg-white text-body-lg font-body-lg transition-all"
-                            id="project_name" placeholder="e.g., Q4 Marketing Campaign" required="" type="text" />
+                            id="project_name" name="name" value="{{ old('name') }}"
+                            placeholder="e.g., Q4 Marketing Campaign" required="" type="text" />
                     </div>
                     <div class="flex flex-col gap-2">
                         <label class="font-label-md text-label-md text-on-surface-variant"
                             for="project_description">Description</label>
                         <textarea
                             class="w-full p-4 rounded-lg border border-outline-variant bg-white text-body-md font-body-md transition-all resize-none"
-                            id="project_description" placeholder="Describe the objectives and key deliverables..." rows="3"></textarea>
+                            id="project_description" name="description" placeholder="Describe the objectives and key deliverables..."
+                            rows="3">{{ old('description') }}</textarea>
                     </div>
                 </div>
                 <!-- Grid: Timeline & Color -->
@@ -54,7 +57,7 @@
                             <div class="flex-1 flex flex-col gap-2">
                                 <input
                                     class="w-full h-12 px-4 rounded-lg border border-outline-variant bg-white text-body-md"
-                                    type="date" />
+                                    name="start_date" type="date" value="{{ old('start_date') }}" />
                             </div>
                             <span class="text-on-surface-variant">
                                 <span class="material-symbols-outlined">arrow_forward</span>
@@ -62,7 +65,7 @@
                             <div class="flex-1 flex flex-col gap-2">
                                 <input
                                     class="w-full h-12 px-4 rounded-lg border border-outline-variant bg-white text-body-md"
-                                    type="date" />
+                                    name="end_date" type="date" value="{{ old('end_date') }}" />
                             </div>
                         </div>
                     </div>
@@ -71,32 +74,36 @@
                         <span class="font-label-md text-label-md text-on-surface-variant">Color Label</span>
                         <div class="flex flex-wrap gap-3">
                             <label class="relative cursor-pointer group">
-                                <input checked="" class="peer hidden" name="color_label" type="radio"
-                                    value="indigo" />
+                                <input {{ old('color_label', 'indigo') === 'indigo' ? 'checked' : '' }} class="peer hidden"
+                                    name="color_label" type="radio" value="indigo" />
                                 <div
                                     class="w-10 h-10 rounded-full bg-primary ring-offset-2 peer-checked:ring-2 ring-primary transition-all">
                                 </div>
                             </label>
                             <label class="relative cursor-pointer group">
-                                <input class="peer hidden" name="color_label" type="radio" value="emerald" />
+                                <input {{ old('color_label', 'indigo') === 'emerald' ? 'checked' : '' }} class="peer hidden"
+                                    name="color_label" type="radio" value="emerald" />
                                 <div
                                     class="w-10 h-10 rounded-full bg-secondary ring-offset-2 peer-checked:ring-2 ring-secondary transition-all">
                                 </div>
                             </label>
                             <label class="relative cursor-pointer group">
-                                <input class="peer hidden" name="color_label" type="radio" value="amber" />
+                                <input {{ old('color_label', 'indigo') === 'amber' ? 'checked' : '' }} class="peer hidden"
+                                    name="color_label" type="radio" value="amber" />
                                 <div
                                     class="w-10 h-10 rounded-full bg-tertiary-container ring-offset-2 peer-checked:ring-2 ring-tertiary-container transition-all">
                                 </div>
                             </label>
                             <label class="relative cursor-pointer group">
-                                <input class="peer hidden" name="color_label" type="radio" value="rose" />
+                                <input {{ old('color_label', 'indigo') === 'rose' ? 'checked' : '' }} class="peer hidden"
+                                    name="color_label" type="radio" value="rose" />
                                 <div
                                     class="w-10 h-10 rounded-full bg-error ring-offset-2 peer-checked:ring-2 ring-error transition-all">
                                 </div>
                             </label>
                             <label class="relative cursor-pointer group">
-                                <input class="peer hidden" name="color_label" type="radio" value="cyan" />
+                                <input {{ old('color_label', 'indigo') === 'cyan' ? 'checked' : '' }} class="peer hidden"
+                                    name="color_label" type="radio" value="cyan" />
                                 <div
                                     class="w-10 h-10 rounded-full bg-[#00bcd4] ring-offset-2 peer-checked:ring-2 ring-[#00bcd4] transition-all">
                                 </div>
@@ -128,8 +135,8 @@
                                     src="https://lh3.googleusercontent.com/aida-public/AB6AXuAS4xnL_hrdxxDOM3hQRGvPEkTZPwQehtbFl0lWOHoEU1OXPCQYIf8rx-qDm05nVgotoUDyomuA5aoFfkWctXTbqOK6_8Tu2-uQ8waPAMu4nhhbzfzX2UVpwPC5S4iBILBvLEsSbzjdF25TUcGMmUHRU6W6sytdTBJBjhHgMffnOtozyM32rTevbSmU4RYNAAm4XcCHeeLJOKuKdAO5tDPdKahM0moxYGah1pKOf09t_9NIaj4ktRlOpA" />
                             </div>
                             <span class="text-body-md font-medium">Sarah Jenkins</span>
-                            <button class="text-on-surface-variant hover:text-error transition-colors" type="button"><span
-                                    class="material-symbols-outlined text-[18px]">close</span></button>
+                            <button class="text-on-surface-variant hover:text-error transition-colors"
+                                type="button"><span class="material-symbols-outlined text-[18px]">close</span></button>
                         </div>
                         <div
                             class="flex items-center gap-2 bg-surface-container-low border border-outline-variant px-3 py-1.5 rounded-full">
