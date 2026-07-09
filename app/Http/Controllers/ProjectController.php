@@ -55,7 +55,9 @@ class ProjectController extends Controller
             abort(403);
         }
 
-        return view('projects.edit', compact('project'));
+        $members = $project->members()->with('pivot')->get();
+
+        return view('projects.edit', compact('project', 'members'));
     }
 
     public function update(UpdateProjectRequest $request, Project $project)

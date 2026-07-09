@@ -119,7 +119,7 @@
                         </div>
                     @endforelse
                 </div>
-                <a href="{{ route('projects.index') }}"
+                <a href="{{ route('projects.overview') }}"
                     class="block w-full mt-6 py-2 border border-outline-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-low transition-colors text-center">
                     Manage Projects
                 </a>
