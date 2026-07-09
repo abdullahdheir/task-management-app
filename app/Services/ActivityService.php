@@ -10,13 +10,7 @@ class ActivityService
 {
     public static function log(User $user, Model $subject, string $action, array $meta = []): Activity
     {
-        return Activity::create([
-            'user_id' => $user->id,
-            'subject_type' => get_class($subject),
-            'subject_id' => $subject->id,
-            'action' => $action,
-            'meta' => $meta ?: null,
-        ]);
+        return Activity::log($user, $subject, $action, $meta);
     }
 
     public static function logTaskPriorityChanged(User $user, Model $task, string $from, string $to): Activity

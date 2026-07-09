@@ -26,13 +26,13 @@ Route::middleware(['auth'])->group(function () {
     Route::post('tasks/{task}/subtasks', [TaskController::class, 'storeSubtask'])->name('tasks.subtasks.store');
 
     // Projects
-    Route::get('projects/overview', [ProjectController::class,'index'])->name('projects.overview');
+    Route::get('projects/overview', [ProjectController::class, 'index'])->name('projects.overview');
     Route::resource('projects', ProjectController::class)->except(['index']);
     Route::post('projects/{project}/members', [ProjectController::class, 'addMember'])->name('projects.members.add');
     Route::delete('projects/{project}/members/{user}', [ProjectController::class, 'removeMember'])->name('projects.members.remove');
 
     // Teams
-    Route::get('teams/overview', [TeamController::class,'index'])->name('teams.overview');
+    Route::get('teams/overview', [TeamController::class, 'index'])->name('teams.overview');
     Route::resource('teams', TeamController::class)->except(['index']);
     Route::post('teams/{team}/invite', [TeamController::class, 'invite'])->name('teams.invite');
     Route::post('teams/{team}/accept', [TeamController::class, 'acceptInvite'])->name('teams.accept');
@@ -45,7 +45,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Search & Calendar
     Route::get('/search', [SearchController::class, 'index'])->name('search.index');
-    Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
+    Route::get('/calendar/{month?}', [CalendarController::class, 'index'])->name('calendar.index');
 
     // Profile & Settings
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
@@ -54,5 +54,5 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
 
     // Help
-    Route::get('help',[HelpController::class,'index'])->name('help.index');
+    Route::get('help', [HelpController::class, 'index'])->name('help.index');
 });

@@ -71,8 +71,8 @@
             <!-- Projects Grid -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter-desktop">
                 @forelse($projects as $project)
-                    <div
-                        class="group bg-white rounded-xl border border-outline-variant hover:shadow-lg hover:-translate-y-1 transition-all duration-300 p-stack-lg flex flex-col h-full">
+                    <a href="{{ route('projects.show', $project) }}"
+                        class="group bg-white rounded-xl border border-outline-variant hover:shadow-lg hover:-translate-y-1 transition-all duration-300 p-stack-lg flex flex-col h-full cursor-pointer">
                         <div class="flex justify-between items-start mb-stack-md">
                             <div class="p-2 bg-secondary-container/20 rounded-lg text-secondary">
                                 <span class="material-symbols-outlined">folder</span>
@@ -112,7 +112,7 @@
                                 {{ $project->status === 'completed' ? 'Finished' : 'Active' }}
                             </span>
                         </div>
-                    </div>
+                    </a>
                 @empty
                     <div
                         class="col-span-3 flex items-center justify-center py-12 rounded-lg border border-outline-variant bg-surface-container-low">
