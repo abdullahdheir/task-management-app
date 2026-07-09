@@ -36,4 +36,38 @@ class ProjectService
     {
         $project->recalculateProgress();
     }
+
+    /**
+     * Get overview statistics for projects.
+     *
+     * @param User $user
+     * @return array
+     */
+    public function getOverviewStats(User $user): array
+    {
+        $totalActive = Project::forUser($user)
+            ->where('status', 'active')
+            ->count();
+
+        $totalCompleted = Project::forUser($user)
+            ->where('status', 'completed')
+            ->count();
+
+        // Calculate average velocity (average progress across active projects)
+        $activeProjects = Project::forUser($user)
+            ->where('status', 'active')
+            ->get();
+
+        $averageVelocity = 0;
+        if ($activeProjects->count() > 0) {
+            $totalProgress = $activeProjects->sum('progress');
+            $averageVelocity = round($totalProgress / $activeProjects->count());
+        }
+
+        return [
+            'totalActive' => $totalActive,
+            'totalCompleted' => $totalCompleted,
+            'averageVelocity' => $averageVelocity,
+        ];
+    }
 }

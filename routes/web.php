@@ -10,14 +10,15 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\TeamController;
+use App\Http\Controllers\HelpController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth'])->group(function () {
     // Dashboard
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/', function () {
         return redirect()->route('dashboard');
     });
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Tasks
     Route::resource('tasks', TaskController::class);
@@ -25,12 +26,14 @@ Route::middleware(['auth'])->group(function () {
     Route::post('tasks/{task}/subtasks', [TaskController::class, 'storeSubtask'])->name('tasks.subtasks.store');
 
     // Projects
-    Route::resource('projects', ProjectController::class);
+    Route::get('projects/overview', [ProjectController::class,'index'])->name('projects.overview');
+    Route::resource('projects', ProjectController::class)->except(['index']);
     Route::post('projects/{project}/members', [ProjectController::class, 'addMember'])->name('projects.members.add');
     Route::delete('projects/{project}/members/{user}', [ProjectController::class, 'removeMember'])->name('projects.members.remove');
 
     // Teams
-    Route::resource('teams', TeamController::class);
+    Route::get('teams/overview', [TeamController::class,'index'])->name('teams.overview');
+    Route::resource('teams', TeamController::class)->except(['index']);
     Route::post('teams/{team}/invite', [TeamController::class, 'invite'])->name('teams.invite');
     Route::post('teams/{team}/accept', [TeamController::class, 'acceptInvite'])->name('teams.accept');
 
@@ -41,7 +44,7 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('attachments/{attachment}', [AttachmentController::class, 'destroy'])->name('attachments.destroy');
 
     // Search & Calendar
-    Route::get('/search', [SearchController::class, 'index'])->name('search');
+    Route::get('/search', [SearchController::class, 'index'])->name('search.index');
     Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
 
     // Profile & Settings
@@ -49,4 +52,7 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
     Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
+
+    // Help
+    Route::get('help',[HelpController::class,'index'])->name('help.index');
 });

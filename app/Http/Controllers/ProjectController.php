@@ -18,8 +18,9 @@ class ProjectController extends Controller
     {
         $user = auth()->user();
         $projects = $service->listForUser($user);
+        $stats = $service->getOverviewStats($user);
 
-        return view('projects.overview', compact('projects'));
+        return view('projects.overview', compact('projects', 'stats'));
     }
 
     public function create()

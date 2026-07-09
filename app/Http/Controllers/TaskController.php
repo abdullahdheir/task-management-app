@@ -20,9 +20,17 @@ class TaskController extends Controller
         $filters = $request->only(['priority', 'category', 'status', 'project_id', 'due_from', 'due_to']);
 
         $tasks = $service->listForUser($user, $filters);
-        $projects = Project::forUser($user)->get();
+        $tasks = $service->transformTasksForView($tasks);
 
-        return view('tasks.index', compact('tasks', 'projects', 'filters'));
+        $weeklyStats = $service->getWeeklyStats($user);
+        $categories = $service->getCategoryBreakdown($user);
+        $remainingCount = $service->getRemainingTodayCount($user);
+
+        return view('tasks.index', compact(
+            'tasks',
+            'categories',
+            'remainingCount'
+        ) + $weeklyStats);
     }
 
     public function create()
@@ -49,8 +57,9 @@ class TaskController extends Controller
         $subtasks = $task->subtasks()->with('assignee')->get();
         $comments = $task->comments()->with('user')->get();
         $activities = $task->activities()->with('user')->orderBy('created_at', 'desc')->get();
+        $attachments = $task->attachments()->with('uploader')->get();
 
-        return view('tasks.show', compact('task', 'subtasks', 'comments', 'activities'));
+        return view('tasks.show', compact('task', 'subtasks', 'comments', 'activities', 'attachments'));
     }
 
     public function edit(Task $task)
