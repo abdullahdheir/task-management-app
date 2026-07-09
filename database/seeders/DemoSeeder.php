@@ -19,6 +19,24 @@ class DemoSeeder extends Seeder
      */
     public function run(): void
     {
+        // Create or get the main user (a@a.com)
+        $mainUser = User::firstOrCreate(
+            ['email' => 'a@a.com'],
+            [
+                'name' => 'Admin User',
+                'username' => 'admin',
+                'password' => Hash::make('password'),
+                'job_title' => 'Administrator',
+                'department' => 'Management',
+                'location' => 'San Francisco, CA',
+                'bio' => 'System administrator with full access to all projects and tasks.',
+                'timezone' => 'America/Los_Angeles',
+                'dark_mode' => false,
+                'two_factor_enabled' => false,
+                'share_usage_data' => true,
+            ]
+        );
+
         // Create demo users
         $users = [
             [
@@ -108,7 +126,7 @@ class DemoSeeder extends Seeder
             $team = Team::firstOrCreate(
                 ['name' => $teamData['name']],
                 array_merge($teamData, [
-                    'owner_id' => $createdUsers->first()->id,
+                    'owner_id' => $mainUser->id,
                     'slug' => null,
                 ])
             );
@@ -177,7 +195,7 @@ class DemoSeeder extends Seeder
             $project = Project::firstOrCreate(
                 ['name' => $projectData['name']],
                 array_merge($projectData, [
-                    'owner_id' => $createdUsers->first()->id,
+                    'owner_id' => $mainUser->id,
                     'team_id' => $createdTeams->first()->id,
                     'slug' => null,
                     'progress' => rand(20, 70),
@@ -248,7 +266,7 @@ class DemoSeeder extends Seeder
                         'title' => $taskData['title'],
                     ],
                     array_merge($taskData, [
-                        'user_id' => $createdUsers->random()->id,
+                        'user_id' => $mainUser->id,
                         'assignee_id' => $createdUsers->random()->id,
                         'parent_id' => null,
                         'description' => fake()->optional()->paragraph(),
@@ -267,7 +285,7 @@ class DemoSeeder extends Seeder
         // Create some standalone tasks
         for ($i = 0; $i < 10; $i++) {
             Task::create([
-                'user_id' => $createdUsers->random()->id,
+                'user_id' => $mainUser->id,
                 'assignee_id' => $createdUsers->random()->id,
                 'project_id' => null,
                 'parent_id' => null,
