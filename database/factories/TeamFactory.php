@@ -36,7 +36,7 @@ class TeamFactory extends Factory
 
         return [
             'owner_id' => User::factory(),
-            'name' => fake()->randomElement($teamNames),
+            'name' => fake()->unique()->randomElement($teamNames),
             'slug' => null, // Will be generated in model
             'description' => fake()->paragraph(),
             'avatar' => null,
