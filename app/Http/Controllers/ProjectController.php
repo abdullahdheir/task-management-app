@@ -41,7 +41,7 @@ class ProjectController extends Controller
             abort(403);
         }
 
-        $members = $project->members()->with('pivot')->get();
+        $members = $project->members()->get();
         $tasks = $project->tasks()->with(['assignee', 'subtasks'])->topLevel()->orderBy('due_date')->get();
         $recentActivity = $project->activities()->with('user')->orderBy('created_at', 'desc')->limit(10)->get();
 
@@ -55,7 +55,7 @@ class ProjectController extends Controller
             abort(403);
         }
 
-        $members = $project->members()->with('pivot')->get();
+        $members = $project->members()->get();
 
         return view('projects.edit', compact('project', 'members'));
     }
