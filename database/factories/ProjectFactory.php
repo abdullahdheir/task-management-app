@@ -56,7 +56,7 @@ class ProjectFactory extends Factory
         return [
             'owner_id' => User::factory(),
             'team_id' => null,
-            'name' => fake()->randomElement($projectNames),
+            'name' => fake()->unique()->randomElement($projectNames),
             'slug' => null, // Will be generated in model
             'description' => fake()->randomElement($descriptions),
             'color' => fake()->randomElement($colors),
