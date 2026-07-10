@@ -187,73 +187,73 @@
                         </form>
                     </div>
                 </section>
-                <!-- Activity Thread -->
-                <section class="bg-surface-container-lowest p-stack-lg rounded-xl border border-outline-variant/30">
-                    <h3 class="font-headline-md text-headline-md mb-stack-lg">Activity</h3>
-                    <div class="space-y-stack-lg">
-                        @forelse($comments as $comment)
-                            <div class="flex gap-4" data-comment>
-                                <div
-                                    class="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center text-primary font-bold">
-                                    {{ substr($comment->user->name ?? 'U', 0, 2) }}</div>
-                                <div class="flex-1">
-                                    <div class="flex items-center justify-between mb-1">
-                                        <div class="flex items-center gap-2">
-                                            <span
-                                                class="font-label-md text-label-md font-bold">{{ $comment->user->name ?? 'User' }}</span>
-                                            <span
-                                                class="text-label-sm text-on-surface-variant">{{ $comment->created_at?->diffForHumans() }}</span>
-                                        </div>
-                                        @if (auth()->id() === $comment->user_id)
-                                            <button
-                                                @click="
-                                                    ajax.delete('{{ route('comments.destroy', $comment) }}')
-                                                        .then(res => {
-                                                            if(res.status === 'success') {
-                                                                $el.closest('[data-comment]').remove();
-                                                                toast('Comment deleted');
-                                                            }
-                                                        })"
-                                                class="text-on-surface-variant hover:text-error transition-colors p-1 rounded">
-                                                <span class="material-symbols-outlined text-[16px]">delete</span>
-                                            </button>
-                                        @endif
-                                    </div>
-                                    <p class="font-body-md text-body-md text-on-surface-variant">{{ $comment->body }}
-                                    </p>
-                                </div>
-                            </div>
-                        @empty
-                            <p class="text-on-surface-variant text-label-sm text-center py-4">No comments yet</p>
-                        @endforelse
-                        <!-- User Comment Box -->
-                        <div class="flex gap-4 items-start pt-stack-md" x-data="{ body: '' }">
-                            <div
-                                class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center text-on-surface-variant">
-                                <span class="material-symbols-outlined">account_circle</span>
-                            </div>
-                            <div class="flex-grow">
-                                <textarea x-model="body"
-                                    class="w-full bg-surface-container-low border border-outline-variant rounded-xl p-3 text-body-md font-body-md focus:ring-2 focus:ring-primary-container h-24 resize-none"
-                                    placeholder="Write a comment..."></textarea>
-                                <div class="mt-2 flex justify-end">
-                                    <form method="POST" action="{{ route('comments.store') }}">
-                                        @csrf
-                                        <input type="hidden" name="commentable_type" value="App\Models\Task">
-                                        <input type="hidden" name="commentable_id" value="{{ $task->id }}">
-                                        <input type="hidden" name="body" :value="body">
-                                        <button type="submit" :disabled="body.trim() === ''"
-                                            :class="body.trim() === '' ? 'opacity-50 cursor-not-allowed' :
-                                                'hover:opacity-90'"
-                                            class="bg-primary text-on-primary px-6 py-2 rounded-lg font-label-md text-label-md transition-all">
-                                            Post Comment
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
+                {{-- Activity Thread --}}
+<section class="bg-surface-container-lowest p-stack-lg rounded-xl border border-outline-variant/30"
+         x-data="{ 
+             body: '',
+             loading: false,
+             async submitComment() {
+                 if (!this.body.trim()) return;
+                 this.loading = true;
+                 try {
+                     const res = await ajax.post('{{ route('comments.store') }}', {
+                         commentable_type: 'App\\Models\\Task',
+                         commentable_id: '{{ $task->id }}',
+                         body: this.body
+                     });
+                     if (res.status === 'success') {
+                         toast('Comment added');
+                         this.body = '';
+                         await this.loadComments();
+                     } else {
+                         toast(res.message ?? 'Error', 'error');
+                     }
+                 } catch {
+                     toast('Failed to add comment', 'error');
+                 } finally {
+                     this.loading = false;
+                 }
+             },
+             async loadComments() {
+                 const res = await fetch('{{ route('tasks.comments', $task) }}', {
+                     headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content }
+                 });
+                 const html = await res.text();
+                 this.$refs.commentsList.innerHTML = html;
+             }
+         }">
+
+    <h3 class="font-headline-md text-headline-md mb-stack-lg">Activity</h3>
+
+    {{-- Comments List --}}
+    <div class="space-y-stack-lg" x-ref="commentsList">
+        @include('partials.comments-list', ['comments' => $comments])
+    </div>
+
+    {{-- Comment Box --}}
+    <div class="flex gap-4 items-start pt-stack-md">
+        <div class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center text-on-surface-variant">
+            <span class="material-symbols-outlined">account_circle</span>
+        </div>
+        <div class="flex-grow">
+            <textarea x-model="body"
+                class="w-full bg-surface-container-low border border-outline-variant rounded-xl p-3 
+                       text-body-md font-body-md focus:ring-2 focus:ring-primary-container h-24 resize-none"
+                placeholder="Write a comment..."
+                @keydown.ctrl.enter="submitComment()"></textarea>
+            <div class="mt-2 flex justify-end">
+                <button @click="submitComment()"
+                        :disabled="body.trim() === '' || loading"
+                        :class="body.trim() === '' || loading ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-90'"
+                        class="bg-primary text-on-primary px-6 py-2 rounded-lg font-label-md 
+                               text-label-md transition-all flex items-center gap-2">
+                    <span x-show="loading" class="material-symbols-outlined text-[16px] animate-spin">progress_activity</span>
+                    <span x-text="loading ? 'Posting...' : 'Post Comment'"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
             </div>
             <!-- Right Column: Metadata & Attachments -->
             <div class="lg:col-span-4 space-y-stack-lg">

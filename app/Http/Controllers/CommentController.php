@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Comments\CreateComment;
 use App\Events\CommentPosted;
 use App\Http\Requests\StoreCommentRequest;
 use App\Models\Comment;
@@ -11,15 +12,11 @@ class CommentController extends Controller
 {
     public function store(StoreCommentRequest $request)
     {
-        $comment = Comment::create([
-            'user_id' => auth()->id(),
-            'commentable_type' => $request->commentable_type,
-            'commentable_id' => $request->commentable_id,
-            'parent_id' => $request->parent_id,
-            'body' => $request->body,
-        ]);
+        $clean = $request->validated();
 
-        CommentPosted::dispatch($comment, auth()->user());
+        $clean['user_id'] = auth()->id();
+
+        $comment = (new CreateComment)($clean);
 
         if (request()->wantsJson()) {
             return response()->json([

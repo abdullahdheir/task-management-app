@@ -147,4 +147,10 @@ class TaskController extends Controller
         $subtask = (new CreateTask)($data, auth()->user());
         return redirect()->route('tasks.show', $task)->with('success', 'Subtask created.');
     }
+
+    public function comments(Task $task)
+    {
+        $comments = $task->comments()->with('user')->get();
+        return view('partials.comments-list', compact('comments'))->render();
+    }
 }

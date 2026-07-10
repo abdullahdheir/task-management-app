@@ -24,6 +24,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('tasks', TaskController::class);
     Route::post('tasks/{task}/complete', [TaskController::class, 'complete'])->name('tasks.complete');
     Route::post('tasks/{task}/subtasks', [TaskController::class, 'storeSubtask'])->name('tasks.subtasks.store');
+    Route::get('tasks/{task}/comments', [TaskController::class, 'comments'])->name('tasks.comments');
 
     // Projects
     Route::get('projects/overview', [ProjectController::class, 'index'])->name('projects.overview');
