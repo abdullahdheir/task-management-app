@@ -1,3 +1,8 @@
+import Alpine from "alpinejs";
+
+window.Alpine = Alpine;
+Alpine.start();
+
 window.ajax = {
     async post(url, data = {}) {
         const res = await fetch(url, {
