@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Actions\Teams\AcceptInvite;
 use App\Actions\Teams\CreateTeam;
 use App\Actions\Teams\InviteMember;
+use App\Actions\Teams\UpdateTeam;
 use App\Http\Requests\StoreTeamRequest;
 use App\Http\Requests\UpdateTeamRequest;
 use App\Models\Team;
@@ -40,7 +41,7 @@ class TeamController extends Controller
             abort(403);
         }
 
-        $members = $team->members()->with('pivot')->get();
+        $members = $team->members()->get();
         $projects = $team->projects()->with('owner', 'members')->get();
         $recentActivity = $team->activities()->with('user')->orderBy('created_at', 'desc')->limit(10)->get();
 
