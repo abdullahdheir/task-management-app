@@ -14,6 +14,7 @@
 
 <div x-data="{ completed: {{ $task->completed ? 'true' : 'false' }}, open: false }" @click.outside="open = false"
     class="flex items-center gap-4 p-3 rounded-lg border border-outline-variant hover:bg-surface-container-low transition-colors group cursor-pointer"
+    :class="completed ? 'opacity-60' : ''"
     @click="window.location.href = '{{ $taskRoute }}'">
     <div class="flex-shrink-0">
         <input type="checkbox" id="task-{{ $task->id }}" :checked="completed" @click.stop
@@ -30,7 +31,8 @@
     </div>
     <div class="flex-grow min-w-0">
         <label for="task-{{ $task->id }}"
-            class="font-body-md text-body-md text-on-surface block cursor-pointer transition-colors {{ $task->completed ? 'line-through text-outline' : '' }} truncate">
+            class="font-body-md text-body-md text-on-surface block cursor-pointer transition-colors truncate"
+            :class="completed ? 'line-through text-outline' : ''">
             {{ $task->title }}
         </label>
         <div class="flex items-center gap-2 mt-1">
@@ -53,7 +55,8 @@
     </span>
     <div class="relative flex-shrink-0">
         <button @click.stop="open = !open"
-            class="material-symbols-outlined text-on-surface-variant {{ $task->completed ? '' : 'opacity-0 group-hover:opacity-100' }} transition-opacity p-1 rounded-full hover:bg-surface-container">
+            class="material-symbols-outlined text-on-surface-variant transition-opacity p-1 rounded-full hover:bg-surface-container"
+            :class="completed ? '' : 'opacity-0 group-hover:opacity-100'">
             more_vert
         </button>
         <div x-show="open" x-transition:enter="transition ease-out duration-100"
@@ -69,12 +72,15 @@
                 <span class="material-symbols-outlined text-[18px] text-secondary">open_in_new</span>
                 View Details
             </a>
+            @can('update', $task)
             <a href="{{ $editRoute }}"
                 class="flex items-center gap-3 px-4 py-2.5 text-on-surface hover:bg-surface-container
                       transition-colors font-label-md text-label-md">
                 <span class="material-symbols-outlined text-[18px] text-secondary">edit</span>
                 Edit Task
             </a>
+            @endcan
+            @can('delete', $task)
             <div class="border-t border-outline-variant my-1"></div>
             <button
                 @click="
@@ -95,6 +101,7 @@
                 <span class="material-symbols-outlined text-[18px]">delete</span>
                 Delete Task
             </button>
+            @endcan
         </div>
     </div>
 </div>

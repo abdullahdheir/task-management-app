@@ -96,7 +96,7 @@ class ProjectController extends Controller
             ]);
         }
 
-        return redirect()->route('projects.index')->with('success', 'Project deleted.');
+        return redirect()->route('projects.overview')->with('success', 'Project deleted.');
     }
 
     public function addMember(Request $request, Project $project)

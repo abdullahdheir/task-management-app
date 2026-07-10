@@ -3,7 +3,11 @@
 @section('title', 'Dashboard')
 
 @section('content')
-
+    @php
+        $progress = $stats['progress'] ?? 0;
+        $completedToday = $stats['completedToday'] ?? 0;
+        $totalToday = $stats['totalToday'] ?? 0;
+    @endphp
     {{-- Hero Welcome Section --}}
     <section class="mb-stack-lg animate-fade-in">
         <div class="flex flex-col md:flex-row justify-between items-end gap-stack-md">
@@ -102,14 +106,14 @@
                 <h3 class="font-headline-md text-headline-md mb-stack-lg">Project Overview</h3>
                 <div class="space-y-6">
                     @forelse($projects as $project)
-                        <a href="{{ route('projects.show', $project) }}" class="block">
+                        <a href="{{ route('projects.show', $project->id) }}" class="block">
                             <div class="flex justify-between items-center mb-2">
                                 <span class="font-label-md text-label-md font-bold">{{ $project->name }}</span>
                                 <span class="text-label-sm text-on-surface-variant">{{ $project->progress }}%</span>
                             </div>
                             <div class="h-1 bg-surface-container-high rounded-full overflow-hidden">
-                                <div class="h-full {{ $project->color ?? 'bg-primary' }}"
-                                    style="width: {{ $project->progress }}%">
+                                <div class="h-full"
+                                    style="width: {{ $project->progress }}%; background-color: {{ $project->color ?? 'bg-primary' }}">
                                 </div>
                             </div>
                         </a>
@@ -135,7 +139,8 @@
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                 @forelse($recentActivity as $activity)
-                    <div class="flex items-start gap-3 p-3 rounded-lg hover:bg-surface-container-low transition-colors">
+                    <a href="{{ $activity['url'] }}"
+                        class="flex items-start gap-3 p-3 rounded-lg hover:bg-surface-container-low transition-colors">
                         <div
                             class="w-8 h-8 rounded-full {{ $activity['color'] }} flex items-center justify-center shrink-0">
                             <span
@@ -145,7 +150,7 @@
                             <p class="text-body-md font-bold">{{ $activity['title'] }}</p>
                             <p class="text-label-sm text-on-surface-variant">{{ $activity['desc'] }}</p>
                         </div>
-                    </div>
+                    </a>
                 @empty
                     <div class="col-span-full text-center py-8">
                         <span class="material-symbols-outlined text-on-surface-variant text-4xl mb-2">history</span>

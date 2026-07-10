@@ -93,7 +93,7 @@ class TeamController extends Controller
             ]);
         }
 
-        return redirect()->route('teams.index')->with('success', 'Team deleted.');
+        return redirect()->route('teams.overview')->with('success', 'Team deleted.');
     }
 
     public function invite(Request $request, Team $team)

@@ -3,30 +3,27 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdateProfileRequest;
+use App\Models\User;
 use App\Services\ProfileService;
 
 class ProfileController extends Controller
 {
     /**
-     * Display the user's profile.
-     *
-     * @param ProfileService $service
-     * @return \Illuminate\View\View
+     * Display a user's profile (own or another user's).
      */
-    public function show(ProfileService $service)
+    public function show(ProfileService $service, ?User $user = null)
     {
-        $user = auth()->user();
+        $authUser = auth()->user();
+        // If no user param, show own profile
+        $user = $user ?? $authUser;
+
         $stats = $service->getProfileStats($user);
 
         return view('profile.show', compact('user', 'stats'));
     }
 
     /**
-     * Update the user's profile.
-     *
-     * @param UpdateProfileRequest $request
-     * @param ProfileService $service
-     * @return \Illuminate\Http\RedirectResponse
+     * Update the authenticated user's profile.
      */
     public function update(UpdateProfileRequest $request, ProfileService $service)
     {

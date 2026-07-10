@@ -14,7 +14,8 @@
 @endphp
 
 <div x-data="{ completed: {{ $task['completed'] ?? false ? 'true' : 'false' }}, open: false }" data-task-row @click.outside="open = false"
-    class="task-row bg-surface-container-lowest border border-outline-variant rounded-xl p-4 flex items-center gap-4 hover:shadow-sm transition-all group {{ $task['completed'] ?? false ? 'opacity-60' : '' }}">
+    class="task-row bg-surface-container-lowest border border-outline-variant rounded-xl p-4 flex items-center gap-4 hover:shadow-sm transition-all group"
+    :class="completed ? 'opacity-60' : ''">
     <input type="checkbox" id="task-{{ $taskId }}" :checked="completed" @click.stop
         @change="
                ajax.post('{{ $completeRoute }}')
@@ -29,7 +30,8 @@
 
     <div class="flex-grow cursor-pointer" @click="window.location.href = '{{ $taskRoute }}'">
         <label for="task-{{ $taskId }}"
-            class="font-body-lg text-body-lg text-on-surface block cursor-pointer transition-colors {{ $task['completed'] ?? false ? 'line-through text-outline' : '' }}">
+            class="font-body-lg text-body-lg text-on-surface block cursor-pointer transition-colors"
+            :class="completed ? 'line-through text-outline' : ''">
             {{ $task['title'] }}
         </label>
         <div class="flex items-center gap-4 mt-1">
@@ -50,7 +52,8 @@
 
     <div class="relative">
         <button @click.stop="open = !open"
-            class="material-symbols-outlined text-on-surface-variant {{ $task['completed'] ?? false ? '' : 'opacity-0 group-hover:opacity-100' }} transition-opacity p-1 rounded-full hover:bg-surface-container">
+            class="material-symbols-outlined text-on-surface-variant transition-opacity p-1 rounded-full hover:bg-surface-container"
+            :class="completed ? '' : 'opacity-0 group-hover:opacity-100'">
             more_vert
         </button>
         <div x-show="open" x-transition:enter="transition ease-out duration-100"
@@ -66,12 +69,15 @@
                 <span class="material-symbols-outlined text-[18px] text-secondary">open_in_new</span>
                 View Details
             </a>
+            @can('update', $task['model'])
             <a href="{{ $editRoute }}"
                 class="flex items-center gap-3 px-4 py-2.5 text-on-surface hover:bg-surface-container
                       transition-colors font-label-md text-label-md">
                 <span class="material-symbols-outlined text-[18px] text-secondary">edit</span>
                 Edit Task
             </a>
+            @endcan
+            @can('delete', $task['model'])
             <div class="border-t border-outline-variant my-1"></div>
             <button
                 @click="
@@ -92,6 +98,7 @@
                 <span class="material-symbols-outlined text-[18px]">delete</span>
                 Delete Task
             </button>
+            @endcan
         </div>
     </div>
 </div>

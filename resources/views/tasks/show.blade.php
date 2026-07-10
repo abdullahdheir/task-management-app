@@ -31,7 +31,7 @@
 
 @section('content')
     <!-- Task Detailed View -->
-    <div class="max-w-container-max mx-auto p-gutter-desktop">
+    <div class="max-w-container-max mx-auto p-gutter-desktop" x-data="{ completed: {{ $task->status === 'completed' ? 'true' : 'false' }} }">
         <!-- Breadcrumbs / Navigation Back -->
         <a href="{{ route('tasks.index') }}"
             class="flex items-center gap-2 mb-stack-lg text-on-surface-variant hover:text-primary transition-colors">
@@ -53,20 +53,71 @@
                         {{ ucfirst($task->priority ?? 'medium') }} Priority
                     </span>
                 </div>
-                <h2 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">{{ $task->title }}</h2>
+                <h2 class="font-headline-lg text-headline-lg text-on-surface tracking-tight transition-all" :class="completed ? 'line-through text-outline' : ''">{{ $task->title }}</h2>
             </div>
             <div class="flex items-center gap-2">
                 <button class="p-2 border border-outline-variant rounded-lg hover:bg-surface-container transition-colors">
                     <span class="material-symbols-outlined">share</span>
                 </button>
-                <button class="p-2 border border-outline-variant rounded-lg hover:bg-surface-container transition-colors">
-                    <span class="material-symbols-outlined">more_horiz</span>
-                </button>
+                <div class="relative" x-data="{ open: false }" @click.outside="open = false">
+                    <button @click="open = !open" class="p-2 border border-outline-variant rounded-lg hover:bg-surface-container transition-colors">
+                        <span class="material-symbols-outlined">more_horiz</span>
+                    </button>
+                    <div x-show="open"
+                         x-transition:enter="transition ease-out duration-100"
+                         x-transition:enter-start="opacity-0 scale-95"
+                         x-transition:enter-end="opacity-100 scale-100"
+                         x-transition:leave="transition ease-in duration-75"
+                         x-transition:leave-start="opacity-100 scale-100"
+                         x-transition:leave-end="opacity-0 scale-95"
+                         class="absolute right-0 top-11 w-48 bg-surface border border-outline-variant
+                                rounded-xl shadow-xl z-50 overflow-hidden py-1"
+                         style="display:none">
+                        @can('update', $task)
+                        <a href="{{ route('tasks.edit', $task) }}"
+                           class="flex items-center gap-3 px-4 py-2.5 text-on-surface hover:bg-surface-container
+                                  transition-colors font-label-md text-label-md">
+                            <span class="material-symbols-outlined text-[18px] text-secondary">edit</span>
+                            Edit Task
+                        </a>
+                        @endcan
+                        @can('delete', $task)
+                        <div class="border-t border-outline-variant my-1"></div>
+                        <button @click="
+                                    open = false;
+                                    if(confirm('Delete this task?')) {
+                                        ajax.delete('{{ route('tasks.destroy', $task) }}')
+                                            .then(res => {
+                                                if(res.status === 'success') {
+                                                    toast('Task deleted');
+                                                    window.location.href = '{{ route('tasks.index') }}';
+                                                } else {
+                                                    toast(res.message ?? 'Error', 'error');
+                                                }
+                                            });
+                                    }"
+                                class="w-full flex items-center gap-3 px-4 py-2.5 text-error
+                                       hover:bg-error-container/20 transition-colors font-label-md text-label-md">
+                            <span class="material-symbols-outlined text-[18px]">delete</span>
+                            Delete Task
+                        </button>
+                        @endcan
+                    </div>
+                </div>
                 <button
-                    class="bg-primary text-on-primary px-6 py-2 rounded-lg font-label-md text-label-md flex items-center gap-2">
-                    <span class="material-symbols-outlined text-[18px]"
-                        style="font-variation-settings: 'FILL' 1;">check_circle</span>
-                    Mark Complete
+                    @click="
+                        ajax.post('{{ route('tasks.complete', $task) }}')
+                            .then(res => {
+                                if(res.status === 'success') {
+                                    completed = res.data.is_completed;
+                                    toast(completed ? 'Task completed!' : 'Task reopened');
+                                }
+                            }).catch(() => toast('Something went wrong', 'error'))
+                    "
+                    class="px-6 py-2 rounded-lg font-label-md text-label-md flex items-center gap-2 transition-all"
+                    :class="completed ? 'bg-secondary-container text-on-secondary-fixed-variant' : 'bg-primary text-on-primary'">
+                    <span class="material-symbols-outlined text-[18px]" :style="completed ? '' : 'font-variation-settings: \'FILL\' 1;'">check_circle</span>
+                    <span x-text="completed ? 'Reopen Task' : 'Mark Complete'"></span>
                 </button>
             </div>
         </div>
@@ -95,67 +146,106 @@
                     </div>
                     <ul class="space-y-2">
                         @forelse($subtasks as $subtask)
-                            <li
+                            <li x-data="{ subcompleted: {{ $subtask->is_completed ? 'true' : 'false' }} }"
+                                :class="subcompleted ? 'opacity-60' : ''"
                                 class="flex items-center gap-3 p-3 hover:bg-surface-container-low transition-colors rounded-lg group">
-                                <input {{ $subtask->is_completed ? 'checked' : '' }}
+                                <input :checked="subcompleted"
+                                    @change="
+                                        ajax.post('{{ route('tasks.complete', $subtask) }}')
+                                            .then(res => {
+                                                if(res.status === 'success') {
+                                                    subcompleted = res.data.is_completed;
+                                                    toast(subcompleted ? 'Subtask completed!' : 'Subtask reopened');
+                                                    setTimeout(() => window.location.reload(), 1000);
+                                                }
+                                            }).catch(() => toast('Something went wrong', 'error'))
+                                    "
                                     class="w-5 h-5 rounded-full border-secondary text-secondary focus:ring-secondary cursor-pointer"
                                     type="checkbox" />
-                                <span
-                                    class="font-body-md text-body-md {{ $subtask->is_completed ? 'text-on-surface-variant line-through' : 'text-on-surface' }}">{{ $subtask->title }}</span>
+                                <span :class="subcompleted ? 'text-on-surface-variant line-through' : 'text-on-surface'"
+                                    class="font-body-md text-body-md">{{ $subtask->title }}</span>
                             </li>
                         @empty
                             <li class="text-center py-4 text-on-surface-variant text-label-sm">No sub-tasks yet</li>
                         @endforelse
                     </ul>
-                    <button
-                        class="mt-stack-md flex items-center gap-2 text-primary font-label-md text-label-md hover:underline">
-                        <span class="material-symbols-outlined text-[16px]">add</span> Add Sub-task
-                    </button>
+                    <div x-data="{ showForm: false, title: '' }">
+                        <button @click="showForm = !showForm"
+                            class="mt-stack-md flex items-center gap-2 text-primary font-label-md text-label-md hover:underline">
+                            <span class="material-symbols-outlined text-[16px]">add</span> Add Sub-task
+                        </button>
+                        
+                        <form x-show="showForm" style="display:none" class="mt-4 flex gap-2" method="POST" action="{{ route('tasks.subtasks.store', $task) }}">
+                            @csrf
+                            <input x-model="title" type="text" name="title" required placeholder="Subtask title" 
+                                   class="flex-grow bg-surface-container-low border border-outline-variant rounded-lg px-3 py-1.5 text-body-md focus:ring-2 focus:ring-primary-container">
+                            <button type="submit" :disabled="!title.trim()" :class="!title.trim() ? 'opacity-50 cursor-not-allowed' : ''"
+                                    class="bg-primary text-on-primary px-4 py-1.5 rounded-lg font-label-sm text-label-sm">
+                                Create
+                            </button>
+                        </form>
+                    </div>
                 </section>
                 <!-- Activity Thread -->
                 <section class="bg-surface-container-lowest p-stack-lg rounded-xl border border-outline-variant/30">
                     <h3 class="font-headline-md text-headline-md mb-stack-lg">Activity</h3>
                     <div class="space-y-stack-lg">
                         @forelse($comments as $comment)
-                            <div class="flex gap-4">
+                            <div class="flex gap-4" data-comment>
                                 <div
                                     class="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center text-primary font-bold">
                                     {{ substr($comment->user->name ?? 'U', 0, 2) }}</div>
                                 <div class="flex-1">
-                                    <div class="flex items-center gap-2 mb-1">
-                                        <span
-                                            class="font-label-md text-label-md font-bold">{{ $comment->user->name ?? 'User' }}</span>
-                                        <span
-                                            class="text-label-sm text-on-surface-variant">{{ $comment->created_at?->diffForHumans() }}</span>
+                                    <div class="flex items-center justify-between mb-1">
+                                        <div class="flex items-center gap-2">
+                                            <span
+                                                class="font-label-md text-label-md font-bold">{{ $comment->user->name ?? 'User' }}</span>
+                                            <span
+                                                class="text-label-sm text-on-surface-variant">{{ $comment->created_at?->diffForHumans() }}</span>
+                                        </div>
+                                        @if(auth()->id() === $comment->user_id)
+                                        <button @click="
+                                                    ajax.delete('{{ route('comments.destroy', $comment) }}')
+                                                        .then(res => {
+                                                            if(res.status === 'success') {
+                                                                $el.closest('[data-comment]').remove();
+                                                                toast('Comment deleted');
+                                                            }
+                                                        })"
+                                                class="text-on-surface-variant hover:text-error transition-colors p-1 rounded">
+                                            <span class="material-symbols-outlined text-[16px]">delete</span>
+                                        </button>
+                                        @endif
                                     </div>
-                                    <p class="font-body-md text-body-md text-on-surface-variant">{{ $comment->content }}
+                                    <p class="font-body-md text-body-md text-on-surface-variant">{{ $comment->body }}
                                     </p>
-                                    <div class="mt-2 flex items-center gap-4">
-                                        <button
-                                            class="text-label-sm text-on-surface-variant hover:text-primary">Reply</button>
-                                        <button
-                                            class="text-label-sm text-on-surface-variant hover:text-primary">React</button>
-                                    </div>
                                 </div>
                             </div>
                         @empty
                             <p class="text-on-surface-variant text-label-sm text-center py-4">No comments yet</p>
                         @endforelse
                         <!-- User Comment Box -->
-                        <div class="flex gap-4 items-start pt-stack-md">
+                        <div class="flex gap-4 items-start pt-stack-md" x-data="{ body: '' }">
                             <div
                                 class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center text-on-surface-variant material-symbols-outlined">
                                 account_circle</div>
-                            <div class="flex-1 relative">
-                                <textarea
+                            <div class="flex-grow">
+                                <textarea x-model="body"
                                     class="w-full bg-surface-container-low border border-outline-variant rounded-xl p-3 text-body-md font-body-md focus:ring-2 focus:ring-primary-container h-24 resize-none"
                                     placeholder="Write a comment..."></textarea>
-                                <div class="absolute bottom-3 right-3 flex items-center gap-2">
-                                    <button class="p-1.5 text-on-surface-variant hover:text-primary"><span
-                                            class="material-symbols-outlined">attach_file</span></button>
-                                    <button
-                                        class="bg-primary text-on-primary px-4 py-1.5 rounded-lg font-label-sm text-label-sm">Post
-                                        Comment</button>
+                                <div class="mt-2 flex justify-end">
+                                    <form method="POST" action="{{ route('comments.store') }}">
+                                        @csrf
+                                        <input type="hidden" name="commentable_type" value="App\Models\Task">
+                                        <input type="hidden" name="commentable_id" value="{{ $task->id }}">
+                                        <input type="hidden" name="body" :value="body">
+                                        <button type="submit"
+                                            :disabled="body.trim() === ''"
+                                            :class="body.trim() === '' ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-90'"
+                                            class="bg-primary text-on-primary px-6 py-2 rounded-lg font-label-md text-label-md transition-all">
+                                            Post Comment
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -213,18 +303,34 @@
                 <section class="bg-surface-container-lowest p-stack-lg rounded-xl border border-outline-variant/30">
                     <div class="flex justify-between items-center mb-stack-md">
                         <h3 class="font-headline-md text-headline-md">Attachments</h3>
-                        <button class="text-primary material-symbols-outlined">add_circle</button>
+                        <button onclick="document.getElementById('attachment-input').click()" class="text-primary material-symbols-outlined">add_circle</button>
                     </div>
                     <div class="grid grid-cols-2 gap-3">
                         @forelse($attachments as $attachment)
-                            <div
-                                class="group relative overflow-hidden rounded-lg border border-outline-variant/50 cursor-pointer">
-                                <div
+                            <div data-attachment-item
+                                 class="group relative overflow-hidden rounded-lg border border-outline-variant/50 cursor-pointer">
+                                <div onclick="window.open('{{ $attachment->url }}', '_blank')"
                                     class="w-full h-24 bg-surface-container-low flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
                                     <span
                                         class="material-symbols-outlined text-4xl text-on-surface-variant">description</span>
                                 </div>
-                                <div class="p-2 bg-white/90 backdrop-blur-sm">
+                                @if(auth()->id() === $attachment->user_id)
+                                    <button @click.stop="
+                                                if(confirm('Delete this attachment?')) {
+                                                    ajax.delete('{{ route('attachments.destroy', $attachment) }}')
+                                                        .then(res => {
+                                                            if(res.status === 'success') {
+                                                                $el.closest('[data-attachment-item]').remove();
+                                                                toast('Attachment deleted');
+                                                            }
+                                                        });
+                                                }
+                                            "
+                                            class="absolute top-2 right-2 bg-white/80 p-1 rounded-full text-error opacity-0 group-hover:opacity-100 transition-opacity hover:bg-error-container/20">
+                                        <span class="material-symbols-outlined text-[16px]">delete</span>
+                                    </button>
+                                @endif
+                                <div class="p-2 bg-white/90 backdrop-blur-sm" onclick="window.open('{{ $attachment->url }}', '_blank')">
                                     <p class="font-label-sm text-label-sm truncate">{{ $attachment->filename }}</p>
                                     <p class="text-[10px] text-on-surface-variant">{{ $attachment->human_size }}</p>
                                 </div>
@@ -236,13 +342,16 @@
                         @endforelse
                     </div>
                     <div class="mt-stack-md space-y-2">
-                        <div
+                        <div onclick="document.getElementById('attachment-input').click()"
                             class="flex items-center gap-3 p-2 border border-dashed border-outline-variant rounded-lg hover:bg-surface-container transition-colors cursor-pointer">
                             <span class="material-symbols-outlined text-on-surface-variant">upload_file</span>
-                            <span class="font-label-md text-label-md text-on-surface-variant">Drop files here to
-                                upload</span>
+                            <span class="font-label-md text-label-md text-on-surface-variant">Drop files here to upload</span>
                         </div>
                     </div>
+                    <form id="attachment-form" action="{{ route('attachments.store', $task) }}" method="POST" enctype="multipart/form-data" class="hidden">
+                        @csrf
+                        <input type="file" name="file" id="attachment-input" onchange="document.getElementById('attachment-form').submit();">
+                    </form>
                 </section>
                 <!-- Atmospheric Animation Element (Subtle) -->
                 <div class="relative h-32 rounded-xl overflow-hidden border border-outline-variant/30">

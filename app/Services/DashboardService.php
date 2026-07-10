@@ -70,9 +70,9 @@ class DashboardService
      * Get active projects with progress data for dashboard.
      *
      * @param User $user
-     * @return array
+     * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function activeProjectsData(User $user): array
+    public function activeProjectsData(User $user)
     {
         $projects = Project::active()
             ->forUser($user)
@@ -83,15 +83,15 @@ class DashboardService
         $projectData = [];
         $colors = ['bg-secondary', 'bg-primary', 'bg-tertiary-container'];
 
-        foreach ($projects as $index => $project) {
-            $projectData[] = [
-                'name' => $project->name,
-                'progress' => $project->progress ?? 0,
-                'color' => $colors[$index] ?? 'bg-surface-variant',
-            ];
-        }
+        // foreach ($projects as $index => $project) {
+        //     $projectData[] = [
+        //         'name' => $project->name,
+        //         'progress' => $project->progress ?? 0,
+        //         'color' => $colors[$index] ?? 'bg-surface-variant',
+        //     ];
+        // }
 
-        return $projectData;
+        return $projects;
     }
 
     /**
@@ -169,12 +169,34 @@ class DashboardService
         $title = $this->getActivityTitle($activity);
         $desc = $this->getActivityDescription($activity);
 
+        $url = '#';
+        if ($activity->subject_type === \App\Models\Task::class) {
+            $url = route('tasks.show', $activity->subject_id);
+        } elseif ($activity->subject_type === \App\Models\Project::class) {
+            $url = route('projects.show', $activity->subject_id);
+        } elseif ($activity->subject_type === \App\Models\Comment::class) {
+            $comment = $activity->subject;
+            if ($comment) {
+                if ($comment->commentable_type === \App\Models\Task::class) {
+                    $url = route('tasks.show', $comment->commentable_id);
+                } elseif ($comment->commentable_type === \App\Models\Project::class) {
+                    $url = route('projects.show', $comment->commentable_id);
+                }
+            }
+        } elseif ($activity->subject_type === \App\Models\TaskAttachment::class) {
+            $attachment = $activity->subject;
+            if ($attachment) {
+                $url = route('tasks.show', $attachment->task_id);
+            }
+        }
+
         return [
             'icon' => $iconData['icon'],
             'color' => $iconData['color'],
             'iconColor' => $iconData['iconColor'],
             'title' => $title,
             'desc' => $desc,
+            'url' => $url,
         ];
     }
 

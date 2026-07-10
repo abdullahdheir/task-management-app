@@ -49,6 +49,13 @@ class AttachmentController extends Controller
 
         $service->delete($attachment);
 
+        if (request()->wantsJson()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Attachment deleted.',
+            ]);
+        }
+
         return back()->with('success', 'Attachment deleted.');
     }
 }

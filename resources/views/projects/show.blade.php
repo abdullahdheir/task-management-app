@@ -102,21 +102,30 @@
                         </a>
                     </div>
                 </div>
-                <div class="space-y-3">
+                 <div class="space-y-3">
                     @forelse($tasks as $task)
-                        <div x-data="{ open: false }" @click.outside="open = false"
-                            class="task-card flex items-center justify-between p-4 {{ $task->status === 'completed' ? 'bg-surface-container-low border border-transparent opacity-80' : 'bg-white border border-outline-variant' }} rounded-lg transition-all duration-200 group">
+                        <div x-data="{ completed: {{ $task->status === 'completed' ? 'true' : 'false' }}, open: false }" @click.outside="open = false"
+                            class="task-card flex items-center justify-between p-4 rounded-lg transition-all duration-200 group"
+                            :class="completed ? 'bg-surface-container-low border border-transparent opacity-80' : 'bg-white border border-outline-variant'">
                             <div class="flex items-center gap-4 flex-1 cursor-pointer"
                                 @click="window.location.href = '{{ route('tasks.show', $task) }}'">
-                                <div @click.stop
-                                    class="w-5 h-5 rounded-full {{ $task->status === 'completed' ? 'bg-secondary flex items-center justify-center text-white' : 'border-2 border-outline cursor-pointer hover:border-secondary' }} transition-colors">
-                                    @if ($task->status === 'completed')
-                                        <span class="material-symbols-outlined text-[16px]">check</span>
-                                    @endif
+                                <div @click.stop="
+                                         ajax.post('{{ route('tasks.complete', $task) }}')
+                                             .then(res => {
+                                                 if(res.status === 'success') {
+                                                     completed = res.data.is_completed;
+                                                     toast(completed ? 'Task completed!' : 'Task reopened');
+                                                     setTimeout(() => window.location.reload(), 1000);
+                                                 }
+                                             });
+                                     "
+                                    class="w-5 h-5 rounded-full transition-colors flex items-center justify-center cursor-pointer"
+                                    :class="completed ? 'bg-secondary text-white' : 'border-2 border-outline hover:border-secondary'">
+                                    <span x-show="completed" class="material-symbols-outlined text-[16px]">check</span>
                                 </div>
                                 <div>
-                                    <h4
-                                        class="font-body-lg text-body-lg {{ $task->status === 'completed' ? 'text-on-surface line-through' : 'text-on-surface' }}">
+                                    <h4 :class="completed ? 'text-on-surface line-through' : 'text-on-surface'"
+                                        class="font-body-lg text-body-lg">
                                         {{ $task->title }}</h4>
                                     <p class="text-label-sm text-on-surface-variant">{{ $task->category ?? 'Task' }} •
                                         {{ $task->due_date?->format('M d') ?? 'No due date' }}</p>
@@ -124,9 +133,12 @@
                             </div>
                             <div class="flex items-center gap-4">
                                 <span
-                                    class="px-2 py-0.5 {{ $task->status === 'completed' ? 'bg-secondary-container text-on-secondary-container' : 'bg-tertiary-fixed text-on-tertiary-fixed' }} rounded text-[10px] font-bold uppercase">{{ $task->status === 'completed' ? 'Done' : ucfirst($task->priority ?? 'Normal') }}</span>
+                                    class="px-2 py-0.5 rounded text-[10px] font-bold uppercase"
+                                    :class="completed ? 'bg-secondary-container text-on-secondary-container' : 'bg-tertiary-fixed text-on-tertiary-fixed'">
+                                    <span x-text="completed ? 'Done' : '{{ ucfirst($task->priority ?? 'Normal') }}'"></span>
+                                </span>
                                 @if ($task->assignee)
-                                    <a href="{{ route('profile.show', $task->assignee) }}"
+                                    <a href="{{ route('profile.show.user', $task->assignee) }}"
                                         class="w-8 h-8 rounded-full border-2 border-white -ml-2 ring-1 ring-outline-variant block">
                                         <img class="w-full h-full rounded-full object-cover"
                                             src="{{ $task->assignee->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($task->assignee->name) . '&size=32' }}"
@@ -135,7 +147,8 @@
                                 @endif
                                 <div class="relative">
                                     <button @click.stop="open = !open"
-                                        class="material-symbols-outlined text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded-full hover:bg-surface-container">
+                                        class="material-symbols-outlined text-on-surface-variant transition-opacity p-1 rounded-full hover:bg-surface-container"
+                                        :class="completed ? '' : 'opacity-0 group-hover:opacity-100'">
                                         more_vert
                                     </button>
                                     <div x-show="open" x-transition:enter="transition ease-out duration-100"
@@ -154,12 +167,15 @@
                                                 class="material-symbols-outlined text-[18px] text-secondary">open_in_new</span>
                                             View Details
                                         </a>
+                                        @can('update', $task)
                                         <a href="{{ route('tasks.edit', $task) }}"
                                             class="flex items-center gap-3 px-4 py-2.5 text-on-surface hover:bg-surface-container
                                                   transition-colors font-label-md text-label-md">
                                             <span class="material-symbols-outlined text-[18px] text-secondary">edit</span>
                                             Edit Task
                                         </a>
+                                        @endcan
+                                        @can('delete', $task)
                                         <div class="border-t border-outline-variant my-1"></div>
                                         <button
                                             @click="
@@ -180,6 +196,7 @@
                                             <span class="material-symbols-outlined text-[18px]">delete</span>
                                             Delete Task
                                         </button>
+                                        @endcan
                                     </div>
                                 </div>
                             </div>
@@ -205,7 +222,7 @@
                     @forelse($members as $member)
                         <div x-data="{ open: false }" @click.outside="open = false"
                             class="flex items-center justify-between group">
-                            <a href="{{ route('profile.show', $member) }}" class="flex items-center gap-3 flex-1">
+                            <a href="{{ route('profile.show.user', $member) }}" class="flex items-center gap-3 flex-1">
                                 <img class="w-10 h-10 rounded-full object-cover"
                                     src="{{ $member->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($member->name) . '&size=40' }}"
                                     alt="{{ $member->name }}">
@@ -232,7 +249,7 @@
                                         class="absolute right-0 top-8 w-48 bg-surface border border-outline-variant
                                             rounded-xl shadow-xl z-50 overflow-hidden py-1"
                                         style="display:none">
-                                        <a href="{{ route('profile.show', $member) }}"
+                                        <a href="{{ route('profile.show.user', $member) }}"
                                             class="flex items-center gap-3 px-4 py-2.5 text-on-surface hover:bg-surface-container
                                               transition-colors font-label-md text-label-md">
                                             <span
@@ -268,11 +285,54 @@
                             <p class="text-label-sm">No team members yet</p>
                         </div>
                     @endforelse
-                    <button
-                        class="w-full mt-2 py-2 border-2 border-dashed border-outline-variant text-on-surface-variant rounded-lg font-label-md flex items-center justify-center gap-2 hover:border-primary hover:text-primary transition-all">
-                        <span class="material-symbols-outlined text-[18px]">person_add</span>
-                        Add Member
-                    </button>
+                    @php
+                        $allUsers = \App\Models\User::where('id', '!=', auth()->id())
+                            ->whereNotIn('id', $members->pluck('id'))
+                            ->get();
+                    @endphp
+                    @if (auth()->id() === $project->owner_id)
+                        <div x-data="{ showAddMember: false, selectedUserId: '', selectedRole: 'member' }">
+                            <button @click="showAddMember = !showAddMember"
+                                class="w-full mt-2 py-2 border-2 border-dashed border-outline-variant text-on-surface-variant rounded-lg font-label-md flex items-center justify-center gap-2 hover:border-primary hover:text-primary transition-all">
+                                <span class="material-symbols-outlined text-[18px]">person_add</span>
+                                Add Member
+                            </button>
+                            
+                            <form x-show="showAddMember" style="display:none" class="mt-4 p-4 border border-outline-variant rounded-lg space-y-3 bg-surface-container-low"
+                                  method="POST" action="{{ route('projects.members.add', $project) }}">
+                                @csrf
+                                <div>
+                                    <label class="block text-label-sm text-on-surface-variant mb-1">Select User</label>
+                                    <select x-model="selectedUserId" name="user_id" required
+                                            class="w-full px-3 py-1.5 rounded-lg border border-outline-variant bg-white text-body-md">
+                                        <option value="">-- Choose User --</option>
+                                        @foreach($allUsers as $u)
+                                            <option value="{{ $u->id }}">{{ $u->name }} ({{ $u->email }})</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-label-sm text-on-surface-variant mb-1">Role</label>
+                                    <select x-model="selectedRole" name="role"
+                                            class="w-full px-3 py-1.5 rounded-lg border border-outline-variant bg-white text-body-md">
+                                        <option value="member">Member</option>
+                                        <option value="lead">Lead</option>
+                                        <option value="viewer">Viewer</option>
+                                    </select>
+                                </div>
+                                <div class="flex justify-end gap-2 pt-2">
+                                    <button type="button" @click="showAddMember = false"
+                                            class="px-3 py-1.5 border border-outline-variant rounded-lg text-label-md hover:bg-surface-container transition-colors">
+                                        Cancel
+                                    </button>
+                                    <button type="submit" :disabled="!selectedUserId" :class="!selectedUserId ? 'opacity-50 cursor-not-allowed' : ''"
+                                            class="px-4 py-1.5 bg-primary text-white rounded-lg text-label-md hover:bg-primary-container transition-colors">
+                                        Add
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    @endif
                 </div>
             </div>
             <!-- Recent Activity Feed -->

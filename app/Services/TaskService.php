@@ -138,6 +138,7 @@ class TaskService
                 'category' => ucfirst($task->category ?? 'other'),
                 'priority' => $task->priority ?? 'low',
                 'completed' => $task->status === 'completed',
+                'model' => $task,
             ];
         });
     }
