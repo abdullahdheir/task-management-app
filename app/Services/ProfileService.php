@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Task;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -62,7 +63,7 @@ class ProfileService
      */
     public function getProfileStats(User $user): array
     {
-        $totalCompleted = \App\Models\Task::forUser($user)
+        $totalCompleted = Task::forUser($user)
             ->where('status', 'completed')
             ->count();
 
@@ -70,7 +71,7 @@ class ProfileService
         $focusHours = 0; // This would come from time tracking data
 
         // Calculate efficiency score
-        $totalTasks = \App\Models\Task::forUser($user)->count();
+        $totalTasks = Task::forUser($user)->count();
         $efficiency = $totalTasks > 0 ? round(($totalCompleted / $totalTasks) * 100) : 0;
 
         return [

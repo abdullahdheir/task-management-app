@@ -2,22 +2,39 @@
 
 namespace App\Models;
 
+use App\Enums\Department;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 
 class User extends Authenticatable
 {
     use HasFactory, Notifiable, SoftDeletes;
 
     protected $fillable = [
-        'name', 'email', 'password', 'username', 'avatar',
-        'job_title', 'department', 'location', 'bio',
-        'timezone', 'dark_mode', 'two_factor_enabled',
-        'share_usage_data', 'focus_start', 'focus_end',
+        'name',
+        'email',
+        'password',
+        'username',
+        'avatar',
+        'job_title',
+        'department',
+        'location',
+        'bio',
+        'timezone',
+        'dark_mode',
+        'two_factor_enabled',
+        'share_usage_data',
+        'focus_start',
+        'focus_end',
+    ];
+
+    protected $appends = [
+        'avatar_url'
     ];
 
     protected $hidden = ['password', 'remember_token'];
@@ -30,6 +47,7 @@ class User extends Authenticatable
             'dark_mode'            => 'boolean',
             'two_factor_enabled'   => 'boolean',
             'share_usage_data'     => 'boolean',
+            'department'           => Department::class,
         ];
     }
 
@@ -88,7 +106,7 @@ class User extends Authenticatable
     public function getAvatarUrlAttribute(): string
     {
         return $this->avatar
-            ? asset('storage/' . $this->avatar)
+            ? Storage::url($this->avatar)
             : 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&background=3525cd&color=fff';
     }
 

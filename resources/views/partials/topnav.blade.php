@@ -33,7 +33,7 @@
             {{-- Profile --}}
             @auth
                 <a href="{{ route('profile.show') }}" class="flex items-center gap-2 cursor-pointer group">
-                    <img src="{{ auth()->user()->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) }}"
+                    <img src="{{ auth()->user()->avatar_url?? 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) }}"
                         alt="{{ auth()->user()->name }}" class="w-8 h-8 rounded-full border border-outline-variant">
                 </a>
             @endauth

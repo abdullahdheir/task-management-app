@@ -24,13 +24,9 @@
         {{-- Profile Header --}}
         <div class="glass-card rounded-xl p-8 flex flex-col md:flex-row items-center gap-8">
             <div class="relative group">
-                <img src="{{ auth()->user()->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($user->name ?? 'User') . '&size=128' }}"
+                <img src="{{ auth()->user()->avatar_url ?? 'https://ui-avatars.com/api/?name=' . urlencode($user->name ?? 'User') . '&size=128' }}"
                     alt="{{ $user->name ?? 'User' }}"
                     class="w-32 h-32 rounded-full border-4 border-white shadow-md object-cover transition-transform group-hover:scale-105">
-                <button
-                    class="absolute bottom-0 right-0 bg-primary text-white p-2 rounded-full shadow-lg hover:scale-110 active:scale-95 transition-all">
-                    <span class="material-symbols-outlined text-sm">edit</span>
-                </button>
             </div>
 
             <div class="text-center md:text-left flex-1">
@@ -53,7 +49,7 @@
             </div>
 
             <div class="flex gap-3">
-                <a href="{{ route('settings.index') }}"
+                <a href="{{ route('profile.edit') }}"
                     class="px-6 py-2.5 bg-primary text-white rounded-lg font-label-md hover:opacity-90 active:scale-95 transition-all">
                     Edit Profile
                 </a>

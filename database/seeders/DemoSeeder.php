@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\Department;
 use App\Models\Activity;
 use App\Models\Comment;
 use App\Models\Project;
@@ -27,7 +28,7 @@ class DemoSeeder extends Seeder
                 'username' => 'admin',
                 'password' => Hash::make('password'),
                 'job_title' => 'Administrator',
-                'department' => 'Management',
+                'department' => Department::MANAGEMENT->value,
                 'location' => 'San Francisco, CA',
                 'bio' => 'System administrator with full access to all projects and tasks.',
                 'timezone' => 'America/Los_Angeles',

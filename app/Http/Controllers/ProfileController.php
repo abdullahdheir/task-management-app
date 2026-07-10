@@ -22,6 +22,13 @@ class ProfileController extends Controller
         return view('profile.show', compact('user', 'stats'));
     }
 
+    public function edit()
+    {
+        $user = auth()->user();
+
+        return view('profile.edit', compact('user'));
+    }
+
     /**
      * Update the authenticated user's profile.
      */
