@@ -213,7 +213,7 @@
                 </section>
                 <!-- Actions -->
                 <div class="flex gap-4">
-                    <button
+                    <button onclick="history.back();"
                         class="flex-1 h-12 rounded-lg border border-outline-variant text-on-surface-variant font-label-md text-label-md hover:bg-surface-container-low transition-colors active:scale-95">
                         Cancel
                     </button>

@@ -151,7 +151,7 @@
 
                     <div class="flex gap-2">
                         <a href="{{ route('teams.show', $team) }}"
-                            class="flex-1 py-2.5 rounded-lg border border-primary text-primary font-label-md text-label-md hover:bg-primary hover:text-on-primary transition-all text-center">
+                            class="flex-1 py-4 rounded-lg border border-primary text-primary font-label-md text-label-md hover:bg-primary hover:text-on-primary transition-all text-center">
                             View Team
                         </a>
                         @if(auth()->id() === $team->owner_id)

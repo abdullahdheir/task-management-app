@@ -30,7 +30,7 @@
             class="w-5 h-5 rounded-full border-2 border-outline-variant text-secondary focus:ring-secondary cursor-pointer">
     </div>
     <div class="flex-grow min-w-0">
-        <label for="task-{{ $task->id }}"
+        <label 
             class="font-body-md text-body-md text-on-surface block cursor-pointer transition-colors truncate"
             :class="completed ? 'line-through text-outline' : ''">
             {{ $task->title }}

@@ -14,9 +14,20 @@ class Task extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'user_id', 'assignee_id', 'project_id', 'parent_id',
-        'title', 'description', 'status', 'priority', 'category',
-        'is_completed', 'completed_at', 'due_date', 'due_time', 'sort_order',
+        'user_id',
+        'assignee_id',
+        'project_id',
+        'parent_id',
+        'title',
+        'description',
+        'status',
+        'priority',
+        'category',
+        'is_completed',
+        'completed_at',
+        'due_date',
+        'due_time',
+        'sort_order',
     ];
 
     protected function casts(): array
@@ -133,6 +144,17 @@ class Task extends Model
             'is_completed' => true,
             'status'       => 'done',
             'completed_at' => now(),
+        ]);
+
+        $this->project?->recalculateProgress();
+    }
+
+    public function markPending(): void
+    {
+        $this->update([
+            'is_completed' => false,
+            'status'       => 'todo',
+            'completed_at' => null,
         ]);
 
         $this->project?->recalculateProgress();

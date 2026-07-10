@@ -29,7 +29,7 @@
         class="task-checkbox w-5 h-5 rounded-full border-2 border-outline-variant text-secondary focus:ring-secondary cursor-pointer">
 
     <div class="flex-grow cursor-pointer" @click="window.location.href = '{{ $taskRoute }}'">
-        <label for="task-{{ $taskId }}"
+        <label 
             class="font-body-lg text-body-lg text-on-surface block cursor-pointer transition-colors"
             :class="completed ? 'line-through text-outline' : ''">
             {{ $task['title'] }}

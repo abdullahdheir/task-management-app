@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Actions\Tasks\CompleteTask;
 use App\Actions\Tasks\CreateTask;
+use App\Actions\Tasks\ReopenTask;
 use App\Actions\Tasks\UpdateTask;
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
@@ -119,7 +120,11 @@ class TaskController extends Controller
             abort(403);
         }
 
-        $task = (new CompleteTask)($task, auth()->user());
+        if ($task->is_completed) {
+            $task = (new ReopenTask)($task, auth()->user());
+        } else {
+            $task = (new CompleteTask)($task, auth()->user());
+        }
 
         if (request()->wantsJson()) {
             return response()->json([

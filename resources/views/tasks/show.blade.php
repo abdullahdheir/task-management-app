@@ -31,7 +31,7 @@
 
 @section('content')
     <!-- Task Detailed View -->
-    <div class="max-w-container-max mx-auto p-gutter-desktop" x-data="{ completed: {{ $task->status === 'completed' ? 'true' : 'false' }} }">
+    <div class="max-w-container-max mx-auto p-gutter-desktop" x-data="{ completed: {{ $task->is_completed ? 'true' : 'false' }} }">
         <!-- Breadcrumbs / Navigation Back -->
         <a href="{{ route('tasks.index') }}"
             class="flex items-center gap-2 mb-stack-lg text-on-surface-variant hover:text-primary transition-colors">
@@ -149,19 +149,18 @@
                         @forelse($subtasks as $subtask)
                             <li x-data="{ subcompleted: {{ $subtask->is_completed ? 'true' : 'false' }} }" :class="subcompleted ? 'opacity-60' : ''"
                                 class="flex items-center gap-3 p-3 hover:bg-surface-container-low transition-colors rounded-lg group">
-                                <input :checked="subcompleted"
+                                <input type="checkbox"
+                                    class="w-5 h-5 rounded-full border-secondary text-secondary focus:ring-secondary cursor-pointer"
+                                    :checked="subcompleted"
                                     @change="
                                         ajax.post('{{ route('tasks.complete', $subtask) }}')
                                             .then(res => {
                                                 if(res.status === 'success') {
                                                     subcompleted = res.data.is_completed;
                                                     toast(subcompleted ? 'Subtask completed!' : 'Subtask reopened');
-                                                    setTimeout(() => window.location.reload(), 1000);
                                                 }
                                             }).catch(() => toast('Something went wrong', 'error'))
-                                    "
-                                    class="w-5 h-5 rounded-full border-secondary text-secondary focus:ring-secondary cursor-pointer"
-                                    type="checkbox" />
+                                    " />
                                 <span :class="subcompleted ? 'text-on-surface-variant line-through' : 'text-on-surface'"
                                     class="font-body-md text-body-md">{{ $subtask->title }}</span>
                             </li>
