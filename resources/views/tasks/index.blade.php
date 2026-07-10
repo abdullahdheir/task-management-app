@@ -13,11 +13,6 @@
             </p>
         </div>
         <div class="flex gap-stack-md">
-            <button
-                class="px-4 py-2 bg-surface-container-high text-on-surface rounded-lg font-label-md text-label-md border border-outline-variant hover:bg-surface-container-highest transition-colors flex items-center gap-2">
-                <span class="material-symbols-outlined text-[18px]">filter_list</span>
-                Filters
-            </button>
             <a href="{{ route('tasks.create') }}"
                 class="px-4 py-2 bg-primary text-on-primary rounded-lg font-label-md text-label-md flex items-center gap-2 hover:opacity-90 active:scale-95 transition-all shadow-md">
                 <span class="material-symbols-outlined text-[18px]">add</span>
