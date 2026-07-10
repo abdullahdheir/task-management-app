@@ -102,16 +102,17 @@
                 <h3 class="font-headline-md text-headline-md mb-stack-lg">Project Overview</h3>
                 <div class="space-y-6">
                     @forelse($projects as $project)
-                        <div>
+                        <a href="{{ route('projects.show', $project) }}" class="block">
                             <div class="flex justify-between items-center mb-2">
-                                <span class="font-label-md text-label-md font-bold">{{ $project['name'] }}</span>
-                                <span class="text-label-sm text-on-surface-variant">{{ $project['progress'] }}%</span>
+                                <span class="font-label-md text-label-md font-bold">{{ $project->name }}</span>
+                                <span class="text-label-sm text-on-surface-variant">{{ $project->progress }}%</span>
                             </div>
                             <div class="h-1 bg-surface-container-high rounded-full overflow-hidden">
-                                <div class="h-full {{ $project['color'] }}" style="width: {{ $project['progress'] }}%">
+                                <div class="h-full {{ $project->color ?? 'bg-primary' }}"
+                                    style="width: {{ $project->progress }}%">
                                 </div>
                             </div>
-                        </div>
+                        </a>
                     @empty
                         <div class="text-center py-8">
                             <span class="material-symbols-outlined text-on-surface-variant text-4xl mb-2">folder_open</span>

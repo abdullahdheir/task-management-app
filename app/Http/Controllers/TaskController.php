@@ -75,7 +75,21 @@ class TaskController extends Controller
 
     public function update(UpdateTaskRequest $request, Task $task)
     {
+        $user = auth()->user();
+        if ($task->user_id !== $user->id && $task->assignee_id !== $user->id) {
+            abort(403);
+        }
+
         $task = (new UpdateTask)($task, $request->validated(), auth()->user());
+
+        if (request()->wantsJson()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Task updated.',
+                'data' => $task,
+            ]);
+        }
+
         return redirect()->route('tasks.show', $task)->with('success', 'Task updated.');
     }
 
@@ -87,12 +101,36 @@ class TaskController extends Controller
         }
 
         $task->delete();
+
+        if (request()->wantsJson()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Task deleted.',
+            ]);
+        }
+
         return redirect()->route('tasks.index')->with('success', 'Task deleted.');
     }
 
     public function complete(Task $task)
     {
+        $user = auth()->user();
+        if ($task->user_id !== $user->id && $task->assignee_id !== $user->id) {
+            abort(403);
+        }
+
         $task = (new CompleteTask)($task, auth()->user());
+
+        if (request()->wantsJson()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => $task->is_completed ? 'Task marked complete.' : 'Task reopened.',
+                'data' => [
+                    'is_completed' => $task->is_completed,
+                ],
+            ]);
+        }
+
         return back()->with('success', 'Task marked complete.');
     }
 

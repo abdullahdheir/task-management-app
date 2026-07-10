@@ -166,6 +166,24 @@
 
         {{-- Page Content --}}
         <div class="p-gutter-desktop max-w-container-max mx-auto">
+            @if (session('success'))
+                <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 3000)"
+                    x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100"
+                    x-transition:leave-end="opacity-0"
+                    class="fixed top-4 right-4 z-[999] bg-secondary-container text-on-secondary-fixed-variant
+                            px-6 py-3 rounded-xl shadow-lg font-label-md text-label-md">
+                    {{ session('success') }}
+                </div>
+            @endif
+            @if (session('error'))
+                <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 4000)"
+                    x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100"
+                    x-transition:leave-end="opacity-0"
+                    class="fixed top-4 right-4 z-[999] bg-error-container text-on-error-container
+                            px-6 py-3 rounded-xl shadow-lg font-label-md text-label-md">
+                    {{ session('error') }}
+                </div>
+            @endif
             @yield('content')
             <!-- Footer Space -->
             <footer class="mt-20 py-10 border-t border-outline-variant text-center">
@@ -179,6 +197,61 @@
     </main>
 
     @stack('scripts')
+    <script>
+        window.ajax = {
+            async post(url, data = {}) {
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                });
+                return res.json();
+            },
+            async delete(url) {
+                const res = await fetch(url, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json',
+                    },
+                });
+                return res.json();
+            },
+            async patch(url, data = {}) {
+                const res = await fetch(url, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                });
+                return res.json();
+            }
+        };
+
+        window.toast = function(message, type = 'success') {
+            const colors = {
+                success: 'bg-secondary-container text-on-secondary-fixed-variant',
+                error: 'bg-error-container text-on-error-container',
+                warning: 'bg-tertiary-fixed text-tertiary',
+            };
+            const el = document.createElement('div');
+            el.className =
+                `fixed top-4 right-4 z-[999] ${colors[type] ?? colors.success} px-6 py-3 rounded-xl shadow-lg font-label-md text-label-md transition-all duration-300`;
+            el.textContent = message;
+            document.body.appendChild(el);
+            setTimeout(() => {
+                el.style.opacity = '0';
+                setTimeout(() => el.remove(), 300);
+            }, 3000);
+        };
+    </script>
 </body>
 
 </html>

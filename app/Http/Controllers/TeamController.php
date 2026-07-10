@@ -65,6 +65,15 @@ class TeamController extends Controller
         }
 
         $team = (new UpdateTeam)($team, $request->validated());
+
+        if (request()->wantsJson()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Team updated.',
+                'data' => $team,
+            ]);
+        }
+
         return redirect()->route('teams.show', $team)->with('success', 'Team updated.');
     }
 
@@ -76,6 +85,14 @@ class TeamController extends Controller
         }
 
         $team->delete();
+
+        if (request()->wantsJson()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Team deleted.',
+            ]);
+        }
+
         return redirect()->route('teams.index')->with('success', 'Team deleted.');
     }
 
@@ -94,6 +111,14 @@ class TeamController extends Controller
         $invitee = User::where('email', $request->email)->first();
         (new InviteMember)($team, $invitee, $request->role ?? 'member');
 
+        if (request()->wantsJson()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Invitation sent.',
+                'data' => $invitee,
+            ]);
+        }
+
         return back()->with('success', 'Invitation sent.');
     }
 
@@ -101,6 +126,13 @@ class TeamController extends Controller
     {
         $user = auth()->user();
         (new AcceptInvite)($team, $user);
+
+        if (request()->wantsJson()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Invitation accepted.',
+            ]);
+        }
 
         return redirect()->route('teams.show', $team)->with('success', 'Invitation accepted.');
     }

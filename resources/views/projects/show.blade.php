@@ -54,7 +54,10 @@
                         <span class="material-symbols-outlined text-primary">description</span>
                         Project Overview
                     </h3>
-                    <button class="text-primary font-label-md hover:underline">Edit</button>
+                    @if (auth()->id() === $project->owner_id)
+                        <a href="{{ route('projects.edit', $project) }}"
+                            class="text-primary font-label-md hover:underline">Edit</a>
+                    @endif
                 </div>
                 <p class="text-body-lg font-body-lg text-on-surface-variant leading-relaxed mb-8">
                     {{ $project->description ?? 'No description provided.' }}
@@ -93,20 +96,19 @@
                         Project Tasks
                     </h3>
                     <div class="flex gap-2">
-                        <span
-                            class="px-3 py-1 bg-surface-container text-on-surface-variant rounded-md text-label-sm cursor-pointer hover:bg-surface-container-high">All</span>
-                        <span
-                            class="px-3 py-1 text-on-surface-variant rounded-md text-label-sm cursor-pointer hover:bg-surface-container-low">Todo</span>
-                        <span
-                            class="px-3 py-1 text-on-surface-variant rounded-md text-label-sm cursor-pointer hover:bg-surface-container-low">Review</span>
+                        <a href="{{ route('tasks.create', ['project_id' => $project->id]) }}"
+                            class="px-3 py-1 bg-primary text-white rounded-md text-label-sm hover:bg-primary-container transition-colors">
+                            New Task
+                        </a>
                     </div>
                 </div>
                 <div class="space-y-3">
                     @forelse($tasks as $task)
-                        <div
-                            class="task-card flex items-center justify-between p-4 {{ $task->status === 'completed' ? 'bg-surface-container-low border border-transparent opacity-80' : 'bg-white border border-outline-variant' }} rounded-lg transition-all duration-200">
-                            <div class="flex items-center gap-4">
-                                <div
+                        <div x-data="{ open: false }" @click.outside="open = false"
+                            class="task-card flex items-center justify-between p-4 {{ $task->status === 'completed' ? 'bg-surface-container-low border border-transparent opacity-80' : 'bg-white border border-outline-variant' }} rounded-lg transition-all duration-200 group">
+                            <div class="flex items-center gap-4 flex-1 cursor-pointer"
+                                @click="window.location.href = '{{ route('tasks.show', $task) }}'">
+                                <div @click.stop
                                     class="w-5 h-5 rounded-full {{ $task->status === 'completed' ? 'bg-secondary flex items-center justify-center text-white' : 'border-2 border-outline cursor-pointer hover:border-secondary' }} transition-colors">
                                     @if ($task->status === 'completed')
                                         <span class="material-symbols-outlined text-[16px]">check</span>
@@ -124,13 +126,62 @@
                                 <span
                                     class="px-2 py-0.5 {{ $task->status === 'completed' ? 'bg-secondary-container text-on-secondary-container' : 'bg-tertiary-fixed text-on-tertiary-fixed' }} rounded text-[10px] font-bold uppercase">{{ $task->status === 'completed' ? 'Done' : ucfirst($task->priority ?? 'Normal') }}</span>
                                 @if ($task->assignee)
-                                    <div
-                                        class="w-8 h-8 rounded-full border-2 border-white -ml-2 ring-1 ring-outline-variant">
+                                    <a href="{{ route('profile.show', $task->assignee) }}"
+                                        class="w-8 h-8 rounded-full border-2 border-white -ml-2 ring-1 ring-outline-variant block">
                                         <img class="w-full h-full rounded-full object-cover"
                                             src="{{ $task->assignee->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($task->assignee->name) . '&size=32' }}"
                                             alt="{{ $task->assignee->name }}">
-                                    </div>
+                                    </a>
                                 @endif
+                                <div class="relative">
+                                    <button @click.stop="open = !open"
+                                        class="material-symbols-outlined text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded-full hover:bg-surface-container">
+                                        more_vert
+                                    </button>
+                                    <div x-show="open" x-transition:enter="transition ease-out duration-100"
+                                        x-transition:enter-start="opacity-0 scale-95"
+                                        x-transition:enter-end="opacity-100 scale-100"
+                                        x-transition:leave="transition ease-in duration-75"
+                                        x-transition:leave-start="opacity-100 scale-100"
+                                        x-transition:leave-end="opacity-0 scale-95"
+                                        class="absolute right-0 top-8 w-48 bg-surface border border-outline-variant
+                                                rounded-xl shadow-xl z-50 overflow-hidden py-1"
+                                        style="display:none">
+                                        <a href="{{ route('tasks.show', $task) }}"
+                                            class="flex items-center gap-3 px-4 py-2.5 text-on-surface hover:bg-surface-container
+                                                  transition-colors font-label-md text-label-md">
+                                            <span
+                                                class="material-symbols-outlined text-[18px] text-secondary">open_in_new</span>
+                                            View Details
+                                        </a>
+                                        <a href="{{ route('tasks.edit', $task) }}"
+                                            class="flex items-center gap-3 px-4 py-2.5 text-on-surface hover:bg-surface-container
+                                                  transition-colors font-label-md text-label-md">
+                                            <span class="material-symbols-outlined text-[18px] text-secondary">edit</span>
+                                            Edit Task
+                                        </a>
+                                        <div class="border-t border-outline-variant my-1"></div>
+                                        <button
+                                            @click="
+                                                    open = false;
+                                                    if(confirm('Delete this task?')) {
+                                                        ajax.delete('{{ route('tasks.destroy', $task) }}')
+                                                            .then(res => {
+                                                                if(res.status === 'success') {
+                                                                    $el.closest('.task-card').remove();
+                                                                    toast('Task deleted');
+                                                                } else {
+                                                                    toast(res.message ?? 'Error', 'error');
+                                                                }
+                                                            });
+                                                    }"
+                                            class="w-full flex items-center gap-3 px-4 py-2.5 text-error
+                                                   hover:bg-error-container/20 transition-colors font-label-md text-label-md">
+                                            <span class="material-symbols-outlined text-[18px]">delete</span>
+                                            Delete Task
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     @empty
@@ -152,19 +203,65 @@
                 </h3>
                 <div class="space-y-4">
                     @forelse($members as $member)
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-3">
+                        <div x-data="{ open: false }" @click.outside="open = false"
+                            class="flex items-center justify-between group">
+                            <a href="{{ route('profile.show', $member) }}" class="flex items-center gap-3 flex-1">
                                 <img class="w-10 h-10 rounded-full object-cover"
                                     src="{{ $member->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($member->name) . '&size=40' }}"
                                     alt="{{ $member->name }}">
                                 <div>
                                     <p class="font-body-lg text-body-lg text-on-surface leading-tight">{{ $member->name }}
                                     </p>
-                                    <p class="text-label-sm text-on-surface-variant">{{ $member->role ?? 'Team Member' }}
+                                    <p class="text-label-sm text-on-surface-variant">
+                                        {{ $member->pivot->role ?? 'Team Member' }}
                                     </p>
                                 </div>
-                            </div>
-                            <span class="material-symbols-outlined text-on-surface-variant cursor-pointer">more_vert</span>
+                            </a>
+                            @if (auth()->id() === $project->owner_id && auth()->id() !== $member->id)
+                                <div class="relative">
+                                    <button @click.stop="open = !open"
+                                        class="material-symbols-outlined text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded-full hover:bg-surface-container">
+                                        more_vert
+                                    </button>
+                                    <div x-show="open" x-transition:enter="transition ease-out duration-100"
+                                        x-transition:enter-start="opacity-0 scale-95"
+                                        x-transition:enter-end="opacity-100 scale-100"
+                                        x-transition:leave="transition ease-in duration-75"
+                                        x-transition:leave-start="opacity-100 scale-100"
+                                        x-transition:leave-end="opacity-0 scale-95"
+                                        class="absolute right-0 top-8 w-48 bg-surface border border-outline-variant
+                                            rounded-xl shadow-xl z-50 overflow-hidden py-1"
+                                        style="display:none">
+                                        <a href="{{ route('profile.show', $member) }}"
+                                            class="flex items-center gap-3 px-4 py-2.5 text-on-surface hover:bg-surface-container
+                                              transition-colors font-label-md text-label-md">
+                                            <span
+                                                class="material-symbols-outlined text-[18px] text-secondary">person</span>
+                                            View Profile
+                                        </a>
+                                        <div class="border-t border-outline-variant my-1"></div>
+                                        <button
+                                            @click="
+                                                open = false;
+                                                if(confirm('Remove this member?')) {
+                                                    ajax.delete('{{ route('projects.members.remove', [$project, $member]) }}')
+                                                        .then(res => {
+                                                            if(res.status === 'success') {
+                                                                $el.closest('.flex.items-center.justify-between').remove();
+                                                                toast('Member removed');
+                                                            } else {
+                                                                toast(res.message ?? 'Error', 'error');
+                                                            }
+                                                        });
+                                                }"
+                                            class="w-full flex items-center gap-3 px-4 py-2.5 text-error
+                                               hover:bg-error-container/20 transition-colors font-label-md text-label-md">
+                                            <span class="material-symbols-outlined text-[18px]">person_remove</span>
+                                            Remove Member
+                                        </button>
+                                    </div>
+                                </div>
+                            @endif
                         </div>
                     @empty
                         <div class="text-center py-4 text-on-surface-variant">
@@ -198,7 +295,8 @@
                                     <span class="font-bold">{{ $activity['user'] ?? 'User' }}</span>
                                     {{ $activity['action'] ?? 'acted' }}
                                 </p>
-                                <p class="text-label-sm text-on-surface-variant mt-1">{{ $activity['time'] ?? 'Recently' }}
+                                <p class="text-label-sm text-on-surface-variant mt-1">
+                                    {{ $activity['time'] ?? 'Recently' }}
                                 </p>
                             </div>
                         </div>

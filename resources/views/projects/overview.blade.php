@@ -71,20 +71,76 @@
             <!-- Projects Grid -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter-desktop">
                 @forelse($projects as $project)
-                    <a href="{{ route('projects.show', $project) }}"
-                        class="group bg-white rounded-xl border border-outline-variant hover:shadow-lg hover:-translate-y-1 transition-all duration-300 p-stack-lg flex flex-col h-full cursor-pointer">
+                    <div x-data="{ open: false }" @click.outside="open = false"
+                        class="group bg-white rounded-xl border border-outline-variant hover:shadow-lg hover:-translate-y-1 transition-all duration-300 p-stack-lg flex flex-col h-full relative">
                         <div class="flex justify-between items-start mb-stack-md">
                             <div class="p-2 bg-secondary-container/20 rounded-lg text-secondary">
                                 <span class="material-symbols-outlined">folder</span>
                             </div>
-                            <span
-                                class="px-2 py-1 {{ $project->status === 'completed' ? 'bg-secondary text-white' : ($project->status === 'on_hold' ? 'bg-surface-container-highest text-on-surface-variant' : 'bg-secondary-container text-on-secondary-fixed-variant') }} font-label-md text-label-sm rounded-md">{{ ucfirst($project->status ?? 'active') }}</span>
+                            <div class="flex items-center gap-2">
+                                <span
+                                    class="px-2 py-1 {{ $project->status === 'completed' ? 'bg-secondary text-white' : ($project->status === 'on_hold' ? 'bg-surface-container-highest text-on-surface-variant' : 'bg-secondary-container text-on-secondary-fixed-variant') }} font-label-md text-label-sm rounded-md">{{ ucfirst($project->status ?? 'active') }}</span>
+                                <div class="relative">
+                                    <button @click.stop="open = !open"
+                                        class="text-on-surface-variant hover:text-primary transition-colors p-1 rounded-full hover:bg-surface-container">
+                                        <span class="material-symbols-outlined">more_vert</span>
+                                    </button>
+                                    <div x-show="open" x-transition:enter="transition ease-out duration-100"
+                                        x-transition:enter-start="opacity-0 scale-95"
+                                        x-transition:enter-end="opacity-100 scale-100"
+                                        x-transition:leave="transition ease-in duration-75"
+                                        x-transition:leave-start="opacity-100 scale-100"
+                                        x-transition:leave-end="opacity-0 scale-95"
+                                        class="absolute right-0 top-8 w-48 bg-surface border border-outline-variant
+                                                rounded-xl shadow-xl z-50 overflow-hidden py-1"
+                                        style="display:none">
+                                        <a href="{{ route('projects.show', $project) }}"
+                                            class="flex items-center gap-3 px-4 py-2.5 text-on-surface hover:bg-surface-container
+                                                  transition-colors font-label-md text-label-md">
+                                            <span
+                                                class="material-symbols-outlined text-[18px] text-secondary">open_in_new</span>
+                                            View Details
+                                        </a>
+                                        @if (auth()->id() === $project->owner_id)
+                                            <a href="{{ route('projects.edit', $project) }}"
+                                                class="flex items-center gap-3 px-4 py-2.5 text-on-surface hover:bg-surface-container
+                                                  transition-colors font-label-md text-label-md">
+                                                <span
+                                                    class="material-symbols-outlined text-[18px] text-secondary">edit</span>
+                                                Edit Project
+                                            </a>
+                                            <div class="border-t border-outline-variant my-1"></div>
+                                            <button
+                                                @click="
+                                                    open = false;
+                                                    if(confirm('Delete this project?')) {
+                                                        ajax.delete('{{ route('projects.destroy', $project) }}')
+                                                            .then(res => {
+                                                                if(res.status === 'success') {
+                                                                    $el.closest('.group').remove();
+                                                                    toast('Project deleted');
+                                                                } else {
+                                                                    toast(res.message ?? 'Error', 'error');
+                                                                }
+                                                            });
+                                                    }"
+                                                class="w-full flex items-center gap-3 px-4 py-2.5 text-error
+                                                   hover:bg-error-container/20 transition-colors font-label-md text-label-md">
+                                                <span class="material-symbols-outlined text-[18px]">delete</span>
+                                                Delete Project
+                                            </button>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <h4
-                            class="text-headline-md font-headline-md text-on-surface mb-2 group-hover:text-primary transition-colors">
-                            {{ $project->name }}</h4>
-                        <p class="text-body-md text-on-surface-variant mb-6 flex-1">
-                            {{ $project->description ?? 'No description' }}</p>
+                        <a href="{{ route('projects.show', $project) }}" class="flex-1 flex flex-col">
+                            <h4
+                                class="text-headline-md font-headline-md text-on-surface mb-2 group-hover:text-primary transition-colors">
+                                {{ $project->name }}</h4>
+                            <p class="text-body-md text-on-surface-variant mb-6 flex-1">
+                                {{ $project->description ?? 'No description' }}</p>
+                        </a>
                         <div class="mb-4 {{ $project->status === 'on_hold' ? 'opacity-60' : '' }}">
                             <div class="flex justify-between items-center mb-2">
                                 <span class="text-label-md font-label-md text-on-surface-variant">Progress</span>
@@ -112,7 +168,7 @@
                                 {{ $project->status === 'completed' ? 'Finished' : 'Active' }}
                             </span>
                         </div>
-                    </a>
+                    </div>
                 @empty
                     <div
                         class="col-span-3 flex items-center justify-center py-12 rounded-lg border border-outline-variant bg-surface-container-low">

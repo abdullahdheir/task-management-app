@@ -21,6 +21,14 @@ class CommentController extends Controller
 
         CommentPosted::dispatch($comment, auth()->user());
 
+        if (request()->wantsJson()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Comment added.',
+                'data' => $comment->load('user'),
+            ]);
+        }
+
         return back()->with('success', 'Comment added.');
     }
 
@@ -32,6 +40,14 @@ class CommentController extends Controller
         }
 
         $comment->delete();
+
+        if (request()->wantsJson()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Comment deleted.',
+            ]);
+        }
+
         return back()->with('success', 'Comment deleted.');
     }
 }

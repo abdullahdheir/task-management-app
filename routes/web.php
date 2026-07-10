@@ -32,7 +32,7 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('projects/{project}/members/{user}', [ProjectController::class, 'removeMember'])->name('projects.members.remove');
 
     // Teams
-    Route::get('teams/overview', [TeamController::class, 'index'])->name('teams.overview');
+    Route::get('teams/overview', [TeamController::class, 'overview'])->name('teams.overview');
     Route::resource('teams', TeamController::class)->except(['index']);
     Route::post('teams/{team}/invite', [TeamController::class, 'invite'])->name('teams.invite');
     Route::post('teams/{team}/accept', [TeamController::class, 'acceptInvite'])->name('teams.accept');

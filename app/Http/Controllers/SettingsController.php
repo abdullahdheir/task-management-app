@@ -37,9 +37,20 @@ class SettingsController extends Controller
             'theme' => ['nullable', 'in:light,dark'],
             'language' => ['nullable', 'string', 'max:5'],
             'timezone' => ['nullable', 'string', 'max:50'],
+            'dark_mode' => ['nullable', 'boolean'],
+            'two_factor_enabled' => ['nullable', 'boolean'],
+            'share_usage_data' => ['nullable', 'boolean'],
         ]);
 
         $service->updateSettings($user, $validated);
+
+        if (request()->wantsJson()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Settings updated.',
+                'data' => $validated,
+            ]);
+        }
 
         return back()->with('success', 'Settings updated.');
     }

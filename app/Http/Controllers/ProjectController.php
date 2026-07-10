@@ -68,6 +68,15 @@ class ProjectController extends Controller
         }
 
         $project = (new UpdateProject)($project, $request->validated());
+
+        if (request()->wantsJson()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Project updated.',
+                'data' => $project,
+            ]);
+        }
+
         return redirect()->route('projects.show', $project)->with('success', 'Project updated.');
     }
 
@@ -79,6 +88,14 @@ class ProjectController extends Controller
         }
 
         $project->delete();
+
+        if (request()->wantsJson()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Project deleted.',
+            ]);
+        }
+
         return redirect()->route('projects.index')->with('success', 'Project deleted.');
     }
 
@@ -101,6 +118,14 @@ class ProjectController extends Controller
 
         ActivityService::logProjectMemberAdded($user, $project, $member);
 
+        if (request()->wantsJson()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Member added.',
+                'data' => $member,
+            ]);
+        }
+
         return back()->with('success', 'Member added.');
     }
 
@@ -113,6 +138,13 @@ class ProjectController extends Controller
 
         $project->members()->detach($user->id);
         ActivityService::logProjectMemberRemoved($authUser, $project, $user);
+
+        if (request()->wantsJson()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Member removed.',
+            ]);
+        }
 
         return back()->with('success', 'Member removed.');
     }
