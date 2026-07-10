@@ -105,9 +105,10 @@
                 <div class="space-y-3">
                     @forelse($tasks as $task)
                         <div x-data="{ completed: {{ $task->is_completed ? 'true' : 'false' }}, open: false }" @click.outside="open = false"
-                            class="task-card flex items-center justify-between p-4 rounded-lg transition-all duration-200 group"
-                            :class="completed ? 'bg-surface-container-low border border-transparent opacity-80' :
-                                'bg-white border border-outline-variant'">
+                            class="task-card flex items-center justify-between p-4 rounded-lg transition-all duration-200 group relative"
+                            :class="open ? 'z-50 bg-white border border-outline-variant shadow-lg' : (completed ?
+                                'bg-surface-container-low border border-transparent opacity-80' :
+                                'bg-white border border-outline-variant')">
                             <div class="flex items-center gap-4 flex-1 cursor-pointer"
                                 @click="window.location.href = '{{ route('tasks.show', $task) }}'">
                                 <div @click.stop="
@@ -149,8 +150,8 @@
                                 @endif
                                 <div class="relative">
                                     <button @click.stop="open = !open"
-                                        class="material-symbols-outlined text-on-surface-variant transition-opacity z-10 p-1 rounded-full hover:bg-surface-container">
-                                        more_vert
+                                        class="material-symbols-outlined text-on-surface-variant p-1 rounded-full hover:bg-surface-container transition-opacity duration-200 opacity-0 group-hover:opacity-100"
+                                        :class="{ 'opacity-100 bg-surface-container': open }"> more_vert
                                     </button>
                                     <div x-show="open" x-transition:enter="transition ease-out duration-100"
                                         x-transition:enter-start="opacity-0 scale-95"
@@ -159,7 +160,7 @@
                                         x-transition:leave-start="opacity-100 scale-100"
                                         x-transition:leave-end="opacity-0 scale-95"
                                         class="absolute right-0 top-8 w-48 bg-surface border border-outline-variant
-                                                rounded-xl shadow-xl z-50 overflow-hidden py-1"
+                                                rounded-xl shadow-xl z-100 overflow-hidden py-1"
                                         style="display:none">
                                         <a href="{{ route('tasks.show', $task) }}"
                                             class="flex items-center gap-3 px-4 py-2.5 text-on-surface hover:bg-surface-container

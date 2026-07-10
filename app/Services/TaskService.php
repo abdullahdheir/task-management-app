@@ -137,7 +137,7 @@ class TaskService
                 'due' => $this->formatDueDate($task->due_date, $task->due_time, $task->status),
                 'category' => ucfirst($task->category ?? 'other'),
                 'priority' => $task->priority ?? 'low',
-                'completed' => $task->status === 'completed',
+                'completed' => $task->is_completed,
                 'model' => $task,
             ];
         });
