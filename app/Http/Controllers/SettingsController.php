@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\SettingsService;
+use Illuminate\Http\Request;
 
 class SettingsController extends Controller
 {
@@ -23,11 +24,11 @@ class SettingsController extends Controller
     /**
      * Update user settings.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param Request $request
      * @param SettingsService $service
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(\Illuminate\Http\Request $request, SettingsService $service)
+    public function update(Request $request, SettingsService $service)
     {
         $user = auth()->user();
 

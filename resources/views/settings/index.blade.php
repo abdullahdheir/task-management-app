@@ -83,6 +83,7 @@
                                         ajax.patch('{{ route('settings.update') }}', { dark_mode: checked })
                                             .then(res => {
                                                 if(res.status === 'success') {
+                                                    darkMode = checked;
                                                     toast('Dark mode ' + (checked ? 'enabled' : 'disabled'));
                                                 } else {
                                                     toast(res.message ?? 'Error', 'error');

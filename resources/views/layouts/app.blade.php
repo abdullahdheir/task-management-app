@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<html class="light" lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html class="light" lang="{{ str_replace('_', '-', app()->getLocale()) }}"x-data="{
+    darkMode: {{ auth()->check() ? (auth()->user()->dark_mode ? 'true' : 'false') : "window.matchMedia('(prefers-color-scheme: dark)').matches" }}
+}"
+    :class="{ 'dark': darkMode, 'light': !darkMode }">
 
 <head>
     <meta charset="utf-8">

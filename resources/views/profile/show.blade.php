@@ -161,15 +161,33 @@
                                             and Dark mode</p>
                                     </div>
                                 </div>
-                                <div class="flex bg-surface-container p-1 rounded-lg">
+                                <div class="flex bg-surface-container p-1 rounded-lg" x-data="{ dark: {{ auth()->user()->dark_mode ? 'true' : 'false' }} }">
+
                                     <button
-                                        onclick="window.location.href='{{ route('settings.update', ['dark_mode' => 0]) }}'"
-                                        class="px-3 py-1 {{ !auth()->user()->dark_mode ? 'bg-white shadow-sm' : '' }} rounded-md text-label-sm font-label-md transition-all">
+                                        @click="
+                                            darkMode = false;
+                                            ajax.patch('{{ route('settings.update') }}', { dark_mode: false })
+                                                .then(res => toast(res.status === 'success' ? 'Light mode enabled' : res.message, res.status)).catch(err=>{
+                                                    toast(err.message,'error');
+                                                    darkMode = !darkMode;
+                                                })
+                                        "
+                                        :class="!darkMode ? 'bg-white shadow-sm text-on-surface' : 'text-on-surface-variant'"
+                                        class="px-3 py-1 rounded-md text-label-sm font-label-md transition-all">
                                         Light
                                     </button>
+
                                     <button
-                                        onclick="window.location.href='{{ route('settings.update', ['dark_mode' => 1]) }}'"
-                                        class="px-3 py-1 {{ auth()->user()->dark_mode ? 'bg-white shadow-sm' : '' }} rounded-md text-label-sm font-label-md transition-all">
+                                        @click="
+                                            darkMode = true;
+                                            ajax.patch('{{ route('settings.update') }}', { dark_mode: true })
+                                                .then(res => toast(res.status === 'success' ? 'Dark mode enabled' : res.message, res.status)).catch(err=>{
+                                                    toast(err.message,'error');
+                                                    darkMode = !darkMode;
+                                                })
+                                        "
+                                        :class="darkMode ? 'bg-white shadow-sm text-on-surface' : 'text-on-surface-variant'"
+                                        class="px-3 py-1 rounded-md text-label-sm font-label-md transition-all">
                                         Dark
                                     </button>
                                 </div>
