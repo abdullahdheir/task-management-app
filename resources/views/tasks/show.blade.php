@@ -33,10 +33,10 @@
     <!-- Task Detailed View -->
     <div class="max-w-container-max mx-auto p-gutter-desktop" x-data="{ completed: {{ $task->is_completed ? 'true' : 'false' }} }">
         <!-- Breadcrumbs / Navigation Back -->
-        <a href="{{ route('tasks.index') }}"
+        <a href="" @click.prevent="history.back();"
             class="flex items-center gap-2 mb-stack-lg text-on-surface-variant hover:text-primary transition-colors">
             <span class="material-symbols-outlined text-sm">arrow_back</span>
-            <span class="font-label-md text-label-md">Back to Task List</span>
+            <span class="font-label-md text-label-md">Back</span>
         </a>
         <!-- Task Header -->
         <div class="flex flex-col md:flex-row md:items-start justify-between gap-stack-lg mb-stack-lg">
@@ -188,72 +188,73 @@
                     </div>
                 </section>
                 {{-- Activity Thread --}}
-<section class="bg-surface-container-lowest p-stack-lg rounded-xl border border-outline-variant/30"
-         x-data="{ 
-             body: '',
-             loading: false,
-             async submitComment() {
-                 if (!this.body.trim()) return;
-                 this.loading = true;
-                 try {
-                     const res = await ajax.post('{{ route('comments.store') }}', {
-                         commentable_type: 'App\\Models\\Task',
-                         commentable_id: '{{ $task->id }}',
-                         body: this.body
-                     });
-                     if (res.status === 'success') {
-                         toast('Comment added');
-                         this.body = '';
-                         await this.loadComments();
-                     } else {
-                         toast(res.message ?? 'Error', 'error');
-                     }
-                 } catch {
-                     toast('Failed to add comment', 'error');
-                 } finally {
-                     this.loading = false;
-                 }
-             },
-             async loadComments() {
-                 const res = await fetch('{{ route('tasks.comments', $task) }}', {
-                     headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content }
-                 });
-                 const html = await res.text();
-                 this.$refs.commentsList.innerHTML = html;
-             }
-         }">
+                <section class="bg-surface-container-lowest p-stack-lg rounded-xl border border-outline-variant/30"
+                    x-data="{
+                        body: '',
+                        loading: false,
+                        async submitComment() {
+                            if (!this.body.trim()) return;
+                            this.loading = true;
+                            try {
+                                const res = await ajax.post('{{ route('comments.store') }}', {
+                                    commentable_type: 'App\\Models\\Task',
+                                    commentable_id: '{{ $task->id }}',
+                                    body: this.body
+                                });
+                                if (res.status === 'success') {
+                                    toast('Comment added');
+                                    this.body = '';
+                                    await this.loadComments();
+                                } else {
+                                    toast(res.message ?? 'Error', 'error');
+                                }
+                            } catch {
+                                toast('Failed to add comment', 'error');
+                            } finally {
+                                this.loading = false;
+                            }
+                        },
+                        async loadComments() {
+                            const res = await fetch('{{ route('tasks.comments', $task) }}', {
+                                headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content }
+                            });
+                            const html = await res.text();
+                            this.$refs.commentsList.innerHTML = html;
+                        }
+                    }">
 
-    <h3 class="font-headline-md text-headline-md mb-stack-lg">Activity</h3>
+                    <h3 class="font-headline-md text-headline-md mb-stack-lg">Activity</h3>
 
-    {{-- Comments List --}}
-    <div class="space-y-stack-lg" x-ref="commentsList">
-        @include('partials.comments-list', ['comments' => $comments])
-    </div>
+                    {{-- Comments List --}}
+                    <div class="space-y-stack-lg" x-ref="commentsList">
+                        @include('partials.comments-list', ['comments' => $comments])
+                    </div>
 
-    {{-- Comment Box --}}
-    <div class="flex gap-4 items-start pt-stack-md">
-        <div class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center text-on-surface-variant">
-            <span class="material-symbols-outlined">account_circle</span>
-        </div>
-        <div class="flex-grow">
-            <textarea x-model="body"
-                class="w-full bg-surface-container-low border border-outline-variant rounded-xl p-3 
+                    {{-- Comment Box --}}
+                    <div class="flex gap-4 items-start pt-stack-md">
+                        <div
+                            class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center text-on-surface-variant">
+                            <span class="material-symbols-outlined">account_circle</span>
+                        </div>
+                        <div class="flex-grow">
+                            <textarea x-model="body"
+                                class="w-full bg-surface-container-low border border-outline-variant rounded-xl p-3 
                        text-body-md font-body-md focus:ring-2 focus:ring-primary-container h-24 resize-none"
-                placeholder="Write a comment..."
-                @keydown.ctrl.enter="submitComment()"></textarea>
-            <div class="mt-2 flex justify-end">
-                <button @click="submitComment()"
-                        :disabled="body.trim() === '' || loading"
-                        :class="body.trim() === '' || loading ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-90'"
-                        class="bg-primary text-on-primary px-6 py-2 rounded-lg font-label-md 
+                                placeholder="Write a comment..." @keydown.ctrl.enter="submitComment()"></textarea>
+                            <div class="mt-2 flex justify-end">
+                                <button @click="submitComment()" :disabled="body.trim() === '' || loading"
+                                    :class="body.trim() === '' || loading ? 'opacity-50 cursor-not-allowed' :
+                                        'hover:opacity-90'"
+                                    class="bg-primary text-on-primary px-6 py-2 rounded-lg font-label-md 
                                text-label-md transition-all flex items-center gap-2">
-                    <span x-show="loading" class="material-symbols-outlined text-[16px] animate-spin">progress_activity</span>
-                    <span x-text="loading ? 'Posting...' : 'Post Comment'"></span>
-                </button>
-            </div>
-        </div>
-    </div>
-</section>
+                                    <span x-show="loading"
+                                        class="material-symbols-outlined text-[16px] animate-spin">progress_activity</span>
+                                    <span x-text="loading ? 'Posting...' : 'Post Comment'"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
             </div>
             <!-- Right Column: Metadata & Attachments -->
             <div class="lg:col-span-4 space-y-stack-lg">

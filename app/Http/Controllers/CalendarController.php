@@ -56,6 +56,7 @@ class CalendarController extends Controller
             $events = [];
             foreach ($dayTasks as $task) {
                 $events[] = [
+                    'id'    => $task->id,
                     'title' => $task->title,
                     'color' => $this->getTaskColor($task->priority),
                 ];
