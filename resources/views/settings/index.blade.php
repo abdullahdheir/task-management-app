@@ -112,84 +112,61 @@
                         <h3 class="font-headline-md text-headline-md">Privacy &amp; Security</h3>
                     </div>
                     <div class="space-y-6">
-                        <div class="flex items-center justify-between"
-                             x-data="{ enabled: {{ auth()->user()->two_factor_secret ? 'true' : 'false' }} }, showQr: false, qrCode: '' }">
-                            <div>
-                                <label class="font-label-md text-label-md text-on-surface block mb-1">Two-Factor
-                                    Authentication</label>
-                                <p class="text-on-surface-variant font-body-md text-body-md">Adds an extra layer of security
-                                    to
-                                    your account.</p>
+                        {{-- 2FA Toggle in Settings --}}
+                        <div
+                            class="p-6 flex items-center justify-between hover:bg-surface-container-low transition-colors group">
+                            <div class="flex gap-4 items-center">
+                                <div
+                                    class="p-2 bg-surface-container text-on-surface-variant rounded-lg 
+                                            group-hover:bg-primary group-hover:text-white transition-colors">
+                                    <span class="material-symbols-outlined">verified_user</span>
+                                </div>
+                                <div>
+                                    <p class="font-body-lg text-body-lg text-on-surface">Two-Factor Authentication</p>
+                                    <p class="font-label-sm text-label-sm text-on-surface-variant">
+                                        @if (auth()->user()->two_factor_confirmed_at)
+                                            <span class="text-secondary font-bold">● Active</span> — Your account is
+                                            protected
+                                        @elseif(auth()->user()->two_factor_secret)
+                                            <span class="text-tertiary font-bold">● Pending</span> — Setup not confirmed yet
+                                        @else
+                                            <span class="text-on-surface-variant">Not enabled — Add extra security to your
+                                                account</span>
+                                        @endif
+                                    </p>
+                                </div>
                             </div>
-                            @if(auth()->user()->two_factor_secret)
-                                <button
-                                    @click="
-                                        if(confirm('Disable two-factor authentication?')) {
-                                            ajax.delete('{{ route('two-factor.disable') }}')
-                                                .then(res => {
-                                                    if(res.status === 'success') {
-                                                        enabled = false;
-                                                        toast('2FA disabled');
-                                                    } else {
-                                                        toast(res.message ?? 'Error', 'error');
-                                                    }
-                                                }).catch(() => toast('Something went wrong', 'error'));
-                                        }
-                                    "
-                                    class="px-4 py-2 border border-error text-error font-label-md text-label-md rounded-lg hover:bg-error-container/20 transition-colors active:scale-95">
-                                    Disable
-                                </button>
+
+                            @if (auth()->user()->two_factor_confirmed_at)
+                                {{-- Disable Button --}}
+                                <form method="POST" action="/user/two-factor-authentication" x-data
+                                    @submit.prevent="if(confirm('Disable 2FA? Your account will be less secure.')) $el.submit()">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit"
+                                        class="px-4 py-2 border border-error text-error rounded-lg font-label-md 
+                                                   hover:bg-error-container/20 transition-colors">
+                                        Disable
+                                    </button>
+                                </form>
                             @else
-                                <button
-                                    @click="
-                                        showQr = true;
-                                        ajax.get('{{ route('two-factor.qr-code') }}')
-                                            .then(res => {
-                                                qrCode = res.svg;
-                                            }).catch(() => toast('Error loading QR code', 'error'));
-                                        ajax.post('{{ route('two-factor.enable') }}')
-                                            .then(res => {
-                                                if(res.status === 'success') {
-                                                    enabled = true;
-                                                    toast('2FA enabled');
-                                                } else {
-                                                    toast(res.message ?? 'Error', 'error');
-                                                }
-                                            }).catch(() => toast('Something went wrong', 'error'));
-                                    "
-                                    class="px-4 py-2 border border-primary text-primary font-label-md text-label-md rounded-lg hover:bg-surface-container transition-colors active:scale-95">
-                                    Enable
+                                {{-- Enable / Continue Setup Button --}}
+                                <button onclick="document.getElementById('twofa-modal').classList.remove('hidden')"
+                                    class="px-4 py-2 bg-primary text-on-primary rounded-lg font-label-md 
+                                               hover:opacity-90 transition-all">
+                                    {{ auth()->user()->two_factor_secret ? 'Continue Setup' : 'Enable 2FA' }}
                                 </button>
                             @endif
                         </div>
-                        @if(auth()->user()->two_factor_secret)
-                        <div class="border-t border-outline-variant pt-6">
-                            <div class="flex items-center justify-between mb-4">
-                                <span class="font-label-md text-label-md text-on-surface">Recovery Codes</span>
-                                <button
-                                    @click="
-                                        if(confirm('Regenerate recovery codes? Old codes will be invalid.')) {
-                                            ajax.post('{{ route('two-factor.regenerate-recovery-codes') }}')
-                                                .then(res => {
-                                                    if(res.status === 'success') {
-                                                        toast('Recovery codes regenerated');
-                                                    } else {
-                                                        toast(res.message ?? 'Error', 'error');
-                                                    }
-                                                }).catch(() => toast('Something went wrong', 'error'));
-                                        }
-                                    "
-                                    class="text-primary text-label-sm hover:underline">
-                                    Regenerate
-                                </button>
+
+                        {{-- 2FA Setup Modal --}}
+                        <div id="twofa-modal"
+                            class="hidden fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4"
+                            x-data @click.self="$el.classList.add('hidden')">
+                            <div class="w-full max-w-md max-h-[90vh] overflow-y-auto">
+                                @include('settings.two-factor-setup')
                             </div>
-                            <a href="{{ route('two-factor.recovery-codes') }}"
-                               target="_blank"
-                               class="text-sm text-on-surface-variant hover:text-primary transition-colors">
-                                View your recovery codes
-                            </a>
                         </div>
-                        @endif
                         <div class="border-t border-outline-variant pt-6 flex items-center justify-between"
                             x-data="{ checked: {{ old('share_usage_data', $settings->share_usage_data ?? true) ? 'true' : 'false' }} }">
                             <div>
@@ -285,8 +262,8 @@
                             <div class="relative inline-block w-12 h-6">
                                 <input
                                     class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-2 border-outline-variant appearance-none cursor-pointer z-10 transition-transform duration-200"
-                                    id="toggle-deadline" type="checkbox" name="deadline_reminders" :checked="checked"
-                                    :class="{ 'translate-x-6': checked }"
+                                    id="toggle-deadline" type="checkbox" name="deadline_reminders"
+                                    :checked="checked" :class="{ 'translate-x-6': checked }"
                                     @change="
                                         checked = !checked;
                                         ajax.patch('{{ route('settings.update') }}', { deadline_reminders: checked })
