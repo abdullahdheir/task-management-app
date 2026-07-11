@@ -71,10 +71,15 @@
         {{-- Days Grid --}}
         <div class="flex-1 grid grid-cols-7 auto-rows-fr">
             @forelse($calendarDays ?? [] as $day)
-                <div
-                    class="border-r border-b border-outline-variant p-2 transition-colors cursor-pointer group min-h-[120px]
+                @php
+                    $dayDate = $day['day']
+                        ? Carbon::parse($monthLabel ?? now()->format('F Y'))->setDay($day['day'])
+                        : null;
+                @endphp
+                <div class="border-r border-b border-outline-variant p-2 transition-colors cursor-pointer group min-h-[120px]
                     {{ $day['current_month'] ? 'hover:bg-surface-container-low' : 'bg-surface-container-low opacity-40' }}
-                    {{ $day['is_today'] ? 'bg-primary-fixed/20' : '' }}">
+                    {{ $day['is_today'] ? 'bg-primary-fixed/20' : '' }}"
+                    @click="window.location.href = '{{ $dayDate ? route('tasks.index', ['due_from' => $dayDate->format('Y-m-d'), 'due_to' => $dayDate->format('Y-m-d')]) : '#' }}'">
 
                     <span
                         class="text-label-md {{ $day['is_today'] ? 'font-black text-white bg-primary w-6 h-6 flex items-center justify-center rounded-full -ml-1' : 'font-bold' }}">
@@ -84,9 +89,10 @@
                     @if (!empty($day['events']))
                         <div class="mt-2 space-y-1">
                             @foreach ($day['events'] as $event)
-                                <div class="px-2 py-1 rounded {{ $event['color'] }} text-[10px] font-bold truncate">
+                                <a href="{{ route('tasks.show', $event['id'] ?? '#') }}" @click.stop
+                                    class="block px-2 py-1 rounded {{ $event['color'] }} text-[10px] font-bold truncate hover:opacity-80 transition-opacity">
                                     {{ $event['title'] }}
-                                </div>
+                                </a>
                             @endforeach
                         </div>
                     @endif

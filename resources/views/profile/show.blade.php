@@ -49,7 +49,7 @@
             </div>
 
             <div class="flex gap-3">
-                <a href="{{ route('profile.edit') }}"
+                <a href="{{ route('settings.index') }}"
                     class="px-6 py-2.5 bg-primary text-white rounded-lg font-label-md hover:opacity-90 active:scale-95 transition-all">
                     Edit Profile
                 </a>

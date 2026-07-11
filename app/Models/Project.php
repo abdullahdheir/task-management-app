@@ -40,6 +40,12 @@ class Project extends Model
         ];
     }
 
+    protected $appends = [
+        'total_tasks_count',
+        'completed_tasks_count',
+        'remaining_tasks_count',
+    ];
+
     // -------------------------------------------------------------------------
     // Relationships
     // -------------------------------------------------------------------------
@@ -103,6 +109,11 @@ class Project extends Model
     public function getTotalTasksCountAttribute(): int
     {
         return $this->tasks()->count();
+    }
+
+    public function getRemainingTasksCountAttribute(): int
+    {
+        return abs($this->total_tasks_count - $this->completed_tasks_count);
     }
 
     public function recalculateProgress(): void

@@ -108,20 +108,27 @@
                 </div>
 
                 {{-- Project selection --}}
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-stack-lg">
-                    <div>
-                        <label for="project_id" class="font-label-md text-label-md text-on-surface-variant block mb-stack-sm">
-                            Project
-                        </label>
-                        <select id="project_id" name="project_id"
-                            class="w-full px-4 py-2.5 rounded-lg border border-outline-variant focus:border-primary-container focus:ring-1 focus:ring-primary-container font-body-md text-body-md bg-white outline-none transition-all appearance-none cursor-pointer">
-                            <option value="">None (Personal Task)</option>
-                            @foreach($projects as $project)
-                                <option value="{{ $project->id }}" {{ old('project_id') == $project->id ? 'selected' : '' }}>📁 {{ $project->name }}</option>
-                            @endforeach
-                        </select>
+                @if (!$project)
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-stack-lg">
+                        <div>
+                            <label for="project_id"
+                                class="font-label-md text-label-md text-on-surface-variant block mb-stack-sm">
+                                Project
+                            </label>
+                            <select id="project_id" name="project_id"
+                                class="w-full px-4 py-2.5 rounded-lg border border-outline-variant focus:border-primary-container focus:ring-1 focus:ring-primary-container font-body-md text-body-md bg-white outline-none transition-all appearance-none cursor-pointer">
+                                <option value="">None (Personal Task)</option>
+                                @foreach ($projects as $project)
+                                    <option value="{{ $project->id }}"
+                                        {{ old('project_id') == $project->id ? 'selected' : '' }}>📁 {{ $project->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
-                </div>
+                @else
+                    <input hidden type="hidden" name="project_id" value="{{ $project->id }}" />
+                @endif
 
                 {{-- Actions --}}
                 <div class="pt-stack-md flex flex-col sm:flex-row items-center justify-end gap-stack-md">

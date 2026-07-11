@@ -34,12 +34,13 @@ class TaskController extends Controller
         ) + $weeklyStats);
     }
 
-    public function create()
+    public function create(Request $request)
     {
         $user = auth()->user();
         $projects = Project::forUser($user)->get();
+        $project = $projects->find($request->query('project_id'));
 
-        return view('tasks.create', compact('projects'));
+        return view('tasks.create', compact('projects','project'));
     }
 
     public function store(StoreTaskRequest $request)
@@ -132,6 +133,7 @@ class TaskController extends Controller
                 'message' => $task->is_completed ? 'Task marked complete.' : 'Task reopened.',
                 'data' => [
                     'is_completed' => $task->is_completed,
+                    'project' => $task->project,
                 ],
             ]);
         }

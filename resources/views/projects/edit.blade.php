@@ -141,24 +141,67 @@
                         <span class="material-symbols-outlined text-primary">groups</span>
                         <h3 class="font-headline-md text-headline-md text-on-surface">Team</h3>
                     </div>
-                    <button class="text-primary font-label-md text-label-md hover:underline">+ Add</button>
                 </div>
                 <div class="space-y-4">
                     @forelse($members as $member)
-                        <div
-                            class="flex items-center justify-between p-3 rounded-lg border border-outline-variant hover:bg-surface transition-colors">
-                            <div class="flex items-center gap-3">
+                        <div x-data="{ open: false }" @click.outside="open = false"
+                            class="flex items-center justify-between p-3 rounded-lg border border-outline-variant hover:bg-surface transition-colors group">
+                            <a href="{{ route('profile.show', $member) }}" class="flex items-center gap-3 flex-1">
                                 <img class="w-10 h-10 rounded-full object-cover border border-outline-variant"
                                     src="{{ $member->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($member->name) . '&size=40' }}"
                                     alt="{{ $member->name }}">
                                 <div>
                                     <p class="font-label-md text-label-md text-on-surface">{{ $member->name }}</p>
-                                    <p class="text-label-sm text-on-surface-variant">{{ $member->role ?? 'Team Member' }}
+                                    <p class="text-label-sm text-on-surface-variant">
+                                        {{ $member->pivot->role ?? 'Team Member' }}
                                     </p>
                                 </div>
-                            </div>
-                            <span
-                                class="material-symbols-outlined text-on-surface-variant text-[20px] cursor-pointer hover:text-primary">more_vert</span>
+                            </a>
+                            @if (auth()->id() === $project->owner_id && auth()->id() !== $member->id)
+                                <div class="relative">
+                                    <button @click.stop="open = !open"
+                                        class="material-symbols-outlined text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded-full hover:bg-surface-container">
+                                        more_vert
+                                    </button>
+                                    <div x-show="open" x-transition:enter="transition ease-out duration-100"
+                                        x-transition:enter-start="opacity-0 scale-95"
+                                        x-transition:enter-end="opacity-100 scale-100"
+                                        x-transition:leave="transition ease-in duration-75"
+                                        x-transition:leave-start="opacity-100 scale-100"
+                                        x-transition:leave-end="opacity-0 scale-95"
+                                        class="absolute right-0 top-8 w-48 bg-surface border border-outline-variant
+                                            rounded-xl shadow-xl z-50 overflow-hidden py-1"
+                                        style="display:none">
+                                        <a href="{{ route('profile.show', $member) }}"
+                                            class="flex items-center gap-3 px-4 py-2.5 text-on-surface hover:bg-surface-container
+                                              transition-colors font-label-md text-label-md">
+                                            <span
+                                                class="material-symbols-outlined text-[18px] text-secondary">person</span>
+                                            View Profile
+                                        </a>
+                                        <div class="border-t border-outline-variant my-1"></div>
+                                        <button
+                                            @click="
+                                                open = false;
+                                                if(confirm('Remove this member?')) {
+                                                    ajax.delete('{{ route('projects.members.remove', [$project, $member]) }}')
+                                                        .then(res => {
+                                                            if(res.status === 'success') {
+                                                                $el.closest('.flex.items-center.justify-between').remove();
+                                                                toast('Member removed');
+                                                            } else {
+                                                                toast(res.message ?? 'Error', 'error');
+                                                            }
+                                                        });
+                                                }"
+                                            class="w-full flex items-center gap-3 px-4 py-2.5 text-error
+                                               hover:bg-error-container/20 transition-colors font-label-md text-label-md">
+                                            <span class="material-symbols-outlined text-[18px]">person_remove</span>
+                                            Remove Member
+                                        </button>
+                                    </div>
+                                </div>
+                            @endif
                         </div>
                     @empty
                         <div class="text-center py-4 text-on-surface-variant">
