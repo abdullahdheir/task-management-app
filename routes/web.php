@@ -55,6 +55,7 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
     Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
+    Route::patch('/settings', [SettingsController::class, 'update'])->name('settings.update');
 
     // Help
     Route::get('help', [HelpController::class, 'index'])->name('help.index');

@@ -66,7 +66,7 @@
                             </select>
                         </div>
                         <div class="border-t border-outline-variant pt-6 flex items-center justify-between"
-                             x-data="{ checked: {{ old('dark_mode', $settings->dark_mode ?? false) ? 'true' : 'false' } }">
+                            x-data="{ checked: {{ old('dark_mode', $settings->dark_mode ?? false) ? 'true' : 'false' }} }">
                             <div>
                                 <label class="font-label-md text-label-md text-on-surface block mb-1">Dark Mode</label>
                                 <p class="text-on-surface-variant font-body-md text-body-md">Switch between light and dark
@@ -76,8 +76,8 @@
                             <div class="relative inline-block w-12 h-6 transition duration-200 ease-in-out">
                                 <input
                                     class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-2 border-outline-variant appearance-none cursor-pointer z-10 transition-transform duration-200"
-                                    id="toggle-dark" type="checkbox"
-                                    :checked="checked"
+                                    id="toggle-dark" type="checkbox" :checked="checked"
+                                    :class="{ 'translate-x-6': checked }"
                                     @change="
                                         checked = !checked;
                                         ajax.patch('{{ route('settings.update') }}', { dark_mode: checked })
@@ -92,8 +92,7 @@
                                     name="dark_mode" />
                                 <label
                                     class="toggle-label block overflow-hidden h-6 rounded-full bg-outline-variant cursor-pointer transition-colors duration-200"
-                                    :class="{ 'bg-primary': checked }"
-                                    for="toggle-dark"></label>
+                                    :class="{ 'bg-primary': checked }" for="toggle-dark"></label>
                             </div>
                         </div>
                         <div class="border-t border-outline-variant pt-6">
@@ -125,7 +124,7 @@
                                 class="px-4 py-2 border border-primary text-primary font-label-md text-label-md rounded-lg hover:bg-surface-container transition-colors active:scale-95">Enable</button>
                         </div>
                         <div class="border-t border-outline-variant pt-6 flex items-center justify-between"
-                             x-data="{ checked: {{ old('share_usage_data', $settings->share_usage_data ?? true) ? 'true' : 'false' } }">
+                            x-data="{ checked: {{ old('share_usage_data', $settings->share_usage_data ?? true) ? 'true' : 'false' }} }">
                             <div>
                                 <label class="font-label-md text-label-md text-on-surface block mb-1">Share Usage
                                     Data</label>
@@ -136,8 +135,8 @@
                             <div class="relative inline-block w-12 h-6">
                                 <input
                                     class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-2 border-outline-variant appearance-none cursor-pointer z-10 transition-transform duration-200"
-                                    id="toggle-data" type="checkbox" name="share_usage_data"
-                                    :checked="checked"
+                                    id="toggle-data" type="checkbox" name="share_usage_data" :checked="checked"
+                                    :class="{ 'translate-x-6': checked }"
                                     @change="
                                         checked = !checked;
                                         ajax.patch('{{ route('settings.update') }}', { share_usage_data: checked })
@@ -151,8 +150,7 @@
                                     " />
                                 <label
                                     class="toggle-label block overflow-hidden h-6 rounded-full bg-outline-variant cursor-pointer transition-colors duration-200"
-                                    :class="{ 'bg-primary': checked }"
-                                    for="toggle-data"></label>
+                                    :class="{ 'bg-primary': checked }" for="toggle-data"></label>
                             </div>
                         </div>
                     </div>
@@ -169,14 +167,13 @@
                         <h3 class="font-headline-md text-headline-md">Notifications</h3>
                     </div>
                     <div class="space-y-5">
-                        <div class="flex items-center justify-between"
-                             x-data="{ checked: {{ old('email_digests', $settings->email_digests ?? true) ? 'true' : 'false' } }">
+                        <div class="flex items-center justify-between" x-data="{ checked: {{ old('email_digests', $settings->email_digests ?? true) ? 'true' : 'false' }} }">
                             <span class="font-body-md text-body-md text-on-surface">Email Digests</span>
                             <div class="relative inline-block w-12 h-6">
                                 <input
                                     class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-2 border-outline-variant appearance-none cursor-pointer z-10 transition-transform duration-200"
-                                    id="toggle-email" type="checkbox" name="email_digests"
-                                    :checked="checked"
+                                    id="toggle-email" type="checkbox" name="email_digests" :checked="checked"
+                                    :class="{ 'translate-x-6': checked }"
                                     @change="
                                         checked = !checked;
                                         ajax.patch('{{ route('settings.update') }}', { email_digests: checked })
@@ -190,18 +187,16 @@
                                     " />
                                 <label
                                     class="toggle-label block overflow-hidden h-6 rounded-full bg-outline-variant cursor-pointer transition-colors duration-200"
-                                    :class="{ 'bg-primary': checked }"
-                                    for="toggle-email"></label>
+                                    :class="{ 'bg-primary': checked }" for="toggle-email"></label>
                             </div>
                         </div>
-                        <div class="flex items-center justify-between"
-                             x-data="{ checked: {{ old('desktop_alerts', $settings->desktop_alerts ?? true) ? 'true' : 'false' } }">
+                        <div class="flex items-center justify-between" x-data="{ checked: {{ old('desktop_alerts', $settings->desktop_alerts ?? true) ? 'true' : 'false' }} }">
                             <span class="font-body-md text-body-md text-on-surface">Desktop Alerts</span>
                             <div class="relative inline-block w-12 h-6">
                                 <input
                                     class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-2 border-outline-variant appearance-none cursor-pointer z-10 transition-transform duration-200"
-                                    id="toggle-desktop" type="checkbox" name="desktop_alerts"
-                                    :checked="checked"
+                                    id="toggle-desktop" type="checkbox" name="desktop_alerts" :checked="checked"
+                                    :class="{ 'translate-x-6': checked }"
                                     @change="
                                         checked = !checked;
                                         ajax.patch('{{ route('settings.update') }}', { desktop_alerts: checked })
@@ -215,18 +210,16 @@
                                     " />
                                 <label
                                     class="toggle-label block overflow-hidden h-6 rounded-full bg-outline-variant cursor-pointer transition-colors duration-200"
-                                    :class="{ 'bg-primary': checked }"
-                                    for="toggle-desktop"></label>
+                                    :class="{ 'bg-primary': checked }" for="toggle-desktop"></label>
                             </div>
                         </div>
-                        <div class="flex items-center justify-between"
-                             x-data="{ checked: {{ old('deadline_reminders', $settings->deadline_reminders ?? false) ? 'true' : 'false' } }">
+                        <div class="flex items-center justify-between" x-data="{ checked: {{ old('deadline_reminders', $settings->deadline_reminders ?? false) ? 'true' : 'false' }} }">
                             <span class="font-body-md text-body-md text-on-surface">Deadline Reminders</span>
                             <div class="relative inline-block w-12 h-6">
                                 <input
                                     class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-2 border-outline-variant appearance-none cursor-pointer z-10 transition-transform duration-200"
-                                    id="toggle-deadline" type="checkbox" name="deadline_reminders"
-                                    :checked="checked"
+                                    id="toggle-deadline" type="checkbox" name="deadline_reminders" :checked="checked"
+                                    :class="{ 'translate-x-6': checked }"
                                     @change="
                                         checked = !checked;
                                         ajax.patch('{{ route('settings.update') }}', { deadline_reminders: checked })
@@ -240,8 +233,7 @@
                                     " />
                                 <label
                                     class="toggle-label block overflow-hidden h-6 rounded-full bg-outline-variant cursor-pointer transition-colors duration-200"
-                                    :class="{ 'bg-primary': checked }"
-                                    for="toggle-deadline"></label>
+                                    :class="{ 'bg-primary': checked }" for="toggle-deadline"></label>
                             </div>
                         </div>
                     </div>
