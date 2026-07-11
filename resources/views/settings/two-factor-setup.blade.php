@@ -53,7 +53,7 @@
         this.loading = true;
         try {
             // Step 1: Enable 2FA (generates secret)
-            await fetch('/user/two-factor-authentication', {
+            await fetch('{{ route('two-factor.enable') }}', {
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content,
@@ -62,14 +62,14 @@
             });
 
             // Step 2: Fetch QR code
-            const qrRes = await fetch('/user/two-factor-qr-code', {
+            const qrRes = await fetch('{{ route('two-factor.qr-code') }}', {
                 headers: { 'Accept': 'application/json' }
             });
             const qrData = await qrRes.json();
             this.qrSvg = qrData.svg;
 
             // Step 3: Fetch secret key
-            const skRes = await fetch('/user/two-factor-secret-key', {
+            const skRes = await fetch('{{ route('two-factor.secret-key') }}', {
                 headers: { 'Accept': 'application/json' }
             });
             const skData = await skRes.json();
@@ -92,7 +92,7 @@
         this.loading = true;
         this.errorMessage = '';
         try {
-            const res = await fetch('/user/confirmed-two-factor-authentication', {
+            const res = await fetch('{{ route('two-factor.confirm') }}', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -169,7 +169,8 @@
             <p class="font-body-md text-body-md text-on-surface-variant mb-6">
                 Your account is now protected with two-factor authentication.
             </p>
-            <button onclick="document.getElementById('twofa-modal').classList.add('hidden'); window.location.reload();"
+            <button type="button"
+                onclick="document.getElementById('twofa-modal').classList.add('hidden'); window.location.reload();"
                 class="w-full bg-primary text-white py-4 rounded-xl font-body-lg hover:opacity-90 transition-all">
                 Done
             </button>
@@ -250,7 +251,7 @@
                                 Store & Google Play</p>
                         </div>
                     </div>
-                    <button @click="enableAndLoad()" :disabled="loading"
+                    <button type="button" @click="enableAndLoad()" :disabled="loading"
                         :class="loading ? 'opacity-70 cursor-not-allowed' : 'hover:opacity-90'"
                         class="w-full bg-primary text-white py-4 rounded-xl font-body-lg 
                                    flex items-center justify-center gap-2 active:scale-[0.98] transition-all">
@@ -277,20 +278,20 @@
                             <code
                                 class="font-bold text-primary tracking-widest font-mono bg-surface-container px-3 py-1 rounded-lg"
                                 x-text="secretKey ? secretKey.match(/.{1,4}/g)?.join(' ') : '...'"></code>
-                            <button @click="copySecret()"
+                            <button type="button" @click="copySecret()"
                                 class="p-2 text-on-surface-variant hover:text-primary transition-colors rounded-lg hover:bg-surface-container">
                                 <span class="material-symbols-outlined text-[18px]">content_copy</span>
                             </button>
                         </div>
                     </div>
                     <div class="flex flex-col gap-3">
-                        <button @click="goToStep(3)"
+                        <button type="button" @click="goToStep(3)"
                             class="w-full bg-primary text-white py-4 rounded-xl font-body-lg 
                                        flex items-center justify-center gap-2 hover:opacity-90 active:scale-[0.98] transition-all">
                             Next
                             <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
                         </button>
-                        <button @click="goToStep(1)"
+                        <button type="button" @click="goToStep(1)"
                             class="w-full text-on-surface-variant py-2 font-label-md hover:text-primary transition-colors">
                             ← Back
                         </button>
@@ -324,7 +325,8 @@
                     </div>
 
                     <div class="flex flex-col gap-3 mt-6">
-                        <button @click="confirmCode()" :disabled="loading || otpCode.join('').length !== 6"
+                        <button type="button" @click="confirmCode()"
+                            :disabled="loading || otpCode.join('').length !== 6"
                             :class="loading || otpCode.join('').length !== 6 ?
                                 'opacity-50 cursor-not-allowed' : 'hover:opacity-90'"
                             class="w-full bg-primary text-white py-4 rounded-xl font-body-lg 
@@ -333,7 +335,7 @@
                                 class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
                             <span x-text="loading ? 'Verifying...' : 'Verify & Enable 2FA'"></span>
                         </button>
-                        <button @click="goToStep(2)"
+                        <button type="button" @click="goToStep(2)"
                             class="w-full text-on-surface-variant py-2 font-label-md hover:text-primary transition-colors">
                             ← Back
                         </button>

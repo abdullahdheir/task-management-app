@@ -139,8 +139,8 @@
 
                             @if (auth()->user()->two_factor_confirmed_at)
                                 {{-- Disable Button --}}
-                                <form method="POST" action="/user/two-factor-authentication" x-data
-                                    @submit.prevent="if(confirm('Disable 2FA? Your account will be less secure.')) $el.submit()">
+                                <form method="POST" action="{{ route('two-factor.disable') }}"
+                                    onsubmit="return confirm('Disable 2FA? Your account will be less secure.');">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit"
@@ -151,7 +151,8 @@
                                 </form>
                             @else
                                 {{-- Enable / Continue Setup Button --}}
-                                <button onclick="document.getElementById('twofa-modal').classList.remove('hidden')"
+                                <button type="button"
+                                    onclick="document.getElementById('twofa-modal').classList.remove('hidden')"
                                     class="px-4 py-2 bg-primary text-on-primary rounded-lg font-label-md 
                                                hover:opacity-90 transition-all">
                                     {{ auth()->user()->two_factor_secret ? 'Continue Setup' : 'Enable 2FA' }}
