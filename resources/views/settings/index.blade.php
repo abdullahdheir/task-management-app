@@ -112,7 +112,8 @@
                         <h3 class="font-headline-md text-headline-md">Privacy &amp; Security</h3>
                     </div>
                     <div class="space-y-6">
-                        <div class="flex items-center justify-between">
+                        <div class="flex items-center justify-between"
+                             x-data="{ enabled: {{ auth()->user()->two_factor_secret ? 'true' : 'false' }} }, showQr: false, qrCode: '' }">
                             <div>
                                 <label class="font-label-md text-label-md text-on-surface block mb-1">Two-Factor
                                     Authentication</label>
@@ -120,9 +121,75 @@
                                     to
                                     your account.</p>
                             </div>
-                            <button
-                                class="px-4 py-2 border border-primary text-primary font-label-md text-label-md rounded-lg hover:bg-surface-container transition-colors active:scale-95">Enable</button>
+                            @if(auth()->user()->two_factor_secret)
+                                <button
+                                    @click="
+                                        if(confirm('Disable two-factor authentication?')) {
+                                            ajax.delete('{{ route('two-factor.disable') }}')
+                                                .then(res => {
+                                                    if(res.status === 'success') {
+                                                        enabled = false;
+                                                        toast('2FA disabled');
+                                                    } else {
+                                                        toast(res.message ?? 'Error', 'error');
+                                                    }
+                                                }).catch(() => toast('Something went wrong', 'error'));
+                                        }
+                                    "
+                                    class="px-4 py-2 border border-error text-error font-label-md text-label-md rounded-lg hover:bg-error-container/20 transition-colors active:scale-95">
+                                    Disable
+                                </button>
+                            @else
+                                <button
+                                    @click="
+                                        showQr = true;
+                                        ajax.get('{{ route('two-factor.qr-code') }}')
+                                            .then(res => {
+                                                qrCode = res.svg;
+                                            }).catch(() => toast('Error loading QR code', 'error'));
+                                        ajax.post('{{ route('two-factor.enable') }}')
+                                            .then(res => {
+                                                if(res.status === 'success') {
+                                                    enabled = true;
+                                                    toast('2FA enabled');
+                                                } else {
+                                                    toast(res.message ?? 'Error', 'error');
+                                                }
+                                            }).catch(() => toast('Something went wrong', 'error'));
+                                    "
+                                    class="px-4 py-2 border border-primary text-primary font-label-md text-label-md rounded-lg hover:bg-surface-container transition-colors active:scale-95">
+                                    Enable
+                                </button>
+                            @endif
                         </div>
+                        @if(auth()->user()->two_factor_secret)
+                        <div class="border-t border-outline-variant pt-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="font-label-md text-label-md text-on-surface">Recovery Codes</span>
+                                <button
+                                    @click="
+                                        if(confirm('Regenerate recovery codes? Old codes will be invalid.')) {
+                                            ajax.post('{{ route('two-factor.regenerate-recovery-codes') }}')
+                                                .then(res => {
+                                                    if(res.status === 'success') {
+                                                        toast('Recovery codes regenerated');
+                                                    } else {
+                                                        toast(res.message ?? 'Error', 'error');
+                                                    }
+                                                }).catch(() => toast('Something went wrong', 'error'));
+                                        }
+                                    "
+                                    class="text-primary text-label-sm hover:underline">
+                                    Regenerate
+                                </button>
+                            </div>
+                            <a href="{{ route('two-factor.recovery-codes') }}"
+                               target="_blank"
+                               class="text-sm text-on-surface-variant hover:text-primary transition-colors">
+                                View your recovery codes
+                            </a>
+                        </div>
+                        @endif
                         <div class="border-t border-outline-variant pt-6 flex items-center justify-between"
                             x-data="{ checked: {{ old('share_usage_data', $settings->share_usage_data ?? true) ? 'true' : 'false' }} }">
                             <div>
