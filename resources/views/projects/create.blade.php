@@ -26,8 +26,40 @@
     </header>
     <!-- Create Project Form Section -->
     <div class="max-w-[800px] mx-auto">
-        <section class="glass-card rounded-xl p-8 shadow-sm">
-            <form action="{{ route('projects.store') }}" method="POST" class="space-y-8" id="createProjectForm">
+        <section class="glass-card rounded-xl p-8 shadow-sm" x-data="{
+            name: '{{ old('name') }}',
+            description: '{{ old('description') }}',
+            startDate: '{{ old('start_date') }}',
+            endDate: '{{ old('end_date') }}',
+            colorLabel: '{{ old('color_label', 'indigo') }}',
+            members: [],
+            loading: false,
+
+            async submitForm() {
+                this.loading = true;
+                try {
+                    const res = await ajax.post('{{ route('projects.store') }}', {
+                        name: this.name,
+                        description: this.description,
+                        start_date: this.startDate,
+                        end_date: this.endDate,
+                        color_label: this.colorLabel,
+                        member_ids: this.members.map(m => m.id)
+                    });
+                    if (res.status === 'success') {
+                        toast('Project created successfully');
+                        window.location.href = res.data.url || '{{ route('projects.overview') }}';
+                    } else {
+                        toast(res.message ?? 'Error creating project', 'error');
+                    }
+                } catch (e) {
+                    toast('Failed to create project', 'error');
+                } finally {
+                    this.loading = false;
+                }
+            }
+        }">
+            <form @submit.prevent="submitForm()" class="space-y-8" id="createProjectForm">
                 @csrf
                 <!-- Basic Info -->
                 <div class="space-y-stack-lg">
@@ -36,16 +68,16 @@
                             Name</label>
                         <input
                             class="w-full h-12 px-4 rounded-lg border border-outline-variant bg-white text-body-lg font-body-lg transition-all"
-                            id="project_name" name="name" value="{{ old('name') }}"
-                            placeholder="e.g., Q4 Marketing Campaign" required="" type="text" />
+                            id="project_name" x-model="name" placeholder="e.g., Q4 Marketing Campaign" required=""
+                            type="text" />
                     </div>
                     <div class="flex flex-col gap-2">
                         <label class="font-label-md text-label-md text-on-surface-variant"
                             for="project_description">Description</label>
                         <textarea
                             class="w-full p-4 rounded-lg border border-outline-variant bg-white text-body-md font-body-md transition-all resize-none"
-                            id="project_description" name="description" placeholder="Describe the objectives and key deliverables..."
-                            rows="3">{{ old('description') }}</textarea>
+                            id="project_description" x-model="description" placeholder="Describe the objectives and key deliverables..."
+                            rows="3"></textarea>
                     </div>
                 </div>
                 <!-- Grid: Timeline & Color -->
@@ -57,7 +89,7 @@
                             <div class="flex-1 flex flex-col gap-2">
                                 <input
                                     class="w-full h-12 px-4 rounded-lg border border-outline-variant bg-white text-body-md"
-                                    name="start_date" type="date" value="{{ old('start_date') }}" />
+                                    x-model="startDate" type="date" />
                             </div>
                             <span class="text-on-surface-variant">
                                 <span class="material-symbols-outlined">arrow_forward</span>
@@ -65,7 +97,7 @@
                             <div class="flex-1 flex flex-col gap-2">
                                 <input
                                     class="w-full h-12 px-4 rounded-lg border border-outline-variant bg-white text-body-md"
-                                    name="end_date" type="date" value="{{ old('end_date') }}" />
+                                    x-model="endDate" type="date" />
                             </div>
                         </div>
                     </div>
@@ -74,36 +106,31 @@
                         <span class="font-label-md text-label-md text-on-surface-variant">Color Label</span>
                         <div class="flex flex-wrap gap-3">
                             <label class="relative cursor-pointer group">
-                                <input {{ old('color_label', 'indigo') === 'indigo' ? 'checked' : '' }} class="peer hidden"
-                                    name="color_label" type="radio" value="indigo" />
+                                <input x-model="colorLabel" value="indigo" class="peer hidden" type="radio" />
                                 <div
                                     class="w-10 h-10 rounded-full bg-primary ring-offset-2 peer-checked:ring-2 ring-primary transition-all">
                                 </div>
                             </label>
                             <label class="relative cursor-pointer group">
-                                <input {{ old('color_label', 'indigo') === 'emerald' ? 'checked' : '' }} class="peer hidden"
-                                    name="color_label" type="radio" value="emerald" />
+                                <input x-model="colorLabel" value="emerald" class="peer hidden" type="radio" />
                                 <div
                                     class="w-10 h-10 rounded-full bg-secondary ring-offset-2 peer-checked:ring-2 ring-secondary transition-all">
                                 </div>
                             </label>
                             <label class="relative cursor-pointer group">
-                                <input {{ old('color_label', 'indigo') === 'amber' ? 'checked' : '' }} class="peer hidden"
-                                    name="color_label" type="radio" value="amber" />
+                                <input x-model="colorLabel" value="amber" class="peer hidden" type="radio" />
                                 <div
                                     class="w-10 h-10 rounded-full bg-tertiary-container ring-offset-2 peer-checked:ring-2 ring-tertiary-container transition-all">
                                 </div>
                             </label>
                             <label class="relative cursor-pointer group">
-                                <input {{ old('color_label', 'indigo') === 'rose' ? 'checked' : '' }} class="peer hidden"
-                                    name="color_label" type="radio" value="rose" />
+                                <input x-model="colorLabel" value="rose" class="peer hidden" type="radio" />
                                 <div
                                     class="w-10 h-10 rounded-full bg-error ring-offset-2 peer-checked:ring-2 ring-error transition-all">
                                 </div>
                             </label>
                             <label class="relative cursor-pointer group">
-                                <input {{ old('color_label', 'indigo') === 'cyan' ? 'checked' : '' }} class="peer hidden"
-                                    name="color_label" type="radio" value="cyan" />
+                                <input x-model="colorLabel" value="cyan" class="peer hidden" type="radio" />
                                 <div
                                     class="w-10 h-10 rounded-full bg-[#00bcd4] ring-offset-2 peer-checked:ring-2 ring-[#00bcd4] transition-all">
                                 </div>
@@ -135,8 +162,8 @@
                                     src="https://lh3.googleusercontent.com/aida-public/AB6AXuAS4xnL_hrdxxDOM3hQRGvPEkTZPwQehtbFl0lWOHoEU1OXPCQYIf8rx-qDm05nVgotoUDyomuA5aoFfkWctXTbqOK6_8Tu2-uQ8waPAMu4nhhbzfzX2UVpwPC5S4iBILBvLEsSbzjdF25TUcGMmUHRU6W6sytdTBJBjhHgMffnOtozyM32rTevbSmU4RYNAAm4XcCHeeLJOKuKdAO5tDPdKahM0moxYGah1pKOf09t_9NIaj4ktRlOpA" />
                             </div>
                             <span class="text-body-md font-medium">Sarah Jenkins</span>
-                            <button class="text-on-surface-variant hover:text-error transition-colors"
-                                type="button"><span class="material-symbols-outlined text-[18px]">close</span></button>
+                            <button class="text-on-surface-variant hover:text-error transition-colors" type="button"><span
+                                    class="material-symbols-outlined text-[18px]">close</span></button>
                         </div>
                         <div
                             class="flex items-center gap-2 bg-surface-container-low border border-outline-variant px-3 py-1.5 rounded-full">
@@ -174,9 +201,23 @@
                     <button
                         class="px-6 py-3 font-label-md text-label-md text-primary hover:bg-surface-container-low rounded-lg transition-colors"
                         type="button">Save as Draft</button>
-                    <button
-                        class="px-8 py-3 bg-primary text-white font-label-md text-label-md rounded-lg shadow-md hover:brightness-110 active:scale-95 transition-all"
-                        type="submit">Create Project</button>
+                    <button :disabled="loading"
+                        :class="loading ? 'opacity-70 cursor-not-allowed' : 'hover:brightness-110'"
+                        class="px-8 py-3 bg-primary text-white font-label-md text-label-md rounded-lg shadow-md active:scale-95 transition-all"
+                        type="submit">
+                        <span x-show="!loading">Create Project</span>
+                        <span x-show="loading" class="flex items-center gap-2">
+                            <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                    stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor"
+                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                </path>
+                            </svg>
+                            Creating...
+                        </span>
+                    </button>
                 </div>
             </form>
         </section>
@@ -205,46 +246,3 @@
         </div>
     </div>
 @endsection
-
-@push('scripts')
-    <!-- Micro-interactions Script -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const form = document.getElementById('createProjectForm');
-
-            form.addEventListener('submit', (e) => {
-                const btn = e.target.querySelector('button[type="submit"]');
-                const originalText = btn.innerHTML;
-
-                btn.innerHTML =
-                    '<span class="flex items-center gap-2"><svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Creating...</span>';
-                btn.disabled = true;
-            });
-
-            // Animated Background Canvas Effect (Subtle Noise)
-            const canvas = document.createElement('canvas');
-            canvas.className = 'fixed inset-0 pointer-events-none opacity-[0.03] z-[99]';
-            document.body.appendChild(canvas);
-            const ctx = canvas.getContext('2d');
-            let w, h;
-
-            function resize() {
-                w = canvas.width = window.innerWidth;
-                h = canvas.height = window.innerHeight;
-            }
-            window.addEventListener('resize', resize);
-            resize();
-
-            function noise() {
-                const idata = ctx.createImageData(w, h);
-                const buffer32 = new Uint32Array(idata.data.buffer);
-                for (let i = 0; i < buffer32.length; i++) {
-                    if (Math.random() < 0.5) buffer32[i] = 0xffffffff;
-                }
-                ctx.putImageData(idata, 0, 0);
-                requestAnimationFrame(noise);
-            }
-            noise();
-        });
-    </script>
-@endpush
