@@ -46,6 +46,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Search & Calendar
     Route::get('/search', [SearchController::class, 'index'])->name('search.index');
+    Route::get('/search/users', [SearchController::class, 'users'])->name('search.users');
     Route::get('/calendar/{month?}', [CalendarController::class, 'index'])->name('calendar.index');
 
     // Profile & Settings

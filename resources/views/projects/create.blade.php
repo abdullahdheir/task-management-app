@@ -34,6 +34,38 @@
             colorLabel: '{{ old('color_label', 'indigo') }}',
             members: [],
             loading: false,
+            searchQuery: '',
+            searchResults: [],
+            searchOpen: false,
+
+            async searchUsers() {
+                if (this.searchQuery.length < 2) {
+                    this.searchResults = [];
+                    this.searchOpen = false;
+                    return;
+                }
+
+                try {
+                    const res = await ajax.get('{{ route('search.users') }}', { q: this.searchQuery });
+                    this.searchResults = res.data || [];
+                    this.searchOpen = true;
+                } catch (e) {
+                    this.searchResults = [];
+                }
+            },
+
+            addMember(user) {
+                if (!this.members.find(m => m.id === user.id)) {
+                    this.members.push(user);
+                }
+                this.searchQuery = '';
+                this.searchResults = [];
+                this.searchOpen = false;
+            },
+
+            removeMember(index) {
+                this.members.splice(index, 1);
+            },
 
             async submitForm() {
                 this.loading = true;
@@ -142,7 +174,8 @@
                 <div class="space-y-4">
                     <div class="flex items-center justify-between">
                         <label class="font-label-md text-label-md text-on-surface-variant">Team Members</label>
-                        <span class="text-label-sm font-label-sm text-primary">3 members added</span>
+                        <span class="text-label-sm font-label-sm text-primary"
+                            x-text="members.length + ' members added'"></span>
                     </div>
                     <div class="relative">
                         <div class="absolute left-4 top-1/2 -translate-y-1/2 text-outline">
@@ -150,48 +183,59 @@
                         </div>
                         <input
                             class="w-full h-12 pl-12 pr-4 rounded-lg border border-outline-variant bg-white text-body-md transition-all"
+                            x-model="searchQuery" @input="searchUsers()" @click.outside="searchOpen = false"
                             placeholder="Search by name or email..." type="text" />
+
+                        <!-- Search Results Dropdown -->
+                        <div x-show="searchOpen && searchResults.length > 0"
+                            x-transition:enter="transition ease-out duration-100"
+                            x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+                            x-transition:leave="transition ease-in duration-75"
+                            x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
+                            class="absolute top-full left-0 right-0 mt-2 bg-white border border-outline-variant rounded-lg shadow-xl z-50 overflow-hidden"
+                            style="display:none">
+                            <template x-for="user in searchResults" :key="user.id">
+                                <button @click="addMember(user)"
+                                    class="w-full flex items-center gap-3 px-4 py-3 hover:bg-surface-container-low transition-colors text-left">
+                                    <div
+                                        class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center font-bold text-primary overflow-hidden">
+                                        <img x-show="user.avatar" :src="user.avatar"
+                                            class="w-full h-full object-cover" alt="" />
+                                        <span x-show="!user.avatar"
+                                            x-text="user.name.substring(0,2).toUpperCase()"></span>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="font-body-md text-on-surface" x-text="user.name"></p>
+                                        <p class="text-xs text-on-surface-variant" x-text="user.email"></p>
+                                    </div>
+                                    <span class="material-symbols-outlined text-primary">add</span>
+                                </button>
+                            </template>
+                        </div>
                     </div>
                     <!-- Member Chips Bento-style -->
                     <div class="flex flex-wrap gap-2 pt-2">
-                        <div
-                            class="flex items-center gap-2 bg-surface-container-low border border-outline-variant px-3 py-1.5 rounded-full">
-                            <div class="w-6 h-6 rounded-full overflow-hidden">
-                                <img class="w-full h-full object-cover"
-                                    data-alt="A professional headshot of a friendly business woman in a clean studio setting, soft lighting, minimalist vibe."
-                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuAS4xnL_hrdxxDOM3hQRGvPEkTZPwQehtbFl0lWOHoEU1OXPCQYIf8rx-qDm05nVgotoUDyomuA5aoFfkWctXTbqOK6_8Tu2-uQ8waPAMu4nhhbzfzX2UVpwPC5S4iBILBvLEsSbzjdF25TUcGMmUHRU6W6sytdTBJBjhHgMffnOtozyM32rTevbSmU4RYNAAm4XcCHeeLJOKuKdAO5tDPdKahM0moxYGah1pKOf09t_9NIaj4ktRlOpA" />
+                        <template x-for="(member, index) in members" :key="member.id">
+                            <div
+                                class="flex items-center gap-2 bg-surface-container-low border border-outline-variant px-3 py-1.5 rounded-full">
+                                <div class="w-6 h-6 rounded-full overflow-hidden">
+                                    <img x-show="member.avatar" :src="member.avatar" class="w-full h-full object-cover"
+                                        alt="" />
+                                    <div x-show="!member.avatar"
+                                        class="w-full h-full bg-surface-container-highest flex items-center justify-center font-bold text-primary text-xs">
+                                        <span x-text="member.name.substring(0,2).toUpperCase()"></span>
+                                    </div>
+                                </div>
+                                <span class="text-body-md font-medium" x-text="member.name"></span>
+                                <button @click="removeMember(index)"
+                                    class="text-on-surface-variant hover:text-error transition-colors" type="button">
+                                    <span class="material-symbols-outlined text-[18px]">close</span>
+                                </button>
                             </div>
-                            <span class="text-body-md font-medium">Sarah Jenkins</span>
-                            <button class="text-on-surface-variant hover:text-error transition-colors" type="button"><span
-                                    class="material-symbols-outlined text-[18px]">close</span></button>
+                        </template>
+                        <div x-show="members.length === 0" class="text-sm text-on-surface-variant italic">
+                            No members added yet
                         </div>
-                        <div
-                            class="flex items-center gap-2 bg-surface-container-low border border-outline-variant px-3 py-1.5 rounded-full">
-                            <div class="w-6 h-6 rounded-full overflow-hidden">
-                                <img class="w-full h-full object-cover"
-                                    data-alt="A professional headshot of a creative male designer with glasses, high-key lighting, minimalist modern office background."
-                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCx51x-QDJGYDVV6sBoqCkkIZv3pMxLslKkBI23JGuCK1L_59VmZe-kvfd7gY5AoUqljtdZIjUDZ5SrG8Gu4myMgOaCQKezR0xFyn-aJlxaqhzBTrH9AgHmVUQCaDQNospxdynK15qaM9QsxT_Xb9x7O5gXpOnODu6TnVLuzJeqKQG3uh-YZXJmPRg-HgpTrberP3U6xdv8EURZvEQzq2H3lSrS-KQyHX3gcSQ-p7wYmGPSLRBw5n9OHA" />
-                            </div>
-                            <span class="text-body-md font-medium">Marcus Chen</span>
-                            <button class="text-on-surface-variant hover:text-error transition-colors"
-                                type="button"><span class="material-symbols-outlined text-[18px]">close</span></button>
-                        </div>
-                        <div
-                            class="flex items-center gap-2 bg-surface-container-low border border-outline-variant px-3 py-1.5 rounded-full">
-                            <div class="w-6 h-6 rounded-full overflow-hidden">
-                                <img class="w-full h-full object-cover"
-                                    data-alt="A professional headshot of a young female developer, neutral tones, soft shadows, clean corporate style."
-                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCoT9yf4tlDMDt2B3gRLmJScgEWHdt_T-1OytE7b9bE8q9wfTig79J16vnIKziUKCmZXzYUoppsqX4c1jH0SPNXLuz0hz-kfC_Jb3S4oLBAu6cRXhoDv-Js_FOy3VOmnoUgvW5CQC3740x5PJwLDOayDo0C5KgwnqgCyCn_GBQ4K6Da7bRuwwdRAGQAFPKBdEKQMmkdCh3h5r_CeXCgaq4j96759lpM8Qo5tFHW5aQUdp9Gc0p82iS47A" />
-                            </div>
-                            <span class="text-body-md font-medium">Elena Rodriguez</span>
-                            <button class="text-on-surface-variant hover:text-error transition-colors"
-                                type="button"><span class="material-symbols-outlined text-[18px]">close</span></button>
-                        </div>
-                        <button
-                            class="flex items-center justify-center w-10 h-10 rounded-full border-2 border-dashed border-outline-variant text-outline hover:border-primary hover:text-primary transition-all"
-                            type="button">
-                            <span class="material-symbols-outlined">add</span>
-                        </button>
                     </div>
                 </div>
                 <!-- Divider -->
