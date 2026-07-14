@@ -45,12 +45,15 @@
                     return;
                 }
 
+                console.log('From Search');
+
                 try {
                     const res = await ajax.get('{{ route('search.users') }}', { q: this.searchQuery });
                     this.searchResults = res.data || [];
                     this.searchOpen = true;
                 } catch (e) {
                     this.searchResults = [];
+                    console.error(e);
                 }
             },
 
@@ -239,7 +242,7 @@
                     </div>
                 </div>
                 <!-- Divider -->
-                <div class="h-[1px] w-full bg-outline-variant opacity-50"></div>
+                <div class="h-px w-full bg-outline-variant opacity-50"></div>
                 <!-- Form Actions -->
                 <div class="flex items-center justify-end gap-4">
                     <button
@@ -281,7 +284,7 @@
                     style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBLVqptl3muTAiCDah2JbbzGUONFb9yKUeNxG2GgN3bS-llHJ-GvUYT14-pb6Ttx7yQSa6RwMPGu9Vc0gTUnYq1iN1ljh5Y6fwYnYsQyYwDC8a47pQt-rDwALXKdlxzoh5LtcgEdA51oDPmABIeP2Wu6JozS3KsNmioqQN7DcWg6vPBzYaIFOEqWE2EUDm_FwChQL9pRwIMFWaoA7amT3_mIVFvKtb4MQj24I_apR33611keuu9DsEjaA')">
                 </div>
                 <div
-                    class="absolute inset-0 bg-gradient-to-t from-on-surface/80 to-transparent p-6 flex flex-col justify-end">
+                    class="absolute inset-0 bg-linear-to-t from-on-surface/80 to-transparent p-6 flex flex-col justify-end">
                     <span class="text-white font-headline-md text-headline-md">Project Templates</span>
                     <p class="text-white/80 text-body-md">Start faster with pre-configured layouts for Marketing,
                         Product, or HR.</p>

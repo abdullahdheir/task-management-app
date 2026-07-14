@@ -31,6 +31,12 @@ class ProjectController extends Controller
     public function store(StoreProjectRequest $request)
     {
         $project = (new CreateProject)($request->validated(), auth()->user());
+        if (request()->wantsJson()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Project created.',
+            ]);
+        }
         return redirect()->route('projects.show', $project)->with('success', 'Project created.');
     }
 

@@ -1,9 +1,24 @@
 import Alpine from "alpinejs";
 
 window.Alpine = Alpine;
-Alpine.start();
+window.Alpine.start();
 
 window.ajax = {
+    async get(url, query = {}) {
+        const params = new URLSearchParams(query).toString();
+        const fullUrl = params ? `${url}?${params}` : url;
+        const res = await fetch(fullUrl, {
+            method: "GET",
+            headers: {
+                Accept: "application/json",
+                "X-CSRF-TOKEN": document.querySelector(
+                    'meta[name="csrf-token"]',
+                ).content,
+            },
+        });
+        return res.json();
+    },
+
     async post(url, data = {}) {
         const res = await fetch(url, {
             method: "POST",
