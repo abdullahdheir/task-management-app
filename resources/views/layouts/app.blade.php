@@ -20,6 +20,7 @@
     <style>
         body {
             font-family: 'Geist', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         .material-symbols-outlined {
@@ -32,6 +33,13 @@
 
         input[type="checkbox"] {
             cursor: pointer;
+        }
+
+        /* Smooth transitions for dark mode */
+        * {
+            transition-property: background-color, border-color, color, fill, stroke;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 150ms;
         }
     </style>
 

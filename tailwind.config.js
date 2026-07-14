@@ -4,104 +4,212 @@ export default {
     theme: {
         extend: {
             colors: {
-                // Light theme colors (existing)
-                "on-tertiary-fixed": "#2a1700",
-                "surface-bright": "#f8f9ff",
-                "on-secondary": "#ffffff",
-                "surface-dim": "#cbdbf5",
-                "surface-container": "#e5eeff",
-                "on-primary": "#ffffff",
-                "secondary-fixed": "#6ffbbe",
-                "surface-container-lowest": "#ffffff",
-                "tertiary-fixed-dim": "#ffb95f",
-                tertiary: "#684000",
-                "inverse-primary": "#c3c0ff",
-                "on-primary-container": "#dad7ff",
-                "surface-container-low": "#eff4ff",
-                secondary: "#006c49",
-                "primary-fixed-dim": "#c3c0ff",
-                "on-tertiary": "#ffffff",
-                "on-surface-variant": "#464555",
-                error: "#ba1a1a",
-                "primary-fixed": "#e2dfff",
-                "inverse-on-surface": "#eaf1ff",
-                "on-primary-fixed": "#0f0069",
-                "on-secondary-fixed": "#002113",
-                "on-secondary-container": "#00714d",
-                "outline-variant": "#c7c4d8",
-                "surface-tint": "#4d44e3",
-                "secondary-fixed-dim": "#4edea3",
-                primary: "#3525cd",
-                "tertiary-fixed": "#ffddb8",
-                background: "#f8f9ff",
-                "surface-variant": "#d3e4fe",
-                "on-error": "#ffffff",
-                "on-tertiary-container": "#ffd4a4",
-                "error-container": "#ffdad6",
-                "on-surface": "#0b1c30",
-                "surface-container-highest": "#d3e4fe",
-                "on-error-container": "#93000a",
-                "surface-container-high": "#dce9ff",
-                "on-secondary-fixed-variant": "#005236",
-                "tertiary-container": "#885500",
-                "primary-container": "#4f46e5",
-                surface: "#f8f9ff",
-                "inverse-surface": "#213145",
-                "on-primary-fixed-variant": "#3323cc",
-                "on-tertiary-fixed-variant": "#653e00",
-                outline: "#777587",
-                "on-background": "#0b1c30",
-                "secondary-container": "#6cf8bb",
+                // Surface colors
+                surface: {
+                    DEFAULT: "#f8f9ff",
+                    dark: "#0b1326",
+                },
+                "surface-dim": {
+                    DEFAULT: "#cbdbf5",
+                    dark: "#0b1326",
+                },
+                "surface-bright": {
+                    DEFAULT: "#f8f9ff",
+                    dark: "#31394d",
+                },
+                "surface-container-lowest": {
+                    DEFAULT: "#ffffff",
+                    dark: "#060e20",
+                },
+                "surface-container-low": {
+                    DEFAULT: "#eff4ff",
+                    dark: "#131b2e",
+                },
+                "surface-container": {
+                    DEFAULT: "#e5eeff",
+                    dark: "#171f33",
+                },
+                "surface-container-high": {
+                    DEFAULT: "#dce9ff",
+                    dark: "#222a3d",
+                },
+                "surface-container-highest": {
+                    DEFAULT: "#d3e4fe",
+                    dark: "#2d3449",
+                },
 
-                // Dark theme colors (from spec)
-                dark: {
-                    surface: "#0b1326",
-                    "surface-dim": "#0b1326",
-                    "surface-bright": "#31394d",
-                    "surface-container-lowest": "#060e20",
-                    "surface-container-low": "#131b2e",
-                    "surface-container": "#171f33",
-                    "surface-container-high": "#222a3d",
-                    "surface-container-highest": "#2d3449",
-                    "on-surface": "#dae2fd",
-                    "on-surface-variant": "#c7c4d7",
-                    "inverse-surface": "#dae2fd",
-                    "inverse-on-surface": "#283044",
-                    outline: "#908fa0",
-                    "outline-variant": "#464554",
-                    "surface-tint": "#c0c1ff",
-                    primary: "#c0c1ff",
-                    "on-primary": "#1000a9",
-                    "primary-container": "#8083ff",
-                    "on-primary-container": "#0d0096",
-                    "inverse-primary": "#494bd6",
-                    secondary: "#b9c8de",
-                    "on-secondary": "#233143",
-                    "secondary-container": "#39485a",
-                    "on-secondary-container": "#a7b6cc",
-                    tertiary: "#ffb783",
-                    "on-tertiary": "#4f2500",
-                    "tertiary-container": "#d97721",
-                    "on-tertiary-container": "#452000",
-                    error: "#ffb4ab",
-                    "on-error": "#690005",
-                    "error-container": "#93000a",
-                    "on-error-container": "#ffdad6",
-                    "primary-fixed": "#e1e0ff",
-                    "primary-fixed-dim": "#c0c1ff",
-                    "on-primary-fixed": "#07006c",
-                    "on-primary-fixed-variant": "#2f2ebe",
-                    "secondary-fixed": "#d4e4fa",
-                    "secondary-fixed-dim": "#b9c8de",
-                    "on-secondary-fixed": "#0d1c2d",
-                    "on-secondary-fixed-variant": "#39485a",
-                    "tertiary-fixed": "#ffdcc5",
-                    "tertiary-fixed-dim": "#ffb783",
-                    "on-tertiary-fixed": "#301400",
-                    "on-tertiary-fixed-variant": "#703700",
-                    background: "#0b1326",
-                    "on-background": "#dae2fd",
-                    "surface-variant": "#2d3449",
+                // Text colors
+                "on-surface": {
+                    DEFAULT: "#0b1c30",
+                    dark: "#dae2fd",
+                },
+                "on-surface-variant": {
+                    DEFAULT: "#464555",
+                    dark: "#c7c4d7",
+                },
+                "on-background": {
+                    DEFAULT: "#0b1c30",
+                    dark: "#dae2fd",
+                },
+
+                // Inverse colors
+                "inverse-surface": {
+                    DEFAULT: "#213145",
+                    dark: "#dae2fd",
+                },
+                "inverse-on-surface": {
+                    DEFAULT: "#eaf1ff",
+                    dark: "#283044",
+                },
+
+                // Outline colors
+                outline: {
+                    DEFAULT: "#777587",
+                    dark: "#908fa0",
+                },
+                "outline-variant": {
+                    DEFAULT: "#c7c4d8",
+                    dark: "#464554",
+                },
+                "surface-tint": {
+                    DEFAULT: "#4d44e3",
+                    dark: "#c0c1ff",
+                },
+
+                // Primary colors
+                primary: {
+                    DEFAULT: "#3525cd",
+                    dark: "#c0c1ff",
+                },
+                "on-primary": {
+                    DEFAULT: "#ffffff",
+                    dark: "#1000a9",
+                },
+                "primary-container": {
+                    DEFAULT: "#4f46e5",
+                    dark: "#8083ff",
+                },
+                "on-primary-container": {
+                    DEFAULT: "#dad7ff",
+                    dark: "#0d0096",
+                },
+                "inverse-primary": {
+                    DEFAULT: "#c3c0ff",
+                    dark: "#494bd6",
+                },
+                "primary-fixed": {
+                    DEFAULT: "#e2dfff",
+                    dark: "#e1e0ff",
+                },
+                "primary-fixed-dim": {
+                    DEFAULT: "#c3c0ff",
+                    dark: "#c0c1ff",
+                },
+                "on-primary-fixed": {
+                    DEFAULT: "#0f0069",
+                    dark: "#07006c",
+                },
+                "on-primary-fixed-variant": {
+                    DEFAULT: "#3323cc",
+                    dark: "#2f2ebe",
+                },
+
+                // Secondary colors
+                secondary: {
+                    DEFAULT: "#006c49",
+                    dark: "#b9c8de",
+                },
+                "on-secondary": {
+                    DEFAULT: "#ffffff",
+                    dark: "#233143",
+                },
+                "secondary-container": {
+                    DEFAULT: "#6cf8bb",
+                    dark: "#39485a",
+                },
+                "on-secondary-container": {
+                    DEFAULT: "#00714d",
+                    dark: "#a7b6cc",
+                },
+                "secondary-fixed": {
+                    DEFAULT: "#6ffbbe",
+                    dark: "#d4e4fa",
+                },
+                "secondary-fixed-dim": {
+                    DEFAULT: "#4edea3",
+                    dark: "#b9c8de",
+                },
+                "on-secondary-fixed": {
+                    DEFAULT: "#002113",
+                    dark: "#0d1c2d",
+                },
+                "on-secondary-fixed-variant": {
+                    DEFAULT: "#005236",
+                    dark: "#39485a",
+                },
+
+                // Tertiary colors
+                tertiary: {
+                    DEFAULT: "#684000",
+                    dark: "#ffb783",
+                },
+                "on-tertiary": {
+                    DEFAULT: "#ffffff",
+                    dark: "#4f2500",
+                },
+                "tertiary-container": {
+                    DEFAULT: "#885500",
+                    dark: "#d97721",
+                },
+                "on-tertiary-container": {
+                    DEFAULT: "#ffd4a4",
+                    dark: "#452000",
+                },
+                "tertiary-fixed": {
+                    DEFAULT: "#ffddb8",
+                    dark: "#ffdcc5",
+                },
+                "tertiary-fixed-dim": {
+                    DEFAULT: "#ffb95f",
+                    dark: "#ffb783",
+                },
+                "on-tertiary-fixed": {
+                    DEFAULT: "#2a1700",
+                    dark: "#301400",
+                },
+                "on-tertiary-fixed-variant": {
+                    DEFAULT: "#653e00",
+                    dark: "#703700",
+                },
+
+                // Error colors
+                error: {
+                    DEFAULT: "#ba1a1a",
+                    dark: "#ffb4ab",
+                },
+                "on-error": {
+                    DEFAULT: "#ffffff",
+                    dark: "#690005",
+                },
+                "error-container": {
+                    DEFAULT: "#ffdad6",
+                    dark: "#93000a",
+                },
+                "on-error-container": {
+                    DEFAULT: "#93000a",
+                    dark: "#ffdad6",
+                },
+
+                // Background
+                background: {
+                    DEFAULT: "#f8f9ff",
+                    dark: "#0b1326",
+                },
+
+                // Surface variant
+                "surface-variant": {
+                    DEFAULT: "#d3e4fe",
+                    dark: "#2d3449",
                 },
             },
             borderRadius: {
