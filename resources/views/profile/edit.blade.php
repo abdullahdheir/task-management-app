@@ -27,25 +27,25 @@
 @section('content')
     <div class="max-w-container-max mx-auto">
         <!-- Breadcrumbs -->
-        <nav class="flex items-center gap-2 mb-stack-lg text-on-surface-variant font-label-md text-label-md">
+        <nav class="flex items-center gap-2 mb-stack-lg text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark font-label-md text-label-md">
             <a href="{{ route('profile.show') }} ">
-                <span class="cursor-pointer hover:text-primary transition-colors">Profile</span></a>
+                <span class="cursor-pointer hover:text-primary dark:hover:text-primary-dark dark:text-primary-dark transition-colors">Profile</span></a>
             <span class="material-symbols-outlined text-[16px]">chevron_right</span>
-            <span class="text-primary font-bold">Edit</span>
+            <span class="text-primary dark:text-primary-dark font-bold">Edit</span>
         </nav>
         <header class="mb-stack-lg flex items-center justify-between">
             <div>
-                <h2 class="font-headline-lg text-headline-lg text-on-surface">Edit Profile</h2>
-                <p class="font-body-md text-body-md text-on-surface-variant mt-1">Manage your personal information and how
+                <h2 class="font-headline-lg text-headline-lg text-on-surface dark:text-on-surface-dark">Edit Profile</h2>
+                <p class="font-body-md text-body-md text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark mt-1">Manage your personal information and how
                     you appear to others.</p>
             </div>
             <div class="flex items-center gap-2">
                 <button @click="window.history.back();"
-                    class="px-4 py-2 text-on-surface-variant font-label-md text-label-md hover:bg-surface-container-high rounded-lg transition-colors active:scale-95">
+                    class="px-4 py-2 text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark font-label-md text-label-md hover:bg-surface dark:bg-surface-dark-container-high rounded-lg transition-colors active:scale-95">
                     Discard
                 </button>
                 <button form="editProfile"
-                    class="px-6 py-2 bg-primary text-on-primary font-label-md text-label-md rounded-lg shadow-sm hover:opacity-90 active:scale-95 transition-all">
+                    class="px-6 py-2 bg-primary dark:bg-primary-dark text-on-primary dark:text-on-primary-dark font-label-md text-label-md rounded-lg shadow-sm hover:opacity-90 active:scale-95 transition-all">
                     Save Changes
                 </button>
             </div>
@@ -56,13 +56,13 @@
             @csrf
             @method('PUT')
             <!-- Profile Picture Section -->
-            <section class="bg-surface p-stack-lg rounded-xl border border-outline-variant shadow-sm"
+            <section class="bg-surface dark:bg-surface-dark p-stack-lg rounded-xl border border-outline dark:border-outline-dark-variant dark:border-outline dark:border-outline-dark-variant-dark shadow-sm"
                 x-data="{
                     avatarUrl: '{{ $user->avatar_url }}',
                     defaultAvatar: 'https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&size=150',
                     isRemoved: false
                 }">
-                <h3 class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant mb-stack-md">Profile
+                <h3 class="font-label-md text-label-md uppercase tracking-wider text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark mb-stack-md">Profile
                     Picture</h3>
                 <div class="flex items-center gap-stack-lg">
                     <div class="relative group">
@@ -71,7 +71,7 @@
                                 alt="Avatar" id="avatarPreview" />
                         </div>
                         <button type="button" @click="$refs.avatarInput.click()"
-                            class="absolute bottom-0 right-0 w-8 h-8 bg-primary text-on-primary rounded-full flex items-center justify-center border-2 border-surface shadow-md hover:scale-110 transition-transform">
+                            class="absolute bottom-0 right-0 w-8 h-8 bg-primary dark:bg-primary-dark text-on-primary dark:text-on-primary-dark rounded-full flex items-center justify-center border-2 border-surface shadow-md hover:scale-110 transition-transform">
                             <span class="material-symbols-outlined text-[18px]">edit</span>
                         </button>
                     </div>
@@ -88,51 +88,51 @@
                             <input type="hidden" name="remove_avatar" :value="isRemoved ? '1' : '0'">
 
                             <button type="button" @click="$refs.avatarInput.click()"
-                                class="px-4 py-2 bg-surface-container-high text-on-surface font-label-md text-label-md rounded-lg hover:bg-surface-container-highest transition-colors active:scale-95 border border-outline-variant">
+                                class="px-4 py-2 bg-surface dark:bg-surface-dark-container-high text-on-surface dark:text-on-surface-dark font-label-md text-label-md rounded-lg hover:bg-surface dark:bg-surface-dark-container-highest transition-colors active:scale-95 border border-outline dark:border-outline-dark-variant dark:border-outline dark:border-outline-dark-variant-dark">
                                 Upload New
                             </button>
 
                             <button type="button" @click="isRemoved = true; $refs.avatarInput.value = '';"
-                                class="px-4 py-2 text-error font-label-md text-label-md rounded-lg hover:bg-error-container transition-colors active:scale-95">
+                                class="px-4 py-2 text-error dark:text-error-dark font-label-md text-label-md rounded-lg hover:bg-error dark:bg-error-dark-container dark:bg-error dark:bg-error-dark-container-dark transition-colors active:scale-95">
                                 Remove
                             </button>
                         </div>
-                        <p class="font-label-sm text-label-sm text-on-surface-variant">Recommended: Square JPG or PNG, at
+                        <p class="font-label-sm text-label-sm text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark">Recommended: Square JPG or PNG, at
                             least 400x400px.</p>
                     </div>
                 </div>
             </section>
             <!-- Personal Information Section -->
-            <section class="bg-surface p-stack-lg rounded-xl border border-outline-variant shadow-sm">
-                <h3 class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant mb-stack-md">
+            <section class="bg-surface dark:bg-surface-dark p-stack-lg rounded-xl border border-outline dark:border-outline-dark-variant dark:border-outline dark:border-outline-dark-variant-dark shadow-sm">
+                <h3 class="font-label-md text-label-md uppercase tracking-wider text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark mb-stack-md">
                     Personal Details</h3>
                 <div class="grid grid-cols-2 gap-stack-lg">
                     <!-- Full Name -->
                     <div class="flex flex-col gap-1">
-                        <label class="font-label-md text-label-md text-on-surface-variant px-1">Full Name</label>
+                        <label class="font-label-md text-label-md text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark px-1">Full Name</label>
                         <input
-                            class="w-full px-4 py-2.5 bg-background border border-outline-variant rounded-lg font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
+                            class="w-full px-4 py-2.5 bg-background dark:bg-background-dark border border-outline dark:border-outline-dark-variant dark:border-outline dark:border-outline-dark-variant-dark rounded-lg font-body-md text-body-md focus:outline-none focus:border-primary dark:focus:border-primary-dark dark:border-primary-dark focus:ring-1 focus:ring-primary dark:focus:ring-primary-dark transition-all"
                             type="text" value="{{ $user->name }}" name="name" required />
                     </div>
                     <!-- Email Address -->
                     <div class="flex flex-col gap-1">
-                        <label class="font-label-md text-label-md text-on-surface-variant px-1">Email Address</label>
+                        <label class="font-label-md text-label-md text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark px-1">Email Address</label>
                         <input
-                            class="w-full px-4 py-2.5 bg-background border border-outline-variant rounded-lg font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
+                            class="w-full px-4 py-2.5 bg-background dark:bg-background-dark border border-outline dark:border-outline-dark-variant dark:border-outline dark:border-outline-dark-variant-dark rounded-lg font-body-md text-body-md focus:outline-none focus:border-primary dark:focus:border-primary-dark dark:border-primary-dark focus:ring-1 focus:ring-primary dark:focus:ring-primary-dark transition-all"
                             type="email" value="{{ $user->email }}" name="email" required />
                     </div>
                     <!-- Job Title -->
                     <div class="flex flex-col gap-1">
-                        <label class="font-label-md text-label-md text-on-surface-variant px-1">Job Title</label>
+                        <label class="font-label-md text-label-md text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark px-1">Job Title</label>
                         <input
-                            class="w-full px-4 py-2.5 bg-background border border-outline-variant rounded-lg font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
+                            class="w-full px-4 py-2.5 bg-background dark:bg-background-dark border border-outline dark:border-outline-dark-variant dark:border-outline dark:border-outline-dark-variant-dark rounded-lg font-body-md text-body-md focus:outline-none focus:border-primary dark:focus:border-primary-dark dark:border-primary-dark focus:ring-1 focus:ring-primary dark:focus:ring-primary-dark transition-all"
                             type="text" value="{{ $user->job_title }}" name="job_title" required />
                     </div>
                     <!-- Department -->
                     <div class="flex flex-col gap-1">
-                        <label class="font-label-md text-label-md text-on-surface-variant px-1">Department</label>
+                        <label class="font-label-md text-label-md text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark px-1">Department</label>
                         <select name="department"
-                            class="w-full px-4 py-2.5 bg-background border border-outline-variant rounded-lg font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all appearance-none cursor-pointer">
+                            class="w-full px-4 py-2.5 bg-background dark:bg-background-dark border border-outline dark:border-outline-dark-variant dark:border-outline dark:border-outline-dark-variant-dark rounded-lg font-body-md text-body-md focus:outline-none focus:border-primary dark:focus:border-primary-dark dark:border-primary-dark focus:ring-1 focus:ring-primary dark:focus:ring-primary-dark transition-all appearance-none cursor-pointer">
                             @foreach ($user->department::cases() as $department)
                                 <option value="{{ $department }}" @selected($user->department === $department)
                                     {{ $user->department === $department ? 'selected' : '' }}>
@@ -143,37 +143,37 @@
                     </div>
                     <!-- Location -->
                     <div class="col-span-2 flex flex-col gap-1">
-                        <label class="font-label-md text-label-md text-on-surface-variant px-1">Location</label>
+                        <label class="font-label-md text-label-md text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark px-1">Location</label>
                         <div class="relative">
                             <span
-                                class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">location_on</span>
+                                class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark text-[20px]">location_on</span>
                             <input
-                                class="w-full pl-10 pr-4 py-2.5 bg-background border border-outline-variant rounded-lg font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
+                                class="w-full pl-10 pr-4 py-2.5 bg-background dark:bg-background-dark border border-outline dark:border-outline-dark-variant dark:border-outline dark:border-outline-dark-variant-dark rounded-lg font-body-md text-body-md focus:outline-none focus:border-primary dark:focus:border-primary-dark dark:border-primary-dark focus:ring-1 focus:ring-primary dark:focus:ring-primary-dark transition-all"
                                 type="text" value="{{ $user->location }}" name="location" />
                         </div>
                     </div>
                 </div>
             </section>
             <!-- Bio Section -->
-            <section class="bg-surface p-stack-lg rounded-xl border border-outline-variant shadow-sm">
-                <h3 class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant mb-stack-md">About
+            <section class="bg-surface dark:bg-surface-dark p-stack-lg rounded-xl border border-outline dark:border-outline-dark-variant dark:border-outline dark:border-outline-dark-variant-dark shadow-sm">
+                <h3 class="font-label-md text-label-md uppercase tracking-wider text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark mb-stack-md">About
                     Me</h3>
                 <div class="flex flex-col gap-1">
-                    <label class="font-label-md text-label-md text-on-surface-variant px-1">Short Bio</label>
+                    <label class="font-label-md text-label-md text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark px-1">Short Bio</label>
                     <textarea name="bio"
-                        class="w-full px-4 py-2.5 bg-background border border-outline-variant rounded-lg font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all resize-none"
+                        class="w-full px-4 py-2.5 bg-background dark:bg-background-dark border border-outline dark:border-outline-dark-variant dark:border-outline dark:border-outline-dark-variant-dark rounded-lg font-body-md text-body-md focus:outline-none focus:border-primary dark:focus:border-primary-dark dark:border-primary-dark focus:ring-1 focus:ring-primary dark:focus:ring-primary-dark transition-all resize-none"
                         rows="4">{{ $user->bio }}</textarea>
-                    <p class="font-label-sm text-label-sm text-on-surface-variant mt-1 text-right">164 / 250 characters</p>
+                    <p class="font-label-sm text-label-sm text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark mt-1 text-right">164 / 250 characters</p>
                 </div>
             </section>
             <!-- Action Footer -->
             <div class="flex items-center justify-end gap-stack-md pt-stack-md mb-24">
                 <button @click="window.history.back();"
-                    class="px-8 py-3 text-on-surface-variant font-label-md text-label-md hover:bg-surface-container-high rounded-lg transition-colors active:scale-95 border border-outline-variant">
+                    class="px-8 py-3 text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark font-label-md text-label-md hover:bg-surface dark:bg-surface-dark-container-high rounded-lg transition-colors active:scale-95 border border-outline dark:border-outline-dark-variant dark:border-outline dark:border-outline-dark-variant-dark">
                     Cancel
                 </button>
                 <button type="submit"
-                    class="px-12 py-3 bg-primary text-on-primary font-label-md text-label-md rounded-lg shadow-md hover:shadow-lg hover:opacity-90 active:scale-95 transition-all flex items-center gap-2">
+                    class="px-12 py-3 bg-primary dark:bg-primary-dark text-on-primary dark:text-on-primary-dark font-label-md text-label-md rounded-lg shadow-md hover:shadow-lg hover:opacity-90 active:scale-95 transition-all flex items-center gap-2">
                     <span class="material-symbols-outlined text-[18px]">save</span>
                     Save Changes
                 </button>
@@ -188,10 +188,10 @@
         // Simple input focus effects and active state handling
         document.querySelectorAll('input, select, textarea').forEach(el => {
             el.addEventListener('focus', () => {
-                el.parentElement.querySelector('label').classList.add('text-primary');
+                el.parentElement.querySelector('label').classList.add('text-primary dark:text-primary-dark');
             });
             el.addEventListener('blur', () => {
-                el.parentElement.querySelector('label').classList.remove('text-primary');
+                el.parentElement.querySelector('label').classList.remove('text-primary dark:text-primary-dark');
             });
         });
 

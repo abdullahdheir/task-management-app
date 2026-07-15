@@ -13,12 +13,12 @@
     <!-- Content Header -->
     <header class="max-w-[800px] mx-auto mb-stack-lg flex items-center justify-between">
         <div>
-            <h2 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Create Project</h2>
-            <p class="font-body-md text-body-md text-on-surface-variant mt-1">Define your scope, timeline, and team to
+            <h2 class="font-headline-lg text-headline-lg text-on-surface dark:text-on-surface-dark tracking-tight">Create Project</h2>
+            <p class="font-body-md text-body-md text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark mt-1">Define your scope, timeline, and team to
                 get started.</p>
         </div>
         <button
-            class="flex items-center gap-2 px-4 py-2 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors cursor-pointer"
+            class="flex items-center gap-2 px-4 py-2 text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark hover:bg-surface dark:bg-surface-dark-container-high rounded-lg transition-colors cursor-pointer"
             onclick="window.history.back()">
             <span class="material-symbols-outlined">close</span>
             <span class="font-label-md text-label-md">Cancel</span>
@@ -99,18 +99,18 @@
                 <!-- Basic Info -->
                 <div class="space-y-stack-lg">
                     <div class="flex flex-col gap-2">
-                        <label class="font-label-md text-label-md text-on-surface-variant" for="project_name">Project
+                        <label class="font-label-md text-label-md text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark" for="project_name">Project
                             Name</label>
                         <input
-                            class="w-full h-12 px-4 rounded-lg border border-outline-variant bg-white text-body-lg font-body-lg transition-all"
+                            class="w-full h-12 px-4 rounded-lg border border-outline dark:border-outline-dark-variant dark:border-outline dark:border-outline-dark-variant-dark bg-white dark:bg-surface-container-low-dark text-body-lg font-body-lg transition-all"
                             id="project_name" x-model="name" placeholder="e.g., Q4 Marketing Campaign" required=""
                             type="text" />
                     </div>
                     <div class="flex flex-col gap-2">
-                        <label class="font-label-md text-label-md text-on-surface-variant"
+                        <label class="font-label-md text-label-md text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark"
                             for="project_description">Description</label>
                         <textarea
-                            class="w-full p-4 rounded-lg border border-outline-variant bg-white text-body-md font-body-md transition-all resize-none"
+                            class="w-full p-4 rounded-lg border border-outline dark:border-outline-dark-variant dark:border-outline dark:border-outline-dark-variant-dark bg-white dark:bg-surface-container-low-dark text-body-md font-body-md transition-all resize-none"
                             id="project_description" x-model="description" placeholder="Describe the objectives and key deliverables..."
                             rows="3"></textarea>
                     </div>
@@ -119,49 +119,49 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-stack-lg">
                     <!-- Timeline -->
                     <div class="space-y-4">
-                        <span class="font-label-md text-label-md text-on-surface-variant">Project Timeline</span>
+                        <span class="font-label-md text-label-md text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark">Project Timeline</span>
                         <div class="flex items-center gap-3">
                             <div class="flex-1 flex flex-col gap-2">
                                 <input
-                                    class="w-full h-12 px-4 rounded-lg border border-outline-variant bg-white text-body-md"
+                                    class="w-full h-12 px-4 rounded-lg border border-outline dark:border-outline-dark-variant dark:border-outline dark:border-outline-dark-variant-dark bg-white dark:bg-surface-container-low-dark text-body-md"
                                     x-model="startDate" type="date" />
                             </div>
-                            <span class="text-on-surface-variant">
+                            <span class="text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark">
                                 <span class="material-symbols-outlined">arrow_forward</span>
                             </span>
                             <div class="flex-1 flex flex-col gap-2">
                                 <input
-                                    class="w-full h-12 px-4 rounded-lg border border-outline-variant bg-white text-body-md"
+                                    class="w-full h-12 px-4 rounded-lg border border-outline dark:border-outline-dark-variant dark:border-outline dark:border-outline-dark-variant-dark bg-white dark:bg-surface-container-low-dark text-body-md"
                                     x-model="endDate" type="date" />
                             </div>
                         </div>
                     </div>
                     <!-- Color Label -->
                     <div class="space-y-4">
-                        <span class="font-label-md text-label-md text-on-surface-variant">Color Label</span>
+                        <span class="font-label-md text-label-md text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark">Color Label</span>
                         <div class="flex flex-wrap gap-3">
                             <label class="relative cursor-pointer group">
                                 <input x-model="colorLabel" value="indigo" class="peer hidden" type="radio" />
                                 <div
-                                    class="w-10 h-10 rounded-full bg-primary ring-offset-2 peer-checked:ring-2 ring-primary transition-all">
+                                    class="w-10 h-10 rounded-full bg-primary dark:bg-primary-dark ring-offset-2 peer-checked:ring-2 ring-primary transition-all">
                                 </div>
                             </label>
                             <label class="relative cursor-pointer group">
                                 <input x-model="colorLabel" value="emerald" class="peer hidden" type="radio" />
                                 <div
-                                    class="w-10 h-10 rounded-full bg-secondary ring-offset-2 peer-checked:ring-2 ring-secondary transition-all">
+                                    class="w-10 h-10 rounded-full bg-secondary dark:bg-secondary-dark ring-offset-2 peer-checked:ring-2 ring-secondary transition-all">
                                 </div>
                             </label>
                             <label class="relative cursor-pointer group">
                                 <input x-model="colorLabel" value="amber" class="peer hidden" type="radio" />
                                 <div
-                                    class="w-10 h-10 rounded-full bg-tertiary-container ring-offset-2 peer-checked:ring-2 ring-tertiary-container transition-all">
+                                    class="w-10 h-10 rounded-full bg-tertiary dark:bg-tertiary-dark-container dark:bg-tertiary dark:bg-tertiary-dark-container-dark ring-offset-2 peer-checked:ring-2 ring-tertiary-container transition-all">
                                 </div>
                             </label>
                             <label class="relative cursor-pointer group">
                                 <input x-model="colorLabel" value="rose" class="peer hidden" type="radio" />
                                 <div
-                                    class="w-10 h-10 rounded-full bg-error ring-offset-2 peer-checked:ring-2 ring-error transition-all">
+                                    class="w-10 h-10 rounded-full bg-error dark:bg-error-dark ring-offset-2 peer-checked:ring-2 ring-error transition-all">
                                 </div>
                             </label>
                             <label class="relative cursor-pointer group">
@@ -176,16 +176,16 @@
                 <!-- Team Members -->
                 <div class="space-y-4">
                     <div class="flex items-center justify-between">
-                        <label class="font-label-md text-label-md text-on-surface-variant">Team Members</label>
-                        <span class="text-label-sm font-label-sm text-primary"
+                        <label class="font-label-md text-label-md text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark">Team Members</label>
+                        <span class="text-label-sm font-label-sm text-primary dark:text-primary-dark"
                             x-text="members.length + ' members added'"></span>
                     </div>
                     <div class="relative">
-                        <div class="absolute left-4 top-1/2 -translate-y-1/2 text-outline">
+                        <div class="absolute left-4 top-1/2 -translate-y-1/2 text-outline dark:text-outline-dark">
                             <span class="material-symbols-outlined">search</span>
                         </div>
                         <input
-                            class="w-full h-12 pl-12 pr-4 rounded-lg border border-outline-variant bg-white text-body-md transition-all"
+                            class="w-full h-12 pl-12 pr-4 rounded-lg border border-outline dark:border-outline-dark-variant dark:border-outline dark:border-outline-dark-variant-dark bg-white dark:bg-surface-container-low-dark text-body-md transition-all"
                             x-model="searchQuery" @input="searchUsers()" @click.outside="searchOpen = false"
                             placeholder="Search by name or email..." type="text" />
 
@@ -195,23 +195,23 @@
                             x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
                             x-transition:leave="transition ease-in duration-75"
                             x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
-                            class="absolute top-full left-0 right-0 mt-2 bg-white border border-outline-variant rounded-lg shadow-xl z-50 overflow-hidden"
+                            class="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-surface-container-low-dark border border-outline dark:border-outline-dark-variant dark:border-outline dark:border-outline-dark-variant-dark rounded-lg shadow-xl z-50 overflow-hidden"
                             style="display:none">
                             <template x-for="user in searchResults" :key="user.id">
                                 <button @click="addMember(user)"
-                                    class="w-full flex items-center gap-3 px-4 py-3 hover:bg-surface-container-low transition-colors text-left">
+                                    class="w-full flex items-center gap-3 px-4 py-3 hover:bg-surface dark:bg-surface-dark-container-low transition-colors text-left">
                                     <div
-                                        class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center font-bold text-primary overflow-hidden">
+                                        class="w-8 h-8 rounded-full bg-surface dark:bg-surface-dark-container-highest flex items-center justify-center font-bold text-primary dark:text-primary-dark overflow-hidden">
                                         <img x-show="user.avatar" :src="user.avatar"
                                             class="w-full h-full object-cover" alt="" />
                                         <span x-show="!user.avatar"
                                             x-text="user.name.substring(0,2).toUpperCase()"></span>
                                     </div>
                                     <div class="flex-1">
-                                        <p class="font-body-md text-on-surface" x-text="user.name"></p>
-                                        <p class="text-xs text-on-surface-variant" x-text="user.email"></p>
+                                        <p class="font-body-md text-on-surface dark:text-on-surface-dark" x-text="user.name"></p>
+                                        <p class="text-xs text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark" x-text="user.email"></p>
                                     </div>
-                                    <span class="material-symbols-outlined text-primary">add</span>
+                                    <span class="material-symbols-outlined text-primary dark:text-primary-dark">add</span>
                                 </button>
                             </template>
                         </div>
@@ -220,23 +220,23 @@
                     <div class="flex flex-wrap gap-2 pt-2">
                         <template x-for="(member, index) in members" :key="member.id">
                             <div
-                                class="flex items-center gap-2 bg-surface-container-low border border-outline-variant px-3 py-1.5 rounded-full">
+                                class="flex items-center gap-2 bg-surface dark:bg-surface-dark-container-low border border-outline dark:border-outline-dark-variant dark:border-outline dark:border-outline-dark-variant-dark px-3 py-1.5 rounded-full">
                                 <div class="w-6 h-6 rounded-full overflow-hidden">
                                     <img x-show="member.avatar" :src="member.avatar" class="w-full h-full object-cover"
                                         alt="" />
                                     <div x-show="!member.avatar"
-                                        class="w-full h-full bg-surface-container-highest flex items-center justify-center font-bold text-primary text-xs">
+                                        class="w-full h-full bg-surface dark:bg-surface-dark-container-highest flex items-center justify-center font-bold text-primary dark:text-primary-dark text-xs">
                                         <span x-text="member.name.substring(0,2).toUpperCase()"></span>
                                     </div>
                                 </div>
                                 <span class="text-body-md font-medium" x-text="member.name"></span>
                                 <button @click="removeMember(index)"
-                                    class="text-on-surface-variant hover:text-error transition-colors" type="button">
+                                    class="text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark hover:text-error dark:text-error-dark transition-colors" type="button">
                                     <span class="material-symbols-outlined text-[18px]">close</span>
                                 </button>
                             </div>
                         </template>
-                        <div x-show="members.length === 0" class="text-sm text-on-surface-variant italic">
+                        <div x-show="members.length === 0" class="text-sm text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark italic">
                             No members added yet
                         </div>
                     </div>
@@ -246,11 +246,11 @@
                 <!-- Form Actions -->
                 <div class="flex items-center justify-end gap-4">
                     <button
-                        class="px-6 py-3 font-label-md text-label-md text-primary hover:bg-surface-container-low rounded-lg transition-colors"
+                        class="px-6 py-3 font-label-md text-label-md text-primary dark:text-primary-dark hover:bg-surface dark:bg-surface-dark-container-low rounded-lg transition-colors"
                         type="button">Save as Draft</button>
                     <button :disabled="loading"
                         :class="loading ? 'opacity-70 cursor-not-allowed' : 'hover:brightness-110'"
-                        class="px-8 py-3 bg-primary text-white font-label-md text-label-md rounded-lg shadow-md active:scale-95 transition-all"
+                        class="px-8 py-3 bg-primary dark:bg-primary-dark text-white font-label-md text-label-md rounded-lg shadow-md active:scale-95 transition-all"
                         type="submit">
                         <span x-show="!loading">Create Project</span>
                         <span x-show="loading" class="flex items-center gap-2">
@@ -270,12 +270,12 @@
         </section>
         <!-- Contextual Tip Card -->
         <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-stack-lg">
-            <div class="p-6 bg-secondary-container/10 border border-secondary-container/30 rounded-xl">
-                <div class="text-secondary mb-2">
+            <div class="p-6 bg-secondary dark:bg-secondary-dark-container dark:bg-secondary dark:bg-secondary-dark-container-dark/10 border border-secondary dark:border-secondary-dark-container/30 rounded-xl">
+                <div class="text-secondary dark:text-secondary-dark mb-2">
                     <span class="material-symbols-outlined">lightbulb</span>
                 </div>
-                <h4 class="font-label-md text-label-md text-on-secondary-fixed-variant">Pro Tip</h4>
-                <p class="text-body-md text-on-surface-variant mt-1">Timeline helps 'Focus' automatically prioritize
+                <h4 class="font-label-md text-label-md text-on-secondary dark:text-on-secondary-dark-fixed dark:text-on-secondary dark:text-on-secondary-dark-fixed-dark-variant dark:text-on-secondary dark:text-on-secondary-dark-fixed dark:text-on-secondary dark:text-on-secondary-dark-fixed-dark-variant-dark">Pro Tip</h4>
+                <p class="text-body-md text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark mt-1">Timeline helps 'Focus' automatically prioritize
                     tasks based on deadlines.</p>
             </div>
             <div class="md:col-span-2 relative rounded-xl overflow-hidden group cursor-pointer">

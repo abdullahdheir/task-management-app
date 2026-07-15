@@ -7,19 +7,19 @@
     {{-- Header --}}
     <div class="flex flex-col md:flex-row md:items-center justify-between mb-stack-lg gap-4">
         <div>
-            <nav class="flex items-center gap-2 mb-1 text-on-surface-variant font-label-sm text-label-sm">
-                <a href="{{ route('teams.overview') }}" class="hover:text-primary transition-colors">Teams</a>
+            <nav class="flex items-center gap-2 mb-1 text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark font-label-sm text-label-sm">
+                <a href="{{ route('teams.overview') }}" class="hover:text-primary dark:hover:text-primary-dark dark:text-primary-dark transition-colors">Teams</a>
                 <span class="material-symbols-outlined text-xs">chevron_right</span>
-                <span class="text-primary font-bold">{{ $team->name }}</span>
+                <span class="text-primary dark:text-primary-dark font-bold">{{ $team->name }}</span>
             </nav>
-            <h2 class="font-headline-lg text-headline-lg text-on-surface">{{ $team->name }}</h2>
-            <p class="font-body-md text-body-md text-on-surface-variant mt-1">{{ $team->description ?? 'No description.' }}
+            <h2 class="font-headline-lg text-headline-lg text-on-surface dark:text-on-surface-dark">{{ $team->name }}</h2>
+            <p class="font-body-md text-body-md text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark mt-1">{{ $team->description ?? 'No description.' }}
             </p>
         </div>
         <div class="flex gap-stack-md">
             @if (auth()->id() === $team->owner_id)
                 <a href="{{ route('teams.edit', $team) }}"
-                    class="px-4 py-2 border border-outline-variant text-on-surface-variant rounded-lg font-label-md hover:bg-surface-container-low transition-colors flex items-center gap-2">
+                    class="px-4 py-2 border border-outline dark:border-outline-dark-variant dark:border-outline dark:border-outline-dark-variant-dark text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark rounded-lg font-label-md hover:bg-surface dark:bg-surface-dark-container-low transition-colors flex items-center gap-2">
                     <span class="material-symbols-outlined text-[18px]">edit</span>
                     Edit Team
                 </a>
@@ -36,7 +36,7 @@
                                 }
                             });
                     }"
-                    class="px-4 py-2 border border-error text-error rounded-lg font-label-md hover:bg-error-container/20 transition-colors flex items-center gap-2">
+                    class="px-4 py-2 border border-error dark:border-error-dark text-error dark:text-error-dark rounded-lg font-label-md hover:bg-error dark:bg-error-dark-container dark:bg-error dark:bg-error-dark-container-dark/20 transition-colors flex items-center gap-2">
                     <span class="material-symbols-outlined text-[18px]">logout</span>
                     Leave Team
                 </button>
@@ -46,17 +46,17 @@
 
     {{-- Stats Row --}}
     <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter-desktop mb-stack-lg">
-        <div class="bg-surface-container-lowest border border-outline-variant p-6 rounded-xl">
-            <p class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Members</p>
-            <h3 class="text-headline-lg font-headline-lg text-primary">{{ $members->count() + 1 }}</h3>
-            <p class="text-label-sm text-on-surface-variant mt-1">Including owner</p>
+        <div class="bg-surface dark:bg-surface-dark-container-lowest border border-outline dark:border-outline-dark-variant dark:border-outline dark:border-outline-dark-variant-dark p-6 rounded-xl">
+            <p class="text-label-sm font-label-sm text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark uppercase tracking-wider mb-1">Members</p>
+            <h3 class="text-headline-lg font-headline-lg text-primary dark:text-primary-dark">{{ $members->count() + 1 }}</h3>
+            <p class="text-label-sm text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark mt-1">Including owner</p>
         </div>
-        <div class="bg-surface-container-lowest border border-outline-variant p-6 rounded-xl">
-            <p class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Projects</p>
-            <h3 class="text-headline-lg font-headline-lg text-secondary">{{ $projects->count() }}</h3>
-            <p class="text-label-sm text-on-surface-variant mt-1">Active in this team</p>
+        <div class="bg-surface dark:bg-surface-dark-container-lowest border border-outline dark:border-outline-dark-variant dark:border-outline dark:border-outline-dark-variant-dark p-6 rounded-xl">
+            <p class="text-label-sm font-label-sm text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark uppercase tracking-wider mb-1">Projects</p>
+            <h3 class="text-headline-lg font-headline-lg text-secondary dark:text-secondary-dark">{{ $projects->count() }}</h3>
+            <p class="text-label-sm text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark mt-1">Active in this team</p>
         </div>
-        <div class="bg-primary p-6 rounded-xl text-on-primary relative overflow-hidden">
+        <div class="bg-primary dark:bg-primary-dark p-6 rounded-xl text-on-primary dark:text-on-primary-dark relative overflow-hidden">
             <div class="relative z-10">
                 <p class="text-label-sm font-label-sm opacity-80 uppercase tracking-wider mb-1">Team Owner</p>
                 <div class="flex items-center gap-3 mt-2">
@@ -81,15 +81,15 @@
 
         {{-- Projects Column --}}
         <div class="lg:col-span-2 space-y-gutter-desktop">
-            <div class="bg-surface-container-lowest border border-outline-variant p-6 rounded-xl">
+            <div class="bg-surface dark:bg-surface-dark-container-lowest border border-outline dark:border-outline-dark-variant dark:border-outline dark:border-outline-dark-variant-dark p-6 rounded-xl">
                 <div class="flex justify-between items-center mb-6">
-                    <h3 class="font-headline-md text-headline-md text-on-surface flex items-center gap-2">
-                        <span class="material-symbols-outlined text-primary">folder</span>
+                    <h3 class="font-headline-md text-headline-md text-on-surface dark:text-on-surface-dark flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary dark:text-primary-dark">folder</span>
                         Projects
                     </h3>
                     @if (auth()->id() === $team->owner_id)
                         <a href="{{ route('projects.create') }}"
-                            class="px-3 py-1 bg-primary text-white rounded-md text-label-sm hover:opacity-90 transition-opacity">
+                            class="px-3 py-1 bg-primary dark:bg-primary-dark text-white rounded-md text-label-sm hover:opacity-90 transition-opacity">
                             + New Project
                         </a>
                     @endif
@@ -97,29 +97,29 @@
                 <div class="space-y-3">
                     @forelse($projects as $project)
                         <a href="{{ route('projects.show', $project) }}"
-                            class="flex items-center justify-between p-4 bg-white border border-outline-variant rounded-lg hover:shadow-sm hover:-translate-y-0.5 transition-all group">
+                            class="flex items-center justify-between p-4 bg-white dark:bg-surface-container-low-dark border border-outline dark:border-outline-dark-variant dark:border-outline dark:border-outline-dark-variant-dark rounded-lg hover:shadow-sm hover:-translate-y-0.5 transition-all group">
                             <div class="flex items-center gap-3">
-                                <div class="p-2 bg-secondary-container/20 rounded-lg text-secondary">
+                                <div class="p-2 bg-secondary dark:bg-secondary-dark-container dark:bg-secondary dark:bg-secondary-dark-container-dark/20 rounded-lg text-secondary dark:text-secondary-dark">
                                     <span class="material-symbols-outlined text-[18px]">folder</span>
                                 </div>
                                 <div>
-                                    <p class="font-body-lg text-on-surface group-hover:text-primary transition-colors">
+                                    <p class="font-body-lg text-on-surface dark:text-on-surface-dark group-hover:text-primary dark:hover:text-primary-dark dark:text-primary-dark transition-colors">
                                         {{ $project->name }}
                                     </p>
-                                    <p class="text-label-sm text-on-surface-variant">{{ $project->progress ?? 0 }}%
+                                    <p class="text-label-sm text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark">{{ $project->progress ?? 0 }}%
                                         complete</p>
                                 </div>
                             </div>
                             <div class="flex items-center gap-3">
-                                <div class="w-24 h-1.5 bg-surface-container rounded-full overflow-hidden">
-                                    <div class="h-full bg-secondary transition-all duration-700"
+                                <div class="w-24 h-1.5 bg-surface dark:bg-surface-dark-container rounded-full overflow-hidden">
+                                    <div class="h-full bg-secondary dark:bg-secondary-dark transition-all duration-700"
                                         style="width: {{ $project->progress ?? 0 }}%"></div>
                                 </div>
-                                <span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+                                <span class="material-symbols-outlined text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark">chevron_right</span>
                             </div>
                         </a>
                     @empty
-                        <div class="text-center py-8 text-on-surface-variant">
+                        <div class="text-center py-8 text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark">
                             <span class="material-symbols-outlined text-4xl mb-2">folder_open</span>
                             <p class="font-body-md">No projects yet.</p>
                         </div>
@@ -129,26 +129,26 @@
 
             {{-- Recent Activity --}}
             @if ($recentActivity->isNotEmpty())
-                <div class="bg-surface-container-lowest border border-outline-variant p-6 rounded-xl">
-                    <h3 class="font-headline-md text-headline-md text-on-surface flex items-center gap-2 mb-6">
-                        <span class="material-symbols-outlined text-primary">history</span>
+                <div class="bg-surface dark:bg-surface-dark-container-lowest border border-outline dark:border-outline-dark-variant dark:border-outline dark:border-outline-dark-variant-dark p-6 rounded-xl">
+                    <h3 class="font-headline-md text-headline-md text-on-surface dark:text-on-surface-dark flex items-center gap-2 mb-6">
+                        <span class="material-symbols-outlined text-primary dark:text-primary-dark">history</span>
                         Recent Activity
                     </h3>
                     <div class="space-y-4 relative">
-                        <div class="absolute left-[19px] top-4 bottom-4 w-0.5 bg-surface-container"></div>
+                        <div class="absolute left-[19px] top-4 bottom-4 w-0.5 bg-surface dark:bg-surface-dark-container"></div>
                         @foreach ($recentActivity as $activity)
                             <div class="relative flex gap-4">
                                 <div
-                                    class="z-10 w-10 h-10 rounded-full bg-white border-2 border-primary-container flex items-center justify-center shrink-0">
+                                    class="z-10 w-10 h-10 rounded-full bg-white dark:bg-surface-container-low-dark border-2 border-primary dark:border-primary-dark-container flex items-center justify-center shrink-0">
                                     <span
-                                        class="material-symbols-outlined text-primary text-[18px]">{{ $activity->icon ?? 'history' }}</span>
+                                        class="material-symbols-outlined text-primary dark:text-primary-dark text-[18px]">{{ $activity->icon ?? 'history' }}</span>
                                 </div>
                                 <div class="flex-1 pt-1">
-                                    <p class="text-body-md text-on-surface">
+                                    <p class="text-body-md text-on-surface dark:text-on-surface-dark">
                                         <span class="font-bold">{{ $activity->user->name ?? 'User' }}</span>
                                         {{ $activity->description ?? 'performed an action' }}
                                     </p>
-                                    <p class="text-label-sm text-on-surface-variant mt-0.5">
+                                    <p class="text-label-sm text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark mt-0.5">
                                         {{ $activity->created_at->diffForHumans() }}
                                     </p>
                                 </div>
@@ -161,9 +161,9 @@
 
         {{-- Members Column --}}
         <div class="space-y-gutter-desktop">
-            <div class="bg-surface-container-lowest border border-outline-variant p-6 rounded-xl">
-                <h3 class="font-headline-md text-headline-md text-on-surface flex items-center gap-2 mb-6">
-                    <span class="material-symbols-outlined text-primary">groups</span>
+            <div class="bg-surface dark:bg-surface-dark-container-lowest border border-outline dark:border-outline-dark-variant dark:border-outline dark:border-outline-dark-variant-dark p-6 rounded-xl">
+                <h3 class="font-headline-md text-headline-md text-on-surface dark:text-on-surface-dark flex items-center gap-2 mb-6">
+                    <span class="material-symbols-outlined text-primary dark:text-primary-dark">groups</span>
                     Members
                 </h3>
 
@@ -174,11 +174,11 @@
                             <img src="{{ $team->owner->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($team->owner->name) . '&size=40' }}"
                                 alt="{{ $team->owner->name }}" class="w-10 h-10 rounded-full object-cover">
                             <div class="flex-1">
-                                <p class="font-body-lg text-on-surface leading-tight">{{ $team->owner->name }}</p>
-                                <p class="text-label-sm text-on-surface-variant">Owner</p>
+                                <p class="font-body-lg text-on-surface dark:text-on-surface-dark leading-tight">{{ $team->owner->name }}</p>
+                                <p class="text-label-sm text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark">Owner</p>
                             </div>
                             <span
-                                class="px-2 py-0.5 bg-primary-container text-on-primary-container rounded font-label-sm text-label-sm">Owner</span>
+                                class="px-2 py-0.5 bg-primary dark:bg-primary-dark-container dark:bg-primary dark:bg-primary-dark-container-dark text-on-primary dark:text-on-primary-dark-container dark:text-on-primary dark:text-on-primary-dark-container-dark rounded font-label-sm text-label-sm">Owner</span>
                         </div>
                     @endif
 
@@ -188,15 +188,15 @@
                             <img src="{{ $member->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($member->name) . '&size=40' }}"
                                 alt="{{ $member->name }}" class="w-10 h-10 rounded-full object-cover">
                             <div class="flex-1">
-                                <p class="font-body-lg text-on-surface leading-tight">{{ $member->name }}</p>
-                                <p class="text-label-sm text-on-surface-variant">
+                                <p class="font-body-lg text-on-surface dark:text-on-surface-dark leading-tight">{{ $member->name }}</p>
+                                <p class="text-label-sm text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark">
                                     {{ ucfirst($member->pivot->role ?? 'member') }}
                                 </p>
                             </div>
                             @if (auth()->id() === $team->owner_id && auth()->id() !== $member->id)
                                 <div class="relative">
                                     <button @click.stop="open = !open"
-                                        class="material-symbols-outlined text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded-full hover:bg-surface-container">
+                                        class="material-symbols-outlined text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded-full hover:bg-surface dark:bg-surface-dark-container">
                                         more_vert
                                     </button>
                                     <div x-show="open" x-transition:enter="transition ease-out duration-100"
@@ -205,9 +205,9 @@
                                         x-transition:leave="transition ease-in duration-75"
                                         x-transition:leave-start="opacity-100 scale-100"
                                         x-transition:leave-end="opacity-0 scale-95"
-                                        class="absolute right-0 top-8 w-48 bg-surface border border-outline-variant rounded-xl shadow-xl z-50 overflow-hidden py-1"
+                                        class="absolute right-0 top-8 w-48 bg-surface dark:bg-surface-dark border border-outline dark:border-outline-dark-variant dark:border-outline dark:border-outline-dark-variant-dark rounded-xl shadow-xl z-50 overflow-hidden py-1"
                                         style="display:none">
-                                        <div class="border-t border-outline-variant my-1"></div>
+                                        <div class="border-t border-outline dark:border-outline-dark-variant dark:border-outline dark:border-outline-dark-variant-dark my-1"></div>
                                         <button
                                             @click="
                                                 open = false;
@@ -218,7 +218,7 @@
                                                             toast('Member removed');
                                                         });
                                                 }"
-                                            class="w-full flex items-center gap-3 px-4 py-2.5 text-error hover:bg-error-container/20 transition-colors font-label-md text-label-md">
+                                            class="w-full flex items-center gap-3 px-4 py-2.5 text-error dark:text-error-dark hover:bg-error dark:bg-error-dark-container dark:bg-error dark:bg-error-dark-container-dark/20 transition-colors font-label-md text-label-md">
                                             <span class="material-symbols-outlined text-[18px]">person_remove</span>
                                             Remove Member
                                         </button>
@@ -233,7 +233,7 @@
                 @if (auth()->id() === $team->owner_id)
                     <div x-data="{ showInvite: false, email: '', role: 'member', sending: false }" class="mt-6">
                         <button @click="showInvite = !showInvite"
-                            class="w-full py-2 border-2 border-dashed border-outline-variant text-on-surface-variant rounded-lg font-label-md flex items-center justify-center gap-2 hover:border-primary hover:text-primary transition-all">
+                            class="w-full py-2 border-2 border-dashed border-outline dark:border-outline-dark-variant dark:border-outline dark:border-outline-dark-variant-dark text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark rounded-lg font-label-md flex items-center justify-center gap-2 hover:border-primary dark:border-primary-dark hover:text-primary dark:hover:text-primary-dark dark:text-primary-dark transition-all">
                             <span class="material-symbols-outlined text-[18px]">person_add</span>
                             Invite Member
                         </button>
@@ -255,16 +255,16 @@
                                     .catch(() => toast('Something went wrong', 'error'))
                                     .finally(() => sending = false);
                             "
-                            class="mt-4 p-4 border border-outline-variant rounded-lg space-y-3 bg-surface-container-low">
+                            class="mt-4 p-4 border border-outline dark:border-outline-dark-variant dark:border-outline dark:border-outline-dark-variant-dark rounded-lg space-y-3 bg-surface dark:bg-surface-dark-container-low">
                             <div>
-                                <label class="block text-label-sm text-on-surface-variant mb-1">Email Address</label>
+                                <label class="block text-label-sm text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark mb-1">Email Address</label>
                                 <input type="email" x-model="email" required placeholder="name@company.com"
-                                    class="w-full px-3 py-1.5 rounded-lg border border-outline-variant bg-white text-body-md focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all">
+                                    class="w-full px-3 py-1.5 rounded-lg border border-outline dark:border-outline-dark-variant dark:border-outline dark:border-outline-dark-variant-dark bg-white dark:bg-surface-container-low-dark text-body-md focus:border-primary dark:focus:border-primary-dark dark:border-primary-dark focus:ring-1 focus:ring-primary dark:focus:ring-primary-dark outline-none transition-all">
                             </div>
                             <div>
-                                <label class="block text-label-sm text-on-surface-variant mb-1">Role</label>
+                                <label class="block text-label-sm text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark mb-1">Role</label>
                                 <select x-model="role"
-                                    class="w-full px-3 py-1.5 rounded-lg border border-outline-variant bg-white text-body-md">
+                                    class="w-full px-3 py-1.5 rounded-lg border border-outline dark:border-outline-dark-variant dark:border-outline dark:border-outline-dark-variant-dark bg-white dark:bg-surface-container-low-dark text-body-md">
                                     <option value="member">Member</option>
                                     <option value="admin">Admin</option>
                                     <option value="guest">Guest</option>
@@ -272,11 +272,11 @@
                             </div>
                             <div class="flex justify-end gap-2 pt-2">
                                 <button type="button" @click="showInvite = false" :disabled="sending"
-                                    class="px-3 py-1.5 border border-outline-variant rounded-lg text-label-md hover:bg-surface-container transition-colors disabled:opacity-50">
+                                    class="px-3 py-1.5 border border-outline dark:border-outline-dark-variant dark:border-outline dark:border-outline-dark-variant-dark rounded-lg text-label-md hover:bg-surface dark:bg-surface-dark-container transition-colors disabled:opacity-50">
                                     Cancel
                                 </button>
                                 <button type="submit" :disabled="sending"
-                                    class="px-4 py-1.5 bg-primary text-white rounded-lg text-label-md hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2">
+                                    class="px-4 py-1.5 bg-primary dark:bg-primary-dark text-white rounded-lg text-label-md hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2">
                                     <span x-show="!sending">Send Invite</span>
                                     <span x-show="sending" class="flex items-center gap-2">
                                         <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg"

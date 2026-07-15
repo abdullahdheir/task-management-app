@@ -33,41 +33,41 @@
     {{-- Calendar Controls --}}
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div class="flex items-center gap-4">
-            <h2 class="font-headline-lg text-headline-lg text-on-surface">
+            <h2 class="font-headline-lg text-headline-lg text-on-surface dark:text-on-surface-dark">
                 {{ $monthLabel ?? now()->format('F Y') }}
             </h2>
-            <div class="flex bg-surface-container-low rounded-lg p-1">
+            <div class="flex bg-surface dark:bg-surface-dark-container-low rounded-lg p-1">
                 <a href="{{ route('calendar.index', ['month' => $prevMonth ?? now()->subMonth()->format('Y-m')]) }}"
-                    class="p-1 hover:bg-surface-container-highest rounded-md transition-colors">
+                    class="p-1 hover:bg-surface dark:bg-surface-dark-container-highest rounded-md transition-colors">
                     <span class="material-symbols-outlined">chevron_left</span>
                 </a>
                 <a href="{{ route('calendar.index', ['month' => $nextMonth ?? now()->addMonth()->format('Y-m')]) }}"
-                    class="p-1 hover:bg-surface-container-highest rounded-md transition-colors">
+                    class="p-1 hover:bg-surface dark:bg-surface-dark-container-highest rounded-md transition-colors">
                     <span class="material-symbols-outlined">chevron_right</span>
                 </a>
             </div>
             <a href="{{ route('calendar.index') }}"
-                class="px-4 py-2 text-label-md font-bold text-primary hover:bg-primary-fixed rounded-lg transition-colors">
+                class="px-4 py-2 text-label-md font-bold text-primary dark:text-primary-dark hover:bg-primary dark:bg-primary-dark-fixed dark:bg-primary dark:bg-primary-dark-fixed-dark rounded-lg transition-colors">
                 Today
             </a>
         </div>
 
-        <div class="flex items-center gap-2 bg-surface-container-low p-1 rounded-xl">
+        <div class="flex items-center gap-2 bg-surface dark:bg-surface-dark-container-low p-1 rounded-xl">
             <button
-                class="px-6 py-2 rounded-lg text-label-md font-bold transition-all bg-surface shadow-sm text-primary">Month</button>
+                class="px-6 py-2 rounded-lg text-label-md font-bold transition-all bg-surface dark:bg-surface-dark shadow-sm text-primary dark:text-primary-dark">Month</button>
             <button
-                class="px-6 py-2 rounded-lg text-label-md font-medium text-on-surface-variant hover:text-on-surface transition-all">Week</button>
+                class="px-6 py-2 rounded-lg text-label-md font-medium text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark hover:text-on-surface dark:hover:text-on-surface-dark dark:text-on-surface-dark transition-all">Week</button>
         </div>
     </div>
 
     {{-- Calendar Grid --}}
-    <div class="bg-surface border border-outline-variant rounded-2xl shadow-sm overflow-hidden flex flex-col"
+    <div class="bg-surface dark:bg-surface-dark border border-outline dark:border-outline-dark-variant dark:border-outline dark:border-outline-dark-variant-dark rounded-2xl shadow-sm overflow-hidden flex flex-col"
         style="min-height: 600px;">
 
         {{-- Day Headers --}}
-        <div class="grid grid-cols-7 border-b border-outline-variant bg-surface-container-lowest">
+        <div class="grid grid-cols-7 border-b border-outline dark:border-outline-dark-variant dark:border-outline dark:border-outline-dark-variant-dark bg-surface dark:bg-surface-dark-container-lowest">
             @foreach (['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'] as $day)
-                <div class="py-3 text-center text-label-sm font-bold text-on-surface-variant">{{ $day }}</div>
+                <div class="py-3 text-center text-label-sm font-bold text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark">{{ $day }}</div>
             @endforeach
         </div>
 
@@ -79,13 +79,13 @@
                         ? Carbon::parse($monthLabel ?? now()->format('F Y'))->setDay($day['day'])
                         : null;
                 @endphp
-                <div class="border-r border-b border-outline-variant p-2 transition-colors cursor-pointer group min-h-[120px]
-                    {{ $day['current_month'] ? 'hover:bg-surface-container-low' : 'bg-surface-container-low opacity-40' }}
-                    {{ $day['is_today'] ? 'bg-primary-fixed/20' : '' }}"
+                <div class="border-r border-b border-outline dark:border-outline-dark-variant dark:border-outline dark:border-outline-dark-variant-dark p-2 transition-colors cursor-pointer group min-h-[120px]
+                    {{ $day['current_month'] ? 'hover:bg-surface dark:bg-surface-dark-container-low' : 'bg-surface dark:bg-surface-dark-container-low opacity-40' }}
+                    {{ $day['is_today'] ? 'bg-primary dark:bg-primary-dark-fixed dark:bg-primary dark:bg-primary-dark-fixed-dark/20' : '' }}"
                     @click="window.location.href = '{{ $dayDate ? route('tasks.index', ['due_from' => $dayDate->format('Y-m-d'), 'due_to' => $dayDate->format('Y-m-d')]) : '#' }}'">
 
                     <span
-                        class="text-label-md {{ $day['is_today'] ? 'font-black text-white bg-primary w-6 h-6 flex items-center justify-center rounded-full -ml-1' : 'font-bold' }}">
+                        class="text-label-md {{ $day['is_today'] ? 'font-black text-white bg-primary dark:bg-primary-dark w-6 h-6 flex items-center justify-center rounded-full -ml-1' : 'font-bold' }}">
                         {{ $day['day'] }}
                     </span>
 
@@ -103,8 +103,8 @@
             @empty
                 <div class="col-span-7 flex items-center justify-center py-12">
                     <div class="text-center">
-                        <span class="material-symbols-outlined text-on-surface-variant text-5xl mb-3">calendar_today</span>
-                        <p class="text-on-surface-variant font-body-md">No calendar data available</p>
+                        <span class="material-symbols-outlined text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark text-5xl mb-3">calendar_today</span>
+                        <p class="text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark font-body-md">No calendar data available</p>
                     </div>
                 </div>
             @endforelse

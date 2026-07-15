@@ -7,14 +7,14 @@
     {{-- Header --}}
     <div class="flex justify-between items-end mb-8">
         <div>
-            <h2 class="font-headline-lg text-headline-lg text-on-surface">Task List</h2>
-            <p class="font-body-md text-body-md text-on-surface-variant">
+            <h2 class="font-headline-lg text-headline-lg text-on-surface dark:text-on-surface-dark">Task List</h2>
+            <p class="font-body-md text-body-md text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark">
                 You have {{ $remainingCount }} tasks remaining for today.
             </p>
         </div>
         <div class="flex gap-stack-md">
             <a href="{{ route('tasks.create') }}"
-                class="px-4 py-2 bg-primary text-on-primary rounded-lg font-label-md text-label-md flex items-center gap-2 hover:opacity-90 active:scale-95 transition-all shadow-md">
+                class="px-4 py-2 bg-primary dark:bg-primary-dark text-on-primary dark:text-on-primary-dark rounded-lg font-label-md text-label-md flex items-center gap-2 hover:opacity-90 active:scale-95 transition-all shadow-md">
                 <span class="material-symbols-outlined text-[18px]">add</span>
                 Add Task
             </a>
@@ -23,30 +23,30 @@
 
     {{-- Filter Chips --}}
     <div class="flex flex-wrap gap-stack-md mb-8">
-        <div class="flex items-center gap-2 pr-4 border-r border-outline-variant">
-            <span class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Priority</span>
+        <div class="flex items-center gap-2 pr-4 border-r border-outline dark:border-outline-dark-variant dark:border-outline dark:border-outline-dark-variant-dark">
+            <span class="text-label-sm font-label-sm text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark uppercase tracking-wider">Priority</span>
             <a href="{{ request()->fullUrlWithQuery(['priority' => 'high']) }}"
                 class="px-3 py-1 rounded-full text-label-sm font-label-sm transition-all
-                    {{ request('priority') === 'high' ? 'bg-error text-on-error' : 'bg-error-container text-on-error-container hover:brightness-95' }}">
+                    {{ request('priority') === 'high' ? 'bg-error dark:bg-error-dark text-on-error dark:text-on-error-dark' : 'bg-error dark:bg-error-dark-container dark:bg-error dark:bg-error-dark-container-dark text-on-error dark:text-on-error-dark-container dark:text-on-error dark:text-on-error-dark-container-dark hover:brightness-95' }}">
                 High
             </a>
             <a href="{{ request()->fullUrlWithQuery(['priority' => 'medium']) }}"
                 class="px-3 py-1 rounded-full text-label-sm font-label-sm transition-all
-                    {{ request('priority') === 'medium' ? 'bg-outline text-white' : 'bg-surface-variant text-on-secondary-fixed-variant hover:brightness-95' }}">
+                    {{ request('priority') === 'medium' ? 'bg-outline text-white' : 'bg-surface dark:bg-surface-dark-variant text-on-secondary dark:text-on-secondary-dark-fixed dark:text-on-secondary dark:text-on-secondary-dark-fixed-dark-variant dark:text-on-secondary dark:text-on-secondary-dark-fixed dark:text-on-secondary dark:text-on-secondary-dark-fixed-dark-variant-dark hover:brightness-95' }}">
                 Medium
             </a>
             <a href="{{ request()->fullUrlWithQuery(['priority' => 'low']) }}"
                 class="px-3 py-1 rounded-full text-label-sm font-label-sm transition-all
-                    {{ request('priority') === 'low' ? 'bg-secondary text-on-secondary' : 'bg-secondary-container text-on-secondary-fixed-variant hover:brightness-95' }}">
+                    {{ request('priority') === 'low' ? 'bg-secondary dark:bg-secondary-dark text-on-secondary dark:text-on-secondary-dark' : 'bg-secondary dark:bg-secondary-dark-container dark:bg-secondary dark:bg-secondary-dark-container-dark text-on-secondary dark:text-on-secondary-dark-fixed dark:text-on-secondary dark:text-on-secondary-dark-fixed-dark-variant dark:text-on-secondary dark:text-on-secondary-dark-fixed dark:text-on-secondary dark:text-on-secondary-dark-fixed-dark-variant-dark hover:brightness-95' }}">
                 Low
             </a>
         </div>
         <div class="flex items-center gap-2">
-            <span class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Category</span>
+            <span class="text-label-sm font-label-sm text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark uppercase tracking-wider">Category</span>
             @foreach ($categories as $cat)
                 <a href="{{ request()->fullUrlWithQuery(['category' => strtolower($cat['name'])]) }}"
                     class="px-3 py-1 rounded-full text-label-sm font-label-sm transition-all
-                    {{ request('category') === strtolower($cat['name']) ? 'bg-primary text-white' : 'bg-surface-container-highest text-primary hover:bg-primary hover:text-white' }}">
+                    {{ request('category') === strtolower($cat['name']) ? 'bg-primary dark:bg-primary-dark text-white' : 'bg-surface dark:bg-surface-dark-container-highest text-primary dark:text-primary-dark hover:bg-primary dark:bg-primary-dark hover:text-white' }}">
                     {{ $cat['name'] }}
                 </a>
             @endforeach
@@ -62,11 +62,11 @@
                 @include('partials.task-item', ['task' => $task])
             @empty
                 <div
-                    class="flex items-center justify-center py-12 rounded-lg border border-outline-variant bg-surface-container-low">
+                    class="flex items-center justify-center py-12 rounded-lg border border-outline dark:border-outline-dark-variant dark:border-outline dark:border-outline-dark-variant-dark bg-surface dark:bg-surface-dark-container-low">
                     <div class="text-center">
-                        <span class="material-symbols-outlined text-on-surface-variant text-5xl mb-3">check_circle</span>
-                        <p class="text-on-surface-variant font-body-md">No tasks found</p>
-                        <p class="text-on-surface-variant text-label-sm mt-1">Create a new task to get started</p>
+                        <span class="material-symbols-outlined text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark text-5xl mb-3">check_circle</span>
+                        <p class="text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark font-body-md">No tasks found</p>
+                        <p class="text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark text-label-sm mt-1">Create a new task to get started</p>
                     </div>
                 </div>
             @endforelse
@@ -76,14 +76,14 @@
         <div class="col-span-12 lg:col-span-4 space-y-gutter-desktop">
 
             {{-- Weekly Goal --}}
-            <div class="bg-primary text-on-primary rounded-2xl p-6 shadow-lg relative overflow-hidden">
+            <div class="bg-primary dark:bg-primary-dark text-on-primary dark:text-on-primary-dark rounded-2xl p-6 shadow-lg relative overflow-hidden">
                 <div class="relative z-10">
                     <h3 class="font-headline-md text-headline-md mb-2">Weekly Goal</h3>
                     <p class="font-body-md text-body-md opacity-90 mb-6">
                         You've completed {{ $weeklyProgress }}% of your tasks this week. Keep it up!
                     </p>
-                    <div class="w-full bg-white/20 h-2 rounded-full mb-2">
-                        <div class="bg-secondary-fixed h-full rounded-full" style="width: {{ $weeklyProgress }}%">
+                    <div class="w-full bg-white dark:bg-surface-container-low-dark/20 h-2 rounded-full mb-2">
+                        <div class="bg-secondary dark:bg-secondary-dark-fixed dark:bg-secondary dark:bg-secondary-dark-fixed-dark h-full rounded-full" style="width: {{ $weeklyProgress }}%">
                         </div>
                     </div>
                     <span class="text-label-sm font-label-sm">{{ $weeklyCompleted }}/{{ $weeklyTotal }} tasks
@@ -96,8 +96,8 @@
             </div>
 
             {{-- Category Breakdown --}}
-            <div class="bg-surface-container-low rounded-2xl p-6 border border-outline-variant">
-                <h3 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest mb-4">
+            <div class="bg-surface dark:bg-surface-dark-container-low rounded-2xl p-6 border border-outline dark:border-outline-dark-variant dark:border-outline dark:border-outline-dark-variant-dark">
+                <h3 class="font-label-md text-label-md text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark uppercase tracking-widest mb-4">
                     Focus by Category
                 </h3>
                 <div class="space-y-4">
@@ -111,7 +111,7 @@
                         </div>
                     @empty
                         <div class="text-center py-4">
-                            <p class="text-on-surface-variant text-label-sm">No categories yet</p>
+                            <p class="text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark text-label-sm">No categories yet</p>
                         </div>
                     @endforelse
                 </div>
@@ -127,10 +127,10 @@
             checkbox.addEventListener('change', function() {
                 const label = this.closest('div').querySelector('label');
                 if (this.checked) {
-                    label?.classList.add('line-through', 'text-outline');
+                    label?.classList.add('line-through', 'text-outline dark:text-outline-dark');
                     this.closest('.task-row')?.classList.add('opacity-60');
                 } else {
-                    label?.classList.remove('line-through', 'text-outline');
+                    label?.classList.remove('line-through', 'text-outline dark:text-outline-dark');
                     this.closest('.task-row')?.classList.remove('opacity-60');
                 }
             });

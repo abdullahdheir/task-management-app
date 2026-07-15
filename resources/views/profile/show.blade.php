@@ -4,13 +4,6 @@
 
 @push('styles')
     <style>
-        .glass-card {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(226, 232, 240, 0.8);
-            transition: transform 0.2s ease;
-        }
-
         .glass-card:hover {
             transform: translateY(-2px);
         }
@@ -142,7 +135,7 @@
                                         @change="ajax.patch('{{ route('settings.update') }}', { email_digests: $el.checked }).then(res => toast(res.status === 'success' ? 'Settings saved' : res.message, res.status === 'success' ? 'success' : 'error'))"
                                         class="sr-only peer">
                                     <div
-                                        class="w-11 h-6 bg-outline-variant rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary">
+                                        class="w-11 h-6 bg-outline-variant rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-surface-container-lowest after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary">
                                     </div>
                                 </label>
                             </div>
@@ -166,13 +159,15 @@
                                     <button
                                         @click="
                                             darkMode = false;
+                                            document.documentElement.classList.remove('dark');
                                             ajax.patch('{{ route('settings.update') }}', { dark_mode: false })
                                                 .then(res => toast(res.status === 'success' ? 'Light mode enabled' : res.message, res.status)).catch(err=>{
                                                     toast(err.message,'error');
                                                     darkMode = !darkMode;
                                                 })
                                         "
-                                        :class="!darkMode ? 'bg-white shadow-sm text-on-surface' : 'text-on-surface-variant'"
+                                        :class="!darkMode ? 'bg-surface-container-lowest shadow-sm text-on-surface' :
+                                            'text-on-surface-variant'"
                                         class="px-3 py-1 rounded-md text-label-sm font-label-md transition-all">
                                         Light
                                     </button>
@@ -180,13 +175,15 @@
                                     <button
                                         @click="
                                             darkMode = true;
+                                            document.documentElement.classList.add('dark');
                                             ajax.patch('{{ route('settings.update') }}', { dark_mode: true })
                                                 .then(res => toast(res.status === 'success' ? 'Dark mode enabled' : res.message, res.status)).catch(err=>{
                                                     toast(err.message,'error');
                                                     darkMode = !darkMode;
                                                 })
                                         "
-                                        :class="darkMode ? 'bg-white shadow-sm text-on-surface' : 'text-on-surface-variant'"
+                                        :class="darkMode ? 'bg-surface-container-lowest shadow-sm text-on-surface' :
+                                            'text-on-surface-variant'"
                                         class="px-3 py-1 rounded-md text-label-sm font-label-md transition-all">
                                         Dark
                                     </button>
@@ -213,7 +210,7 @@
                                         @change="ajax.patch('{{ route('settings.update') }}', { desktop_alerts: $el.checked }).then(res => toast(res.status === 'success' ? 'Settings saved' : res.message, res.status === 'success' ? 'success' : 'error'))"
                                         class="sr-only peer">
                                     <div
-                                        class="w-11 h-6 bg-outline-variant rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary">
+                                        class="w-11 h-6 bg-outline-variant rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-surface-container-lowest after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary">
                                     </div>
                                 </label>
                             </div>
@@ -252,12 +249,12 @@
                                 <p class="font-body-md text-body-md opacity-80 mb-4">Collaborate with your team and unlock
                                     advanced workflows.</p>
                                 <a href="{{ route('teams.create') }}"
-                                    class="bg-white text-primary px-4 py-2 rounded-lg font-label-md hover:shadow-xl transition-shadow inline-block">
+                                    class="bg-surface-container-lowest text-primary px-4 py-2 rounded-lg font-label-md hover:shadow-xl transition-shadow inline-block">
                                     Create Team
                                 </a>
                             </div>
                             <div
-                                class="absolute -right-4 -bottom-4 w-24 h-24 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700">
+                                class="absolute -right-4 -bottom-4 w-24 h-24 bg-surface-container-lowest/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700">
                             </div>
                         </div>
                     @endif

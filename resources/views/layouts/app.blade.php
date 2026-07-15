@@ -31,7 +31,7 @@
     @stack('styles')
 </head>
 
-<body class="bg-background text-on-background min-h-screen flex">
+<body class="bg-background dark:bg-background-dark text-on-background dark:text-on-background-dark min-h-screen flex">
 
     {{-- Sidebar --}}
     @include('partials.sidebar')
@@ -48,7 +48,7 @@
                 <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 3000)"
                     x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100"
                     x-transition:leave-end="opacity-0"
-                    class="fixed top-4 right-4 z-[999] bg-secondary-container text-on-secondary-fixed-variant
+                    class="fixed top-4 right-4 z-[999] bg-secondary dark:bg-secondary-dark-container dark:bg-secondary dark:bg-secondary-dark-container-dark text-on-secondary dark:text-on-secondary-dark-fixed dark:text-on-secondary dark:text-on-secondary-dark-fixed-dark-variant dark:text-on-secondary dark:text-on-secondary-dark-fixed dark:text-on-secondary dark:text-on-secondary-dark-fixed-dark-variant-dark
                             px-6 py-3 rounded-xl shadow-lg font-label-md text-label-md">
                     {{ session('success') }}
                 </div>
@@ -57,15 +57,15 @@
                 <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 4000)"
                     x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100"
                     x-transition:leave-end="opacity-0"
-                    class="fixed top-4 right-4 z-[999] bg-error-container text-on-error-container
+                    class="fixed top-4 right-4 z-[999] bg-error dark:bg-error-dark-container dark:bg-error dark:bg-error-dark-container-dark text-on-error dark:text-on-error-dark-container dark:text-on-error dark:text-on-error-dark-container-dark
                             px-6 py-3 rounded-xl shadow-lg font-label-md text-label-md">
                     {{ session('error') }}
                 </div>
             @endif
             @yield('content')
             <!-- Footer Space -->
-            <footer class="mt-20 py-10 border-t border-outline-variant text-center">
-                <p class="text-label-sm font-label-sm text-on-surface-variant">© 2024
+            <footer class="mt-20 py-10 border-t border-outline dark:border-outline-dark-variant dark:border-outline dark:border-outline-dark-variant-dark text-center">
+                <p class="text-label-sm font-label-sm text-on-surface dark:text-on-surface-dark-variant dark:text-on-surface dark:text-on-surface-dark-variant-dark">© 2024
                     {{ strtolower(config('app.name')) }} Productivity Inc. All rights
                     reserved.</p>
             </footer>
