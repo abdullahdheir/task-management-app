@@ -5,6 +5,17 @@
     :class="{ 'dark': darkMode, 'light': !darkMode }">
 
 <head>
+    {{-- Apply dark mode BEFORE paint to prevent flash --}}
+    <script>
+        (function() {
+            const isDark = @json(auth()->check() && auth()->user()->dark_mode);
+            if (isDark) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        })();
+    </script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -16,32 +27,6 @@
         rel="stylesheet">
 
     @vite(['resources/css/app.css'])
-
-    <style>
-        body {
-            font-family: 'Geist', sans-serif;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-
-        .card-elevation {
-            box-shadow: 0px 4px 6px -1px rgba(0, 0, 0, 0.05), 0px 2px 4px -1px rgba(0, 0, 0, 0.03);
-        }
-
-        input[type="checkbox"] {
-            cursor: pointer;
-        }
-
-        /* Smooth transitions for dark mode */
-        * {
-            transition-property: background-color, border-color, color, fill, stroke;
-            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-            transition-duration: 150ms;
-        }
-    </style>
 
     @stack('styles')
 </head>

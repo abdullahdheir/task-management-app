@@ -1,0 +1,303 @@
+/* ── Light Mode Variables (default) ── */
+:root {
+    --color-background: #f8f9ff;
+    --color-surface: #f8f9ff;
+    --color-surface-dim: #cbdbf5;
+    --color-surface-bright: #f8f9ff;
+    --color-surface-container-lowest: #ffffff;
+    --color-surface-container-low: #eff4ff;
+    --color-surface-container: #e5eeff;
+    --color-surface-container-high: #dce9ff;
+    --color-surface-container-highest: #d3e4fe;
+    --color-on-surface: #0b1c30;
+    --color-on-surface-variant: #464555;
+    --color-outline: #777587;
+    --color-outline-variant: #c7c4d8;
+    --color-primary: #3525cd;
+    --color-on-primary: #ffffff;
+    --color-primary-container: #4f46e5;
+    --color-on-primary-container: #dad7ff;
+    --color-secondary: #006c49;
+    --color-on-secondary: #ffffff;
+    --color-secondary-container: #6cf8bb;
+    --color-on-secondary-container: #00714d;
+    --color-on-secondary-fixed-variant: #005236;
+    --color-tertiary: #684000;
+    --color-tertiary-container: #885500;
+    --color-tertiary-fixed: #ffddb8;
+    --color-on-tertiary-fixed-variant: #653e00;
+    --color-error: #ba1a1a;
+    --color-on-error: #ffffff;
+    --color-error-container: #ffdad6;
+    --color-on-error-container: #93000a;
+    --color-surface-variant: #d3e4fe;
+    --color-primary-fixed: #e2dfff;
+    --color-on-primary-fixed: #0f0069;
+    --color-secondary-fixed: #6ffbbe;
+    --color-on-secondary-fixed: #002113;
+    --color-on-surface-text: #0b1c30;
+}
+
+/* ── Dark Mode Variables ── */
+html.dark {
+    --color-background: #0b1326;
+    --color-surface: #0b1326;
+    --color-surface-dim: #0b1326;
+    --color-surface-bright: #31394d;
+    --color-surface-container-lowest: #060e20;
+    --color-surface-container-low: #131b2e;
+    --color-surface-container: #171f33;
+    --color-surface-container-high: #222a3d;
+    --color-surface-container-highest: #2d3449;
+    --color-on-surface: #dae2fd;
+    --color-on-surface-variant: #c7c4d7;
+    --color-outline: #908fa0;
+    --color-outline-variant: #464554;
+    --color-primary: #c0c1ff;
+    --color-on-primary: #1000a9;
+    --color-primary-container: #8083ff;
+    --color-on-primary-container: #0d0096;
+    --color-secondary: #b9c8de;
+    --color-on-secondary: #233143;
+    --color-secondary-container: #39485a;
+    --color-on-secondary-container: #a7b6cc;
+    --color-on-secondary-fixed-variant: #a7b6cc;
+    --color-tertiary: #ffb783;
+    --color-tertiary-container: #d97721;
+    --color-tertiary-fixed: #ffdcc5;
+    --color-on-tertiary-fixed-variant: #703700;
+    --color-error: #ffb4ab;
+    --color-on-error: #690005;
+    --color-error-container: #93000a;
+    --color-on-error-container: #ffdad6;
+    --color-surface-variant: #2d3449;
+    --color-primary-fixed: #e1e0ff;
+    --color-on-primary-fixed: #07006c;
+    --color-secondary-fixed: #d4e4fa;
+    --color-on-secondary-fixed: #0d1c2d;
+    --color-on-surface-text: #dae2fd;
+}
+
+/* ── Map CSS Variables to Tailwind custom colors ── */
+.bg-background {
+    background-color: var(--color-background) !important;
+}
+
+.bg-surface {
+    background-color: var(--color-surface) !important;
+}
+
+.bg-surface-dim {
+    background-color: var(--color-surface-dim) !important;
+}
+
+.bg-surface-bright {
+    background-color: var(--color-surface-bright) !important;
+}
+
+.bg-surface-container-lowest {
+    background-color: var(--color-surface-container-lowest) !important;
+}
+
+.bg-surface-container-low {
+    background-color: var(--color-surface-container-low) !important;
+}
+
+.bg-surface-container {
+    background-color: var(--color-surface-container) !important;
+}
+
+.bg-surface-container-high {
+    background-color: var(--color-surface-container-high) !important;
+}
+
+.bg-surface-container-highest {
+    background-color: var(--color-surface-container-highest) !important;
+}
+
+.bg-primary {
+    background-color: var(--color-primary) !important;
+}
+
+.bg-primary-container {
+    background-color: var(--color-primary-container) !important;
+}
+
+.bg-secondary {
+    background-color: var(--color-secondary) !important;
+}
+
+.bg-secondary-container {
+    background-color: var(--color-secondary-container) !important;
+}
+
+.bg-tertiary-container {
+    background-color: var(--color-tertiary-container) !important;
+}
+
+.bg-tertiary-fixed {
+    background-color: var(--color-tertiary-fixed) !important;
+}
+
+.bg-error {
+    background-color: var(--color-error) !important;
+}
+
+.bg-error-container {
+    background-color: var(--color-error-container) !important;
+}
+
+.bg-surface-variant {
+    background-color: var(--color-surface-variant) !important;
+}
+
+.bg-primary-fixed {
+    background-color: var(--color-primary-fixed) !important;
+}
+
+.bg-secondary-fixed {
+    background-color: var(--color-secondary-fixed) !important;
+}
+
+.text-on-surface {
+    color: var(--color-on-surface) !important;
+}
+
+.text-on-surface-variant {
+    color: var(--color-on-surface-variant) !important;
+}
+
+.text-on-background {
+    color: var(--color-on-surface) !important;
+}
+
+.text-primary {
+    color: var(--color-primary) !important;
+}
+
+.text-on-primary {
+    color: var(--color-on-primary) !important;
+}
+
+.text-on-primary-container {
+    color: var(--color-on-primary-container) !important;
+}
+
+.text-secondary {
+    color: var(--color-secondary) !important;
+}
+
+.text-on-secondary {
+    color: var(--color-on-secondary) !important;
+}
+
+.text-on-secondary-container {
+    color: var(--color-on-secondary-container) !important;
+}
+
+.text-on-secondary-fixed-variant {
+    color: var(--color-on-secondary-fixed-variant) !important;
+}
+
+.text-tertiary {
+    color: var(--color-tertiary) !important;
+}
+
+.text-on-tertiary-fixed-variant {
+    color: var(--color-on-tertiary-fixed-variant) !important;
+}
+
+.text-error {
+    color: var(--color-error) !important;
+}
+
+.text-on-error {
+    color: var(--color-on-error) !important;
+}
+
+.text-on-error-container {
+    color: var(--color-on-error-container) !important;
+}
+
+.text-outline {
+    color: var(--color-outline) !important;
+}
+
+.text-on-primary-fixed {
+    color: var(--color-on-primary-fixed) !important;
+}
+
+.text-on-secondary-fixed {
+    color: var(--color-on-secondary-fixed) !important;
+}
+
+.border-outline-variant {
+    border-color: var(--color-outline-variant) !important;
+}
+
+.border-outline {
+    border-color: var(--color-outline) !important;
+}
+
+.border-primary {
+    border-color: var(--color-primary) !important;
+}
+
+.border-error {
+    border-color: var(--color-error) !important;
+}
+
+.border-secondary {
+    border-color: var(--color-secondary) !important;
+}
+
+/* Dividers and subtle elements */
+html.dark .border-outline-variant\/30 {
+    border-color: rgba(70, 69, 84, 0.5) !important;
+}
+
+/* Dark mode card elevation via subtle top border */
+html.dark .card-shadow,
+html.dark .glass-effect {
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 4px 24px rgba(0, 0, 0, 0.4) !important;
+    background: var(--color-surface-container-low) !important;
+}
+
+/* Scrollbar dark mode */
+html.dark ::-webkit-scrollbar-track {
+    background: var(--color-surface-container-low);
+}
+
+html.dark ::-webkit-scrollbar-thumb {
+    background: var(--color-outline-variant);
+}
+
+/* Input dark mode */
+html.dark input,
+html.dark textarea,
+html.dark select {
+    color-scheme: dark;
+}
+
+/* Transition for smooth mode switch */
+*,
+*::before,
+*::after {
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.15s ease;
+}
+
+body {
+    font-family: 'Geist', sans-serif;
+}
+
+.material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+.card-elevation {
+    box-shadow: 0px 4px 6px -1px rgba(0, 0, 0, 0.05), 0px 2px 4px -1px rgba(0, 0, 0, 0.03);
+}
+
+input[type="checkbox"] {
+    cursor: pointer;
+}
